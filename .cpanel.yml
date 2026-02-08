@@ -1,4 +1,3 @@
----
 deployment:
   tasks:
     - export DEPLOYPATH=/home/cnbx6122/public_html/sml.cnblogistik.com
