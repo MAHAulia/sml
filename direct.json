@@ -1,0 +1,69 @@
+[
+  {
+    "id": "evt_01jyjttxyabv7kb583fedma62e",
+    "timestamp": 1750831298506,
+    "event": "message.any",
+    "session": "default",
+    "metadata": {},
+    "me": {
+      "id": "6285793490143@c.us",
+      "pushName": "Neo Vai"
+    },
+    "payload": {
+      "id": "false_6287803166974@c.us_3FE5FC849489AC7E2398",
+      "timestamp": 1750831298,
+      "from": "6287803166974@c.us",
+      "fromMe": false,
+      "source": "app",
+      "body": "Hallo guys, apa kabar?",
+      "hasMedia": false,
+      "media": null,
+      "ack": 2,
+      "ackName": "DEVICE",
+      "replyTo": null,
+      "_data": {
+        "key": {
+          "remoteJid": "6287803166974@s.whatsapp.net",
+          "fromMe": false,
+          "id": "3FE5FC849489AC7E2398"
+        },
+        "messageTimestamp": 1750831298,
+        "pushName": "Aulia",
+        "broadcast": false,
+        "message": {
+          "messageContextInfo": {
+            "deviceListMetadata": {
+              "senderKeyHash": "PbFrnbQQe7zRLw==",
+              "senderTimestamp": "1750036677",
+              "recipientKeyHash": "kUt5M9kZCZ2vuw==",
+              "recipientTimestamp": "0"
+            },
+            "deviceListMetadataVersion": 2
+          },
+          "ephemeralMessage": {
+            "message": {
+              "extendedTextMessage": {
+                "text": "Hallo guys, apa kabar?",
+                "contextInfo": {
+                  "expiration": 604800,
+                  "ephemeralSettingTimestamp": "1721030264",
+                  "disappearingMode": {
+                    "initiator": "INITIATED_BY_ME"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "status": 3
+      }
+    },
+    "engine": "NOWEB",
+    "environment": {
+      "version": "2025.6.2",
+      "engine": "NOWEB",
+      "tier": "CORE",
+      "browser": null
+    }
+  }
+]

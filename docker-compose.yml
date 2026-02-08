@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: easyform-app
+    volumes:
+      - .:/var/www/html
+    networks:
+      - easy-form-net
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: easyform-nginx
+    ports:
+      - "1025:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - easy-form-net
+    depends_on:
+      - app
+
+  db:
+    image: postgres:15
+    container_name: easyform-db
+    restart: always
+    environment:
+      POSTGRES_DB: easyform-db
+      POSTGRES_USER: easyform-db
+      POSTGRES_PASSWORD: easyform-db-secret123
+    volumes:
+      - easy_form_db_data:/var/lib/postgresql/data
+    networks:
+      - easy-form-net
+
+networks:
+  easy-form-net:
+
+volumes:
+  easy_form_db_data:

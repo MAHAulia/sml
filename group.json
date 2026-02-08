@@ -1,0 +1,71 @@
+[
+  {
+    "id": "evt_01jykgchxx63qpn7my5qp0y9dc",
+    "timestamp": 1750853896125,
+    "event": "message.any",
+    "session": "default",
+    "metadata": {},
+    "me": {
+      "id": "6285793490143@c.us",
+      "pushName": "Neo Vai"
+    },
+    "payload": {
+      "id": "false_6287803166974-1493587388@g.us_1353B9B982C630B56C15023C19543AEA_6287803166974@c.us",
+      "timestamp": 1750853895,
+      "from": "6287803166974-1493587388@g.us",
+      "fromMe": false,
+      "source": "app",
+      "body": "Wah, kok ISO bales dewe",
+      "to": "6287803166974-1493587388@g.us",
+      "participant": "6287803166974@c.us",
+      "hasMedia": false,
+      "media": null,
+      "ack": 2,
+      "ackName": "DEVICE",
+      "replyTo": {
+        "id": "3EB0D93696A5C774382845",
+        "participant": "6285793490143@c.us",
+        "body": "Maaf, saat ini tidak tersedia informasi nomor telepon baru untuk Simple Solution. Untuk menghubungi tim kami, Anda dapat menggunakan WhatsApp atau email yang tersedia. Jika ada update, tim kami akan menginformasikan lebih lanjut.",
+        "_data": {
+          "conversation": "Maaf, saat ini tidak tersedia informasi nomor telepon baru untuk Simple Solution. Untuk menghubungi tim kami, Anda dapat menggunakan WhatsApp atau email yang tersedia. Jika ada update, tim kami akan menginformasikan lebih lanjut."
+        }
+      },
+      "_data": {
+        "key": {
+          "remoteJid": "6287803166974-1493587388@g.us",
+          "fromMe": false,
+          "id": "1353B9B982C630B56C15023C19543AEA",
+          "participant": "6287803166974@s.whatsapp.net"
+        },
+        "messageTimestamp": 1750853895,
+        "pushName": "Aulia",
+        "broadcast": false,
+        "message": {
+          "extendedTextMessage": {
+            "text": "Wah, kok ISO bales dewe",
+            "previewType": "NONE",
+            "contextInfo": {
+              "stanzaId": "3EB0D93696A5C774382845",
+              "participant": "6285793490143@s.whatsapp.net",
+              "quotedMessage": {
+                "conversation": "Maaf, saat ini tidak tersedia informasi nomor telepon baru untuk Simple Solution. Untuk menghubungi tim kami, Anda dapat menggunakan WhatsApp atau email yang tersedia. Jika ada update, tim kami akan menginformasikan lebih lanjut."
+              }
+            },
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          },
+          "messageContextInfo": {
+            "messageSecret": "A+zOjT/8hZKr5d7QFsUexXZoyHzKRkkl+bIhZrni9b0="
+          }
+        },
+        "status": 3
+      }
+    },
+    "engine": "NOWEB",
+    "environment": {
+      "version": "2025.6.2",
+      "engine": "NOWEB",
+      "tier": "CORE",
+      "browser": null
+    }
+  }
+]
