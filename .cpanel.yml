@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cnbx6122/public_html/sml.cnblogistik.com
+    - /bin/cp -R images $DEPLOYPATH
+    - cd DEPLOYPATH && /bin/composer install --no-scripts --ignore-platform-reqs
