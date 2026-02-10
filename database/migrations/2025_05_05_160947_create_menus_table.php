@@ -102,6 +102,38 @@ return new class extends Migration
             ["label" => "Simpan Perubahan Offering", "route_name" => "offering.update", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
             // 35
             ["label" => "Hapus Offering", "route_name" => "offering.destroy", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            // 36
+            ["label" => "Request Pickup", "route_name" => "pickup.index", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "menu"],
+            // 37
+            ["label" => "Tambah Request Pickup", "route_name" => "pickup.create", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            // 38
+            ["label" => "Simpan Request Pickup", "route_name" => "pickup.store", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            // 39
+            ["label" => "Lihat Request Pickup", "route_name" => "pickup.show", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            // 40
+            ["label" => "Ubah Request Pickup", "route_name" => "pickup.edit", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            // 41
+            ["label" => "Simpan Perubahan Request Pickup", "route_name" => "pickup.update", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            // 42
+            ["label" => "Hapus Request Pickup", "route_name" => "pickup.destroy", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+
+            // Customer Services
+            // 43
+            ["label" => "Customer Services", "route_name" => "", "icon" => "Headset", "is_parent" => true, "parent_id" => null, "order_number" => 3, "type" => "menu"],
+            // 44
+            ["label" => "Offering", "route_name" => "offering.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 43, "order_number" => 1, "type" => "menu"],
+            // 45
+            ["label" => "Set Tarif", "route_name" => "offering-price.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 43, "order_number" => 2, "type" => "form"],
+            // 46
+            ["label" => "Simpan Set Tarif", "route_name" => "offering-price.store", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 43, "order_number" => 2, "type" => "api"],
+            // 47
+            ["label" => "Lihat Set Tarif", "route_name" => "offering-price.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 43, "order_number" => 2, "type" => "form"],
+            // 48
+            ["label" => "Request Pickup", "route_name" => "pickup.index", "icon" => "Package", "is_parent" => false, "parent_id" => 43, "order_number" => 3, "type" => "menu"],
+            // 49
+            ["label" => "Kelola Pickup", "route_name" => "pickup.manage", "icon" => "Package", "is_parent" => false, "parent_id" => 43, "order_number" => 3, "type" => "form"],
+            // 50
+            ["label" => "Simpan Kelola Pickup", "route_name" => "pickup.savemanage", "icon" => "Package", "is_parent" => false, "parent_id" => 43, "order_number" => 3, "type" => "api"],
         ]);
     }
 
