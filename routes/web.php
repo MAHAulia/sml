@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
+use App\Http\Controllers\OfferingController;
 use App\Http\Controllers\Settings\MenuController;
 use App\Http\Controllers\Settings\RoleController;
 use App\Http\Controllers\SocialLogin\GoogleController;
@@ -34,6 +35,8 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::resource("role", RoleController::class);
     Route::get("role/mapping/{role}", [RoleController::class, "roleMapping"])->name("role.mappingmenutorole");
     Route::put("role/mapping/{role}", [RoleController::class, "updateRoleMapping"])->name("role.storemappingmenutorole");
+
+    Route::resource("offering", OfferingController::class);
     
 });
 

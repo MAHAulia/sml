@@ -30,7 +30,6 @@ return new class extends Migration
 
             // 2
             ["label" => "Settings", "route_name" => "", "icon" => "Settings", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "menu"],
-
             // 3
             ["label" => "Pengguna", "route_name" => "pengguna.index", "icon" => "Settings", "is_parent" => false, "parent_id" => 2, "order_number" => 1, "type" => "menu"],
             // 4
@@ -47,7 +46,6 @@ return new class extends Migration
             ["label" => "Hapus Pengguna", "route_name" => "pengguna.destroy", "icon" => "Users", "is_parent" => false, "parent_id" => 2, "order_number" => 1, "type" => "api"],
             // 10
             ["label" => "Kirim Ulang Tautan Verifikasi Pengguna", "route_name" => "pengguna.verify-resend", "icon" => "MailPlus", "is_parent" => false, "parent_id" => 2, "order_number" => 1, "type" => "api"],
-
             // 11
             ["label" => "Roles", "route_name" => "role.index", "icon" => "FileKey2", "is_parent" => false, "parent_id" => 2, "order_number" => 2, "type" => "menu"],
             // 12
@@ -64,12 +62,10 @@ return new class extends Migration
             ["label" => "Hapus Roles", "route_name" => "role.destroy", "icon" => "FileKey2", "is_parent" => false, "parent_id" => 2, "order_number" => 2, "type" => "api"],
             // 18
             ["label" => "Hapus Roles", "route_name" => "role.destroy", "icon" => "FileKey2", "is_parent" => false, "parent_id" => 2, "order_number" => 2, "type" => "api"],
-
             // 19
             ["label" => "Role to Menu", "route_name" => "role.mappingmenutorole", "icon" => "RectangleEllipsis", "is_parent" => false, "parent_id" => 2, "order_number" => 3, "type" => "form"],
             // 20
             ["label" => "Simpan Role to Menu", "route_name" => "role.storemappingmenutorole", "icon" => "RectangleEllipsis", "is_parent" => false, "parent_id" => 2, "order_number" => 3, "type" => "api"],
-
             // 21
             ["label" => "Menu", "route_name" => "menu.index", "icon" => "RectangleEllipsis", "is_parent" => false, "parent_id" => 2, "order_number" => 4, "type" => "menu"],
             // 22
@@ -89,51 +85,119 @@ return new class extends Migration
             // 28
             ["label" => "Marketing", "route_name" => "", "icon" => "Megaphone", "is_parent" => true, "parent_id" => null, "order_number" => 2, "type" => "menu"],
             // 29
-            ["label" => "Offering", "route_name" => "offering.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "menu"],
+            ["label" => "Customer", "route_name" => "customer.index", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "menu"],
             // 30
-            ["label" => "Tambah Offering", "route_name" => "offering.create", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            ["label" => "Tambah Customer", "route_name" => "customer.create", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
             // 31
-            ["label" => "Simpan Offering", "route_name" => "offering.store", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            ["label" => "Simpan Customer", "route_name" => "customer.store", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
             // 32
-            ["label" => "Lihat Offering", "route_name" => "offering.show", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            ["label" => "Lihat Customer", "route_name" => "customer.show", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
             // 33
-            ["label" => "Ubah Offering", "route_name" => "offering.edit", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            ["label" => "Ubah Customer", "route_name" => "customer.edit", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
             // 34
-            ["label" => "Simpan Perubahan Offering", "route_name" => "offering.update", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            ["label" => "Simpan Perubahan Customer", "route_name" => "customer.update", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
             // 35
-            ["label" => "Hapus Offering", "route_name" => "offering.destroy", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            ["label" => "Hapus Customer", "route_name" => "customer.destroy", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
             // 36
-            ["label" => "Request Pickup", "route_name" => "pickup.index", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "menu"],
+            ["label" => "Offering", "route_name" => "offering.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "menu"],
             // 37
-            ["label" => "Tambah Request Pickup", "route_name" => "pickup.create", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            ["label" => "Tambah Offering", "route_name" => "offering.create", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "form"],
             // 38
-            ["label" => "Simpan Request Pickup", "route_name" => "pickup.store", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            ["label" => "Simpan Offering", "route_name" => "offering.store", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "api"],
             // 39
-            ["label" => "Lihat Request Pickup", "route_name" => "pickup.show", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            ["label" => "Lihat Offering", "route_name" => "offering.show", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "form"],
             // 40
-            ["label" => "Ubah Request Pickup", "route_name" => "pickup.edit", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "form"],
+            ["label" => "Ubah Offering", "route_name" => "offering.edit", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "form"],
             // 41
-            ["label" => "Simpan Perubahan Request Pickup", "route_name" => "pickup.update", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            ["label" => "Simpan Perubahan Offering", "route_name" => "offering.update", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "api"],
             // 42
-            ["label" => "Hapus Request Pickup", "route_name" => "pickup.destroy", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "api"],
+            ["label" => "Hapus Offering", "route_name" => "offering.destroy", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "api"],
+            // 43
+            ["label" => "Request Pickup", "route_name" => "pickup.index", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "menu"],
+            // 44
+            ["label" => "Tambah Request Pickup", "route_name" => "pickup.create", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "form"],
+            // 45
+            ["label" => "Simpan Request Pickup", "route_name" => "pickup.store", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "api"],
+            // 46
+            ["label" => "Lihat Request Pickup", "route_name" => "pickup.show", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "form"],
+            // 47
+            ["label" => "Ubah Request Pickup", "route_name" => "pickup.edit", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "form"],
+            // 48
+            ["label" => "Simpan Perubahan Request Pickup", "route_name" => "pickup.update", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "api"],
+            // 49
+            ["label" => "Hapus Request Pickup", "route_name" => "pickup.destroy", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "api"],
 
             // Customer Services
-            // 43
-            ["label" => "Customer Services", "route_name" => "", "icon" => "Headset", "is_parent" => true, "parent_id" => null, "order_number" => 3, "type" => "menu"],
-            // 44
-            ["label" => "Offering", "route_name" => "offering.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 43, "order_number" => 1, "type" => "menu"],
-            // 45
-            ["label" => "Set Tarif", "route_name" => "offering-price.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 43, "order_number" => 2, "type" => "form"],
-            // 46
-            ["label" => "Simpan Set Tarif", "route_name" => "offering-price.store", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 43, "order_number" => 2, "type" => "api"],
-            // 47
-            ["label" => "Lihat Set Tarif", "route_name" => "offering-price.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 43, "order_number" => 2, "type" => "form"],
-            // 48
-            ["label" => "Request Pickup", "route_name" => "pickup.index", "icon" => "Package", "is_parent" => false, "parent_id" => 43, "order_number" => 3, "type" => "menu"],
-            // 49
-            ["label" => "Kelola Pickup", "route_name" => "pickup.manage", "icon" => "Package", "is_parent" => false, "parent_id" => 43, "order_number" => 3, "type" => "form"],
             // 50
-            ["label" => "Simpan Kelola Pickup", "route_name" => "pickup.savemanage", "icon" => "Package", "is_parent" => false, "parent_id" => 43, "order_number" => 3, "type" => "api"],
+            ["label" => "Customer Services", "route_name" => "", "icon" => "Headset", "is_parent" => true, "parent_id" => null, "order_number" => 3, "type" => "menu"],
+            // 51
+            ["label" => "Offering", "route_name" => "offering-request.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "menu"],
+            // 52
+            ["label" => "Set Tarif", "route_name" => "offering-price.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "form"],
+            // 53
+            ["label" => "Simpan Set Tarif", "route_name" => "offering-price.store", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "api"],
+            // 54
+            ["label" => "Lihat Set Tarif", "route_name" => "offering-price.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "form"],
+            // 55
+            ["label" => "Request Pickup", "route_name" => "pickup-request.index", "icon" => "Package", "is_parent" => false, "parent_id" => 50, "order_number" => 2, "type" => "menu"],
+            // 56
+            ["label" => "Kelola Pickup", "route_name" => "pickup-request.manage", "icon" => "Package", "is_parent" => false, "parent_id" => 50, "order_number" => 2, "type" => "form"],
+            // 57
+            ["label" => "Simpan Kelola Pickup", "route_name" => "pickup-request.savemanage", "icon" => "Package", "is_parent" => false, "parent_id" => 50, "order_number" => 2, "type" => "api"],
+            
+            // Pickup
+            //58
+            ["label" => "Pickup", "route_name" => "", "icon" => "FileBox", "is_parent" => true, "parent_id" => null, "order_number" => 4, "type" => "menu"],
+            //59
+            ["label" => "Request Pickup", "route_name" => "pickup.index", "icon" => "FileBox", "is_parent" => false, "parent_id" => 58, "order_number" => 1, "type" => "menu"],
+            //60
+            ["label" => "Show Pickup", "route_name" => "pickup.show", "icon" => "FileBox", "is_parent" => false, "parent_id" => 58, "order_number" => 1, "type" => "form"],
+            //61
+            ["label" => "Update Pickup", "route_name" => "pickup.update", "icon" => "FileBox", "is_parent" => false, "parent_id" => 58, "order_number" => 1, "type" => "api"],
+
+            // Warehouse
+            //62
+            ["label" => "Warehouse", "route_name" => "", "icon" => "Warehouse", "is_parent" => true, "parent_id" => null, "order_number" => 5, "type" => "menu"],
+            //63
+            ["label" => "Manifest", "route_name" => "manifest.index", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 1, "type" => "menu"],
+            //64
+            ["label" => "Create Manifest", "route_name" => "manifest.create", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 2, "type" => "form"],
+            //65
+            ["label" => "Show Manifest", "route_name" => "manifest.show", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 3, "type" => "form"],
+            //66
+            ["label" => "Update Manifest", "route_name" => "manifest.update", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 4, "type" => "api"],
+
+            // Delivery
+            //67
+            ["label" => "Delivery", "route_name" => "", "icon" => "Truck", "is_parent" => true, "parent_id" => null, "order_number" => 6, "type" => "menu"],
+            //68
+            ["label" => "Delivery Order", "route_name" => "delivery-order.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 1, "type" => "menu"],
+            //69
+            ["label" => "Create Delivery Order", "route_name" => "delivery-order.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 2, "type" => "form"],
+            //70
+            ["label" => "Show Delivery Order", "route_name" => "delivery-order.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 3, "type" => "form"],
+            //71
+            ["label" => "Update Delivery Order", "route_name" => "delivery-order.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 4, "type" => "api"],
+            //72
+            ["label" => "POD", "route_name" => "pod.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 5, "type" => "menu"],
+            //73
+            ["label" => "Create POD", "route_name" => "pod.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 67, "order_number" => 6, "type" => "form"],
+            //74
+            ["label" => "Show POD", "route_name" => "pod.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 67, "order_number" => 7, "type" => "form"],
+            //75
+            ["label" => "Update POD", "route_name" => "pod.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 67, "order_number" => 8, "type" => "api"],
+
+            // Accounting
+            //76
+            ["label" => "Accounting", "route_name" => "", "icon" => "CreditCard", "is_parent" => true, "parent_id" => null, "order_number" => 7, "type" => "menu"],
+            //77
+            ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 1, "type" => "menu"],
+            //78
+            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 2, "type" => "form"],
+            //79
+            ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 3, "type" => "form"],
+            //80
+            ["label" => "Update Invoice", "route_name" => "invoice.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 4, "type" => "api"],
         ]);
     }
 
