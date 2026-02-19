@@ -17,36 +17,16 @@ import { Icon } from "@/components/icon"
 import * as Icons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"
+import { SelectedOffer } from "@/types/customer"
+import { Offerings } from "@/types/marketing"
 
 type ColumnProps = {
-  onView: (data: MenuData) => void;
-  onEdit: (data: MenuData) => void;
-  onDelete: (data: MenuData) => void;
+  onView: (data: Offerings) => void;
+  onEdit: (data: Offerings) => void;
+  onDelete: (data: Offerings) => void;
 };
 
-export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<MenuData>[] => [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
+export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<Offerings>[] => [
   {
     id: "no",
     header: ({ column }) => {
@@ -75,7 +55,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Label
+          Customer
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
@@ -90,7 +70,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Alias
+          Nama Pengirim
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
@@ -105,15 +85,10 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Icon
+          Alamat Pengirim
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
-    },
-    cell: ({ row }) => {
-      const icon = row.getValue("icon") as string
-      const previewIcon = (Icons as unknown as Record<string, LucideIcon>)[icon] ?? Icons.LayoutGrid;
-      return  <div className="flex justify-center"><Icon iconNode={previewIcon} className="h-5 w-5" /></div>
     }
   },
   {
@@ -125,20 +100,10 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Type
+          Nama Penerima
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
-    },
-    cell: ({ row }) => {
-      const type = row.getValue("type") as string
-      let style = "bg-blue-500 text-white"
-      if (type == "api") {
-        style = "bg-green-500 text-white"
-      } else if (type == "form") {
-        style = "bg-orange-500 text-white"
-      }
-      return  <div className="flex justify-center"><Badge className={style}>{type}</Badge></div>
     }
   },
   {
@@ -150,60 +115,10 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Parent
+          Alamat Penerima
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
-    },
-    cell: ({ row }) => {
-      const isParent = row.getValue("is_parent") as boolean
-      let style = "bg-orange-500 text-white"
-      if (isParent == false) {
-        style = "bg-yellow-500 text-white"
-      }
-      return  <div className="flex justify-center"><Badge className={style}>{isParent ? "Parent" : "Child"}</Badge></div>
-    }
-  },
-  {
-    accessorKey: "parent_id",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Parent Menu
-          <ArrowUpDown className="ml-auto h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      const parentLabel = row.original.parent?.label || '-'
-      if (parentLabel == "-") {
-        return <div className="flex justify-center"></div>
-      }
-      return <div className="flex justify-center"><Badge className="bg-blue-500 dark:bg-blue-200">{parentLabel}</Badge></div>
-    }
-  },
-  {
-    accessorKey: "order_number",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nomor Urut
-          <ArrowUpDown className="ml-auto h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      const order_number = row.getValue("order_number") as string
-      
-      return  <div className="flex justify-center">{order_number}</div>
     }
   },
   {

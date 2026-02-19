@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import MenuForm from "./form";
-import { useForm, usePage } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,7 @@ interface MenuFormDialog {
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
+    withParam: string | null;
 }
 
 type MenuForm = {
@@ -29,7 +30,7 @@ type MenuForm = {
 };
 
 
-export default function MenuFormDialog({ selectedMenu, isOpen, setIsOpen, isView = true }: MenuFormDialog) {
+export default function MenuFormDialog({ selectedMenu, isOpen, setIsOpen, isView = true, withParam }: MenuFormDialog) {
     const page = usePage();
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<MenuForm>>({
         id: 0,
@@ -63,6 +64,9 @@ export default function MenuFormDialog({ selectedMenu, isOpen, setIsOpen, isView
                     resetForm();
                     if (setIsOpen) {
                         setIsOpen(false);
+                    }
+                    if (withParam) {
+                        router.visit(route(`${withParam}.index`, {'f': 'customer'}))
                     }
                 },
                 onError: (error) => {

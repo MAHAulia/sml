@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,8 +14,9 @@ class OfferingController extends Controller
     public function index()
     {
         
-        return Inertia::render('marketing/index', [
-            "datas" => []
+        return Inertia::render('offering/index', [
+            "datas" => [],
+            "customers" => Customer::all(["id", "name", "phone","email", "address"])
         ]);
     }
 

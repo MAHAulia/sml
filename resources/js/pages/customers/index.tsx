@@ -1,9 +1,9 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import {type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { menuTableColumn } from './table-column';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import MenuTable from './table';
 import MenuFormDialog from './form-dialog';
@@ -28,6 +28,9 @@ export default function Customer({ datas }: CustomerProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
     const [isView, setisView] = useState(false)
+
+    const params = new URLSearchParams(window.location.search);
+    const filter = params.get('f');
 
     const handleView = (data: CustomerData) => {
         setIsOpen(true)
@@ -57,6 +60,12 @@ export default function Customer({ datas }: CustomerProps) {
         setisView(false)
     }
 
+    useEffect(() => {
+        if (filter) {
+            handleAdd()
+        }
+    },[])
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Marketing - Customer" />
@@ -65,7 +74,7 @@ export default function Customer({ datas }: CustomerProps) {
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
                         <MenuTable data={datas} onAddButtonClicked={handleAdd} columns={menuTableColumn({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete })} />
-                        <MenuFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedMenu={selectedMenu} isView={isView} />
+                        <MenuFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedMenu={selectedMenu} isView={isView} withParam={filter} />
                         <DeleteConfirmation
                             title='Hapus Data Menu'
                             subtitle='Proses penghapusan data Menu'
