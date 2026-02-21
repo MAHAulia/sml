@@ -13,7 +13,7 @@ import OfferingTable from './table';
 import OfferingFormDialog from './form-dialog';
 
 
-interface MarketingProps {
+interface OfferingProps {
     datas: Offerings[],
     customers: CustomerData[],
 }
@@ -24,7 +24,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Marketing({ datas }: MarketingProps) {
+export default function Marketing({ datas }: OfferingProps) {
 
     const { delete: destroy, processing } = useForm();
 

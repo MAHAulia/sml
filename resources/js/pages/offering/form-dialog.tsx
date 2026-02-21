@@ -1,18 +1,14 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { MenuData } from "@/types";
-import MenuForm from "./form";
 import { router, useForm, usePage } from "@inertiajs/react";
 import ErrorBoundary from '@/components/error-boundary';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import * as Icons from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { LoaderCircle } from 'lucide-react';
-import { createElement, FormEventHandler, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEventHandler, useEffect, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
@@ -28,9 +24,12 @@ interface OfferingFormDialog {
 }
 
 type OfferingForm = {
+    customerId: number | null;
     senderName: string;
+    senderPhone: string;
     senderAddress: string;
     receiverName: string;
+    receiverPhone: string;
     receiverAddress: string;
     p: number;
     l: number;
@@ -48,10 +47,13 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
     const page = usePage();
     const customers = page.props.customers as CustomerData[];
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<OfferingForm>>({
+        customerId: null,
         senderName: "",
         senderAddress: "",
+        senderPhone: "",
         receiverName: "",
         receiverAddress: "",
+        receiverPhone: "",
         p: 0,
         l: 0,
         t: 0,
@@ -65,10 +67,13 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
     useEffect(() => {
 
         if (selectedOffer != null) {
+            setData('customerId', selectedOffer.sender.id);
             setData('senderName', selectedOffer.sender.name);
             setData('senderAddress', selectedOffer.sender.address);
+            setData('senderPhone', selectedOffer.sender.phone);
             setData('receiverName', selectedOffer.receiver.name);
             setData('receiverAddress', selectedOffer.receiver.address);
+            setData('receiverPhone', selectedOffer.receiver.phone);
             setData('p', selectedOffer.dimention.p);
             setData('l', selectedOffer.dimention.l);
             setData('t', selectedOffer.dimention.t);
@@ -85,7 +90,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
         e.preventDefault();
         console.log(data.action);
         if (data.action == 'add') {
-            post(route('menu.store'), {
+            post(route('offering.store'), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -99,7 +104,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
         }
 
         if (data.action == 'update') {
-            put(route('menu.update', selectedOffer?.id), {
+            put(route('offering.update', selectedOffer?.id), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -114,14 +119,20 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
     };
 
     const resetForm = () => {
+        reset('customerId');
         reset('senderName');
         reset('senderAddress');
+        reset('senderPhone');
         reset('receiverName');
+        reset('receiverPhone');
         reset('receiverAddress');
         reset('berat');
         reset('p');
         reset('l');
         reset('t');
+        reset('isiKiriman');
+        reset('jumlah');
+        reset('catatan');
         reset('action');
     };
 
@@ -172,6 +183,8 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                                                 const customer = customers.find((item) => item.id == Number(currentValue))
                                                                                 setData('senderName', customer?.name ?? "");
                                                                                 setData('senderAddress', customer?.address ?? "");
+                                                                                setData('senderPhone', customer?.phone ?? "");
+                                                                                setData('customerId', customer?.id ?? null);
                                                                                 setSelectIsOpen(false);
                                                                             }}
                                                                             className="flex items-center justify-between"
@@ -211,10 +224,27 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 autoComplete="senderName"
                                                 value={data.senderName}
                                                 onChange={(e) => setData('senderName', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                placeholder="contoh. Fulan bin Fulan"
                                                 disabled={isView}
                                             />
                                             <InputError message={errors.senderName} />
+                                        </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="senderPhone">Telepon Pengirim</Label>
+                                            <Input
+                                                id="senderPhone"
+                                                type="tel"
+                                                required
+                                                tabIndex={2}
+                                                autoComplete="senderPhone"
+                                                maxLength={15}
+                                                value={data.senderPhone}
+                                                onChange={(e) => setData('senderPhone', e.target.value)}
+                                                placeholder="contoh. 08123456789"
+                                                disabled={isView}
+                                            />
+                                            <InputError message={errors.senderPhone} />
                                         </div>
 
                                         <div className="grid gap-2">
@@ -222,11 +252,11 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                             <TextArea
                                                 id="senderAddress"
                                                 required
-                                                tabIndex={1}
+                                                tabIndex={3}
                                                 autoComplete="senderAddress"
                                                 value={data.senderAddress}
                                                 onChange={(e) => setData('senderAddress', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                placeholder="contoh. Jl. Sumatra No. 123"
                                                 disabled={isView}
                                                 className="h-24"
                                             />
@@ -240,14 +270,31 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 id="receiverName"
                                                 type="text"
                                                 required
-                                                tabIndex={1}
+                                                tabIndex={4}
                                                 autoComplete="receiverName"
                                                 value={data.receiverName}
                                                 onChange={(e) => setData('receiverName', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                placeholder="contoh. Rozi"
                                                 disabled={isView}
                                             />
                                             <InputError message={errors.receiverName} />
+                                        </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="receiverPhone">Telepon Penerima</Label>
+                                            <Input
+                                                id="receiverPhone"
+                                                type="tel"
+                                                required
+                                                tabIndex={5}
+                                                autoComplete="receiverPhone"
+                                                value={data.receiverPhone}
+                                                onChange={(e) => setData('receiverPhone', e.target.value)}
+                                                placeholder="contoh. 08123456789"
+                                                maxLength={15}
+                                                disabled={isView}
+                                            />
+                                            <InputError message={errors.receiverPhone} />
                                         </div>
 
                                         <div className="grid gap-2">
@@ -255,11 +302,11 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                             <TextArea
                                                 id="receiverAddress"
                                                 required
-                                                tabIndex={1}
+                                                tabIndex={6}
                                                 autoComplete="receiverAddress"
                                                 value={data.receiverAddress}
                                                 onChange={(e) => setData('receiverAddress', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                placeholder="contoh. Jl. Aceh No. 123"
                                                 disabled={isView}
                                                 className="h-24"
                                             />
@@ -272,129 +319,128 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="grid gap-2">
                                         <div className="grid gap-2">
-                                            <Label htmlFor="senderName">Jumlah Barang</Label>
+                                            <Label htmlFor="jumlah">Jumlah Barang (pcs)</Label>
                                             <Input
-                                                id="senderName"
+                                                id="jumlah"
                                                 type="number"
                                                 required
-                                                tabIndex={1}
-                                                autoComplete="senderName"
-                                                value={data.senderName}
-                                                onChange={(e) => setData('senderName', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                tabIndex={7}
+                                                autoComplete="jumlah"
+                                                value={data.jumlah}
+                                                onChange={(e) => setData('jumlah', e.target.value == '' ? 0 : Number(e.target.value))}
+                                                placeholder="contoh. 2"
                                                 disabled={isView}
                                             />
-                                            <InputError message={errors.senderName} />
+                                            <InputError message={errors.jumlah} />
                                         </div>
 
                                         <div className="grid gap-2">
-                                            <Label htmlFor="senderAddress">Dimensi Barang</Label>
+                                            <Label htmlFor="dimension">Dimensi Barang (cm)</Label>
                                             <div className="grid grid-cols-3 gap-2">
                                                 <Input
-                                                    id="senderName"
+                                                    id="p"
                                                     type="number"
-                                                    required
-                                                    tabIndex={1}
-                                                    autoComplete="senderName"
-                                                    value={data.senderName}
-                                                    onChange={(e) => setData('senderName', e.target.value)}
+                                                    tabIndex={8}
+                                                    step="any" 
+                                                    inputMode="decimal"
+                                                    autoComplete="off"
+                                                    value={data.p}
+                                                    onChange={(e) => setData('p', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Panjang"
                                                     disabled={isView}
                                                 />
-                                                <InputError message={errors.senderAddress} />
+                                                <InputError message={errors.p} />
                                                 <Input
-                                                    id="senderName"
+                                                    id="l"
                                                     type="number"
                                                     required
-                                                    tabIndex={1}
-                                                    autoComplete="senderName"
-                                                    value={data.senderName}
-                                                    onChange={(e) => setData('senderName', e.target.value)}
+                                                    tabIndex={9}
+                                                    autoComplete="l"
+                                                    value={data.l}
+                                                    onChange={(e) => setData('l', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Lebar"
                                                     disabled={isView}
                                                 />
-                                                <InputError message={errors.senderAddress} />
+                                                <InputError message={errors.l} />
                                                 <Input
-                                                    id="senderName"
+                                                    id="t"
                                                     type="number"
                                                     required
-                                                    tabIndex={1}
-                                                    autoComplete="senderName"
-                                                    value={data.senderName}
-                                                    onChange={(e) => setData('senderName', e.target.value)}
+                                                    tabIndex={10}
+                                                    autoComplete="t"
+                                                    value={data.t}
+                                                    onChange={(e) => setData('t', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Tinggi"
                                                     disabled={isView}
                                                 />
-                                                <InputError message={errors.senderAddress} />
+                                                <InputError message={errors.t} />
                                             </div>
                                         </div>
                                         <div className="grid gap-2">
-                                            <Label htmlFor="senderName">Berat</Label>
+                                            <Label htmlFor="berat">Berat (gram)</Label>
                                             <Input
-                                                id="senderName"
+                                                id="berat"
                                                 type="number"
                                                 required
-                                                tabIndex={1}
-                                                autoComplete="senderName"
-                                                value={data.senderName}
-                                                onChange={(e) => setData('senderName', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                tabIndex={11}
+                                                step="any" 
+                                                inputMode="decimal"
+                                                autoComplete="off"
+                                                value={data.berat}
+                                                onChange={(e) => {
+                                                    const value = e.target.value
+                                                    setData('berat', value === '' ? 0 : parseFloat(value))
+                                                }}
+                                                placeholder="contoh. 12.5"
                                                 disabled={isView}
                                             />
-                                            <InputError message={errors.senderName} />
+                                            <InputError message={errors.berat} />
                                         </div>
                                     </div>
                                     <div className="grid gap-2">
                                         <div className="grid gap-2">
-                                            <Label htmlFor="receiverName">Isi Kiriman</Label>
+                                            <Label htmlFor="isiKiriman">Isi Kiriman</Label>
                                             <Input
-                                                id="receiverName"
+                                                id="isiKiriman"
                                                 type="text"
                                                 required
-                                                tabIndex={1}
-                                                autoComplete="receiverName"
-                                                value={data.receiverName}
-                                                onChange={(e) => setData('receiverName', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                tabIndex={12}
+                                                autoComplete="isiKiriman"
+                                                value={data.isiKiriman}
+                                                onChange={(e) => setData('isiKiriman', e.target.value)}
+                                                placeholder="contoh. Buku Cetak"
                                                 disabled={isView}
                                             />
-                                            <InputError message={errors.receiverName} />
+                                            <InputError message={errors.isiKiriman} />
                                         </div>
 
                                         <div className="grid gap-2">
-                                            <Label htmlFor="receiverAddress">Catatan</Label>
+                                            <Label htmlFor="catatan">Catatan</Label>
                                             <TextArea
-                                                id="receiverAddress"
-                                                required
-                                                tabIndex={1}
-                                                autoComplete="receiverAddress"
-                                                value={data.receiverAddress}
-                                                onChange={(e) => setData('receiverAddress', e.target.value)}
-                                                placeholder="contoh. Laporan Baru"
+                                                id="catatan"
+                                                tabIndex={13}
+                                                autoComplete="catatan"
+                                                value={data.catatan}
+                                                onChange={(e) => setData('catatan', e.target.value)}
+                                                placeholder="contoh. Tolong ditangani dengan baik"
                                                 disabled={isView}
                                                 className="h-24"
                                             />
-                                            <InputError message={errors.receiverAddress} />
+                                            <InputError message={errors.catatan} />
                                         </div>
 
                                     </div>
                                 </div>
 
-                                {!isView && <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
+                                {!isView && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                     Simpan
                                 </Button>}
-                                {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={5} disabled={processing} onClick={() => resetForm()}>
+                                {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={15} disabled={processing} onClick={() => resetForm()}>
                                     Batal
                                 </Button>}
                             </div>
 
-                            {/* <div className="text-muted-foreground text-center text-sm">
-                    Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
-                    </TextLink>
-                </div> */}
                         </form>
 
                         {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}

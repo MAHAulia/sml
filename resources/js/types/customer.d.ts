@@ -7,8 +7,10 @@ export interface CustomerData {
 }
 
 export interface Person {
+    id: number | null;
     name: string;
     address: string;
+    phone: string;
 }
 
 export interface ItemDimension {
