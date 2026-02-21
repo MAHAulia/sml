@@ -1,13 +1,13 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import {type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { menuTableColumn } from './table-column';
 import { useEffect, useState } from 'react';
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
-import MenuTable from './table';
-import MenuFormDialog from './form-dialog';
 import { CustomerData } from '@/types/customer';
+import CustomerTable from './table';
+import CustomerFormDialog from './form-dialog';
 
 
 interface CustomerProps {
@@ -73,8 +73,8 @@ export default function Customer({ datas }: CustomerProps) {
             <PageLayout title='Customer' description="Kelola data Customer Anda">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <MenuTable data={datas} onAddButtonClicked={handleAdd} columns={menuTableColumn({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete })} />
-                        <MenuFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedMenu={selectedMenu} isView={isView} withParam={filter} />
+                        <CustomerTable data={datas} onAddButtonClicked={handleAdd} columns={menuTableColumn({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete })} />
+                        <CustomerFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedMenu={selectedMenu} isView={isView} withParam={filter} />
                         <DeleteConfirmation
                             title='Hapus Data Menu'
                             subtitle='Proses penghapusan data Menu'

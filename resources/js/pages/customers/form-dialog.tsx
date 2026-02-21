@@ -30,7 +30,7 @@ type MenuForm = {
 };
 
 
-export default function MenuFormDialog({ selectedMenu, isOpen, setIsOpen, isView = true, withParam }: MenuFormDialog) {
+export default function CustomerFormDialog({ selectedMenu, isOpen, setIsOpen, isView = true, withParam }: MenuFormDialog) {
     const page = usePage();
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<MenuForm>>({
         id: 0,
