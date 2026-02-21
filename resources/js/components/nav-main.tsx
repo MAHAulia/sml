@@ -24,7 +24,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Menu</SidebarGroupLabel>
             <SidebarMenu>
-                {items.map((item) => {
+                {items.map((item, i) => {
 
                     if (!can[item.name]) return null;
                     
@@ -49,7 +49,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
 
                     return (
                         <Collapsible
-                            key={`collapsible-${item.name}`}
+                            key={`collapsible-${item.name}-${i}`}
                             asChild
                             defaultOpen={item.children.some((child) => {
                                 

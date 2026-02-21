@@ -1,54 +1,57 @@
 import { Head, useForm } from '@inertiajs/react';
-import { MenuData, type BreadcrumbItem } from '@/types';
+import {type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { menuTableColumn } from './table-column';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
-import MenuTable from './table';
-import MenuFormDialog from './form-dialog';
-import { Offerings } from '@/types/marketing';
+import { CustomerData } from '@/types/customer';
+import CustomerTable from './table';
+import CustomerFormDialog from './form-dialog';
 
 
-interface MarketingProps {
-    datas: Offerings[],
+interface CustomerProps {
+    datas: CustomerData[],
 }
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Marketing',
-        href: '/Marketing',
+        title: 'Customers',
+        href: '/customers',
     },
 ];
 
-export default function Marketing({ datas }: MarketingProps) {
+export default function Customer({ datas }: CustomerProps) {
     const { delete: destroy, processing } = useForm();
 
-    const [selectedMenu, setSelectedMenu] = useState<MenuData | null>(null)
-    const [deleteMenu, setDeleteMenu] = useState<MenuData>()
+    const [selectedMenu, setSelectedMenu] = useState<CustomerData | null>(null)
+    const [deleteMenu, setDeleteMenu] = useState<CustomerData>()
     const [isOpen, setIsOpen] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
     const [isView, setisView] = useState(false)
 
-    const handleView = (data: MenuData) => {
+    const params = new URLSearchParams(window.location.search);
+    const filter = params.get('f');
+
+    const handleView = (data: CustomerData) => {
         setIsOpen(true)
         setSelectedMenu(data)
         setisView(true)
     }
 
-    const handleEdit = (data: MenuData) => {
+    const handleEdit = (data: CustomerData) => {
         setIsOpen(true)
         setSelectedMenu(data)
         setisView(false)
     }
 
-    const confirmDelete = (data: MenuData) => {
+    const confirmDelete = (data: CustomerData) => {
         setDeleteMenu(data)
         setShowConfirm(true)
         setisView(false)
     }
 
     const handleDelete = () => {
-        destroy(route('menu.destroy', deleteMenu?.id));
+        destroy(route('customer.destroy', deleteMenu?.id));
     }
 
     const handleAdd = () => {
@@ -57,15 +60,21 @@ export default function Marketing({ datas }: MarketingProps) {
         setisView(false)
     }
 
+    useEffect(() => {
+        if (filter) {
+            handleAdd()
+        }
+    },[])
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Marketing - Offering" />
+            <Head title="Marketing - Customer" />
 
-            <PageLayout title='Offering' description="Kelola data penawaran ke Customer Anda">
+            <PageLayout title='Customer' description="Kelola data Customer Anda">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <MenuTable data={datas} onAddButtonClicked={handleAdd} columns={menuTableColumn({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete })} />
-                        <MenuFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedMenu={selectedMenu} isView={isView} />
+                        <CustomerTable data={datas} onAddButtonClicked={handleAdd} columns={menuTableColumn({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete })} />
+                        <CustomerFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedMenu={selectedMenu} isView={isView} withParam={filter} />
                         <DeleteConfirmation
                             title='Hapus Data Menu'
                             subtitle='Proses penghapusan data Menu'

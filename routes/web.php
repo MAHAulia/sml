@@ -1,6 +1,7 @@
 <?php
 
 use App\AiHelper\OpenRouterAI;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\LandingPageController;
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::get("role/mapping/{role}", [RoleController::class, "roleMapping"])->name("role.mappingmenutorole");
     Route::put("role/mapping/{role}", [RoleController::class, "updateRoleMapping"])->name("role.storemappingmenutorole");
 
+    Route::resource('customer', CustomerController::class);
     Route::resource("offering", OfferingController::class);
     
 });

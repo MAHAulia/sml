@@ -31,7 +31,7 @@ interface DataTableProps<TData, TValue> {
   onAddButtonClicked?: () => void
 }
 
-export default function MenuTable<TData, TValue>({
+export default function CustomerTable<TData, TValue>({
   columns,
   data,
   onAddButtonClicked
