@@ -32,4 +32,14 @@ class Offering extends Model
             
         ];
     }
+
+    public function biaya()
+    {
+        return $this->belongsTo(Biaya::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }

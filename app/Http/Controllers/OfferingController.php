@@ -16,8 +16,10 @@ class OfferingController extends Controller
     public function index()
     {
         
+        $datas = Offering::where("user_id", Auth::id())->with("biaya", "customer")->latest()->get();
+        
         return Inertia::render('offering/index', [
-            "datas" => [],
+            "datas" => $datas,
             "customers" => Customer::all(["id", "name", "phone","email", "address"])
         ]);
     }
@@ -95,7 +97,41 @@ class OfferingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = Auth::user();
+        $offering = Offering::where('id', $id)
+                                ->where("user_id", $user->id)
+                                ->where("status", "pending")
+                                ->first();
+        if (!$offering) {
+            return to_route("offering.index")->with('flash', [
+                'type' => 'error',
+                'title' => 'Data Penawaran Tidak Ditemukan',
+                'message' => 'Data penawaran yang akan Anda ubah tidak dapat ditemukan',
+            ]);
+        }
+
+        $offering->user_id = $user->id;
+        $offering->customer_id = $request->customerId;
+        $offering->senderName = $request->senderName;
+        $offering->senderPhone = $request->senderPhone;
+        $offering->senderAddress = $request->senderAddress;
+        $offering->receiverName = $request->receiverName;
+        $offering->receiverPhone = $request->receiverPhone;
+        $offering->receiverAddress = $request->receiverAddress;
+        $offering->total_item = $request->jumlah;
+        $offering->p = $request->p;
+        $offering->l = $request->l;
+        $offering->t = $request->t;
+        $offering->weight = $request->berat;
+        $offering->isiKiriman = $request->isiKiriman;
+        $offering->catatan = $request->catatan;
+        $offering->save();
+
+        return to_route("offering.index")->with('flash', [
+            'type' => 'success',
+            'title' => 'Penawaran berhasil diperbaharui',
+            'message' => 'Penawaran berhasil diperbaharui, silahkan hubungi customer service untuk mempercepat proses validasi.',
+        ]);
     }
 
     /**

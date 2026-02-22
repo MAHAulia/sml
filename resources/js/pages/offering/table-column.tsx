@@ -1,6 +1,5 @@
 "use client"
 
-import { MenuData } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, Edit3, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,11 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 // import { Checkbox } from "@/components/ui/checkbox"
-import { Icon } from "@/components/icon"
-import * as Icons from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { Badge } from "@/components/ui/badge"
-import { SelectedOffer } from "@/types/customer"
 import { Offerings } from "@/types/marketing"
 
 type ColumnProps = {
@@ -47,7 +41,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
     }
   },
   {
-    accessorKey: "label",
+    accessorKey: "customer.name",
     header: ({ column }) => {
       return (
         <Button
@@ -62,7 +56,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
     },
   },
   {
-    accessorKey: "route_name",
+    accessorKey: "senderName",
     header: ({ column }) => {
       return (
         <Button
@@ -77,7 +71,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
     },
   },
   {
-    accessorKey: "icon",
+    accessorKey: "senderAddress",
     header: ({ column }) => {
       return (
         <Button
@@ -92,7 +86,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
     }
   },
   {
-    accessorKey: "type",
+    accessorKey: "receiverName",
     header: ({ column }) => {
       return (
         <Button
@@ -107,7 +101,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
     }
   },
   {
-    accessorKey: "is_parent",
+    accessorKey: "receiverAddress",
     header: ({ column }) => {
       return (
         <Button
@@ -142,11 +136,11 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {data.status === "pending" && <DropdownMenuItem
               onClick={() => onEdit(data)}
             >
               <Edit3 /> Ubah
-            </DropdownMenuItem>
+            </DropdownMenuItem>}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>
           </DropdownMenuContent>

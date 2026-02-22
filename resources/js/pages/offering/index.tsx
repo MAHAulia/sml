@@ -1,14 +1,12 @@
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { menuTableColumn } from './table-column';
 import { useEffect, useState } from 'react';
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
-import MenuTable from './table';
-import MenuFormDialog from './form-dialog';
 import { Offerings } from '@/types/marketing';
-import { CustomerData, SelectedOffer } from '@/types/customer';
+import { CustomerData } from '@/types/customer';
 import OfferingTable from './table';
 import OfferingFormDialog from './form-dialog';
 
@@ -26,9 +24,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Marketing({ datas }: OfferingProps) {
 
+    console.log('datas', datas)
     const { delete: destroy, processing } = useForm();
 
-    const [selectedMenu, setSelectedMenu] = useState<SelectedOffer | null>(null)
+    const [selectedMenu, setSelectedMenu] = useState<Offerings | null>(null)
     const [deleteMenu, setDeleteMenu] = useState<Offerings>()
     const [isOpen, setIsOpen] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
@@ -37,13 +36,13 @@ export default function Marketing({ datas }: OfferingProps) {
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('f');
 
-    const handleView = (data: SelectedOffer) => {
+    const handleView = (data: Offerings) => {
         setIsOpen(true)
         setSelectedMenu(data)
         setisView(true)
     }
 
-    const handleEdit = (data: SelectedOffer) => {
+    const handleEdit = (data: Offerings) => {
         setIsOpen(true)
         setSelectedMenu(data)
         setisView(false)
@@ -69,6 +68,7 @@ export default function Marketing({ datas }: OfferingProps) {
         if (filter) {
             handleAdd()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

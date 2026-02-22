@@ -29,7 +29,7 @@ return new class extends Migration
             $table->double("weight");
             $table->string("isiKiriman");
             $table->string("catatan")->nullable();
-            $table->enum("status", ["pending", "on_nego", "accepted", "rejected"])->default("pending");
+            $table->enum("status", ["pending", "on_review", "price_set", "on_nego", "accepted", "rejected"])->default("pending");
             $table->timestamps();
         });
     }

@@ -73,6 +73,7 @@ export default function MenuForm({ selectedMenu, onOpenChange }: MenuProps) {
             setData('orderNumber', selectedMenu.order_number ?? 1);
             setData('action', 'update');
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedMenu]);
 
     setTimeout(() => {

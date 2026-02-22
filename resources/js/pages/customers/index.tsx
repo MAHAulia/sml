@@ -64,6 +64,7 @@ export default function Customer({ datas }: CustomerProps) {
         if (filter) {
             handleAdd()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     return (

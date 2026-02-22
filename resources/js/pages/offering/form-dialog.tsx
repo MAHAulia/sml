@@ -13,11 +13,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { TextArea } from "@/components/ui/textarea";
-import { CustomerData, SelectedOffer } from "@/types/customer";
+import { CustomerData } from "@/types/customer";
+import { Offerings } from "@/types/marketing";
+import { Badge } from "@/components/ui/badge";
 
 
 interface OfferingFormDialog {
-    selectedOffer: SelectedOffer | null;
+    selectedOffer: Offerings | null;
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
@@ -67,23 +69,26 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
     useEffect(() => {
 
         if (selectedOffer != null) {
-            setData('customerId', selectedOffer.sender.id);
-            setData('senderName', selectedOffer.sender.name);
-            setData('senderAddress', selectedOffer.sender.address);
-            setData('senderPhone', selectedOffer.sender.phone);
-            setData('receiverName', selectedOffer.receiver.name);
-            setData('receiverAddress', selectedOffer.receiver.address);
-            setData('receiverPhone', selectedOffer.receiver.phone);
-            setData('p', selectedOffer.dimention.p);
-            setData('l', selectedOffer.dimention.l);
-            setData('t', selectedOffer.dimention.t);
-            setData('berat', selectedOffer.berat);
+            console.log('selectedOffer', selectedOffer  )
+            setData('customerId', selectedOffer.customer_id);
+            setData('senderName', selectedOffer.senderName);
+            setData('senderAddress', selectedOffer.senderAddress);
+            setData('senderPhone', selectedOffer.senderPhone);
+            setData('receiverName', selectedOffer.receiverName);
+            setData('receiverAddress', selectedOffer.receiverAddress);
+            setData('receiverPhone', selectedOffer.receiverPhone);
+            setData('p', selectedOffer.p);
+            setData('l', selectedOffer.l);
+            setData('t', selectedOffer.t);
+            setData('berat', selectedOffer.weight);
             setData('isiKiriman', selectedOffer.isiKiriman);
-            setData('catatan', selectedOffer.catatan);
+            setData('catatan', selectedOffer.catatan ?? "");
+            setData('jumlah', selectedOffer.total_item);
             setData('action', 'update');
         } else {
             resetForm()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedOffer]);
 
     const submit: FormEventHandler = (e) => {
@@ -136,11 +141,70 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
         reset('action');
     };
 
+    const getVariant = (status: string | undefined) => {
+        let variant = "default"
+        switch (status) {
+            case 'pending':
+                variant = "secondary"
+                break;
+            case 'on_review':
+                variant = "destructive"
+                break;
+            case 'price_set':
+                variant = "outline"
+                break;
+            case 'on_nego':
+                variant = "ghost"
+                break;
+            case 'accepted':
+                variant = "link"
+                break;
+            case 'rejected':
+                variant = "destructive"
+                break;
+    
+            default:
+                variant = "default"
+                break;
+        }
+
+        return variant as "default" | "secondary" | "destructive" | "outline" | null | undefined
+    }
+
+    const getLabel = (status: string | undefined) => {
+        let label = status
+        switch (status) {
+            case 'pending':
+                label = "Sedang Diproses"
+                break;
+            case 'on_review':
+                label = "Sedang Ditinjau"
+                break;
+            case 'price_set':
+                label = "Biaya Ditetapkan"
+                break;
+            case 'on_nego':
+                label = "Dalam Negosiasi"
+                break;
+            case 'accepted':
+                label = "Transaksi Diterima"
+                break;
+            case 'rejected':
+                label = "Transaksi Ditolak"
+                break;
+            default:
+                label = "Sedang Diproses"
+                break;
+        }
+
+        return label
+    }
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-9/12">
                 <DialogHeader>
-                    <DialogTitle>Penawaran</DialogTitle>
+                    <DialogTitle>Penawaran {isView && <Badge variant={getVariant(selectedOffer?.status)}>{getLabel(selectedOffer?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
                         Formulir data penawaran layanan
                     </DialogDescription>
@@ -149,7 +213,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                     <div>
                         <form className="flex flex-col gap-6" onSubmit={submit}>
                             <div className="grid gap-6">
-                                <div className="grid gap-2">
+                                { data.action == 'add' ||  data.action == 'update' && <div className="grid gap-2">
                                     <Label htmlFor="customer">Customer</Label>
                                     <div className="grid grid-cols-2 gap-2">
                                         <Popover open={selectIsOpen} onOpenChange={setSelectIsOpen} >
@@ -208,9 +272,9 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
-                                    <Button type="button" onClick={() => router.visit(route('customer.index', {'f': 'offering'})) }>Tambah Customer Baru</Button>
+                                    {data.action == 'add' && <Button type="button" onClick={() => router.visit(route('customer.index', {'f': 'offering'})) }>Tambah Customer Baru</Button>}
                                     </div>
-                                </div>
+                                </div>}
 
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="grid gap-2">

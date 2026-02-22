@@ -11,11 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-// import { Checkbox } from "@/components/ui/checkbox"
-import { Icon } from "@/components/icon"
-import * as Icons from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { Badge } from "@/components/ui/badge"
 import { CustomerData } from "@/types/customer"
 
 type ColumnProps = {
