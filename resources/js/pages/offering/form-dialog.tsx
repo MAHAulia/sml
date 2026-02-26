@@ -400,45 +400,54 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                         </div>
 
                                         <div className="grid gap-2">
-                                            <Label htmlFor="dimension">Dimensi Barang (cm)</Label>
-                                            <div className="grid grid-cols-3 gap-2">
-                                                <Input
-                                                    id="p"
-                                                    type="number"
-                                                    tabIndex={8}
-                                                    step="any" 
-                                                    inputMode="decimal"
-                                                    autoComplete="off"
-                                                    value={data.p}
-                                                    onChange={(e) => setData('p', e.target.value == '' ? 0 : Number(e.target.value))}
-                                                    placeholder="Panjang"
-                                                    disabled={isView}
-                                                />
-                                                <InputError message={errors.p} />
-                                                <Input
-                                                    id="l"
-                                                    type="number"
-                                                    required
-                                                    tabIndex={9}
-                                                    autoComplete="l"
-                                                    value={data.l}
-                                                    onChange={(e) => setData('l', e.target.value == '' ? 0 : Number(e.target.value))}
-                                                    placeholder="Lebar"
-                                                    disabled={isView}
-                                                />
-                                                <InputError message={errors.l} />
-                                                <Input
-                                                    id="t"
-                                                    type="number"
-                                                    required
-                                                    tabIndex={10}
-                                                    autoComplete="t"
-                                                    value={data.t}
-                                                    onChange={(e) => setData('t', e.target.value == '' ? 0 : Number(e.target.value))}
-                                                    placeholder="Tinggi"
-                                                    disabled={isView}
-                                                />
-                                                <InputError message={errors.t} />
+                                            <Label htmlFor="dimension">Dimensi Barang</Label>
+                                            <div className="grid grid-cols-3 gap-4">
+                                                <div className="grid grid-cols-2 items-center">
+                                                    <Label htmlFor="p">Panjang (cm)</Label>
+                                                    <Input
+                                                        id="p"
+                                                        type="number"
+                                                        tabIndex={8}
+                                                        step="any" 
+                                                        inputMode="decimal"
+                                                        autoComplete="off"
+                                                        value={data.p}
+                                                        onChange={(e) => setData('p', e.target.value == '' ? 0 : Number(e.target.value))}
+                                                        placeholder="Panjang"
+                                                        disabled={isView}
+                                                    />
+                                                    <InputError message={errors.p} />
+                                                </div>
+                                                <div className="grid grid-cols-2 items-center">
+                                                    <Label htmlFor="l">Lebar (cm)</Label>
+                                                    <Input
+                                                        id="l"
+                                                        type="number"
+                                                        required
+                                                        tabIndex={9}
+                                                        autoComplete="l"
+                                                        value={data.l}
+                                                        onChange={(e) => setData('l', e.target.value == '' ? 0 : Number(e.target.value))}
+                                                        placeholder="Lebar"
+                                                        disabled={isView}
+                                                    />
+                                                    <InputError message={errors.l} />
+                                                </div>
+                                                <div className="grid grid-cols-2 items-center">
+                                                    <Label htmlFor="t">Tinggi (cm)</Label>
+                                                    <Input
+                                                        id="t"
+                                                        type="number"
+                                                        required
+                                                        tabIndex={10}
+                                                        autoComplete="t"
+                                                        value={data.t}
+                                                        onChange={(e) => setData('t', e.target.value == '' ? 0 : Number(e.target.value))}
+                                                        placeholder="Tinggi"
+                                                        disabled={isView}
+                                                    />
+                                                    <InputError message={errors.t} />
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="grid gap-2">
