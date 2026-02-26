@@ -35,7 +35,7 @@ class Offering extends Model
 
     public function biaya()
     {
-        return $this->belongsTo(Biaya::class);
+        return $this->hasOne(Biaya::class);
     }
 
     public function customer()

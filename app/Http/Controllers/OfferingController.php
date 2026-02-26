@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Biaya;
 use App\Models\Customer;
 use App\Models\Offering;
 use Illuminate\Http\Request;
@@ -178,10 +179,56 @@ class OfferingController extends Controller
 
     public function tarif() {
         $datas = Offering::with("biaya", "customer")->latest()->get();
-        
+
         return Inertia::render('tarif/index', [
             "datas" => $datas,
             "customers" => Customer::all(["id", "name", "phone","email", "address"])
+        ]);
+    }
+
+    public function storeTarif(Request $request, string $id) {
+        $offering = Offering::where('id', $id)
+                                ->where("status", "on_review")
+                                ->with('biaya')
+                                ->first();
+        if (!$offering) {
+            return to_route("tarif.index")->with('flash', [
+                'type' => 'error',
+                'title' => 'Data Penawaran Tidak Ditemukan',
+                'message' => 'Data penawaran yang akan Anda ubah tidak dapat ditemukan',
+            ]);
+        }
+
+        $user = Auth::user();
+        $status = $request->status ?? "pending"; // ["pending", "on_nego", "accepted", "rejected"]
+
+        $data = [
+            'user_id'        => $user->id,
+            'base_price'     => $request->basePrice,
+            'offering_price' => $request->offeringPrice,
+            'deal_price'     => $request->dealPrice,
+            'status'         => $status
+        ];
+
+        // if ($user->hasRole('Marketing') || $user->hasRole('Customer Services')) {
+        //     $status = "on_nego";
+        //     unset($data["base_price"]);
+        //     unset($data["offering_price"]);
+        // }
+
+        $offering->biaya()->updateOrCreate(
+            ['offering_id' => $offering->id], // condition
+            $data
+        );
+
+        $offering->update([
+            "status" => "price_set"
+        ]);
+
+        return to_route("tarif.index")->with('flash', [
+            'type' => 'success',
+            'title' => 'Tarif berhasil disimpan',
+            'message' => 'Penawaran tarif berhasil disimpan',
         ]);
     }
 }

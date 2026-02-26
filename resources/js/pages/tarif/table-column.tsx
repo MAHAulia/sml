@@ -20,7 +20,7 @@ type ColumnProps = {
   onDelete: (data: Offerings) => void;
 };
 
-export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<Offerings>[] => [
+export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<Offerings>[] => [
   {
     id: "no",
     header: ({ column }) => {
@@ -151,10 +151,10 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {data.status === "pending" && <DropdownMenuItem
+            {data.status === "on_review" && <DropdownMenuItem
               onClick={() => onEdit(data)}
             >
-              <Edit3 /> Review
+              <Edit3 /> Set Tarif
             </DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>

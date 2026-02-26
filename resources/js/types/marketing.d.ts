@@ -28,7 +28,7 @@ export interface Offerings {
 export interface Biayas {
     id: number;
     base_price: number;
-    offring_price: number;
+    offering_price: number;
     deal_price: number | null;
     nego_price: number | null
     status: 'pending' | 'on_nego' | 'accepted' | 'rejected';

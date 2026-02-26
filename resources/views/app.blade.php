@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>
@@ -30,7 +30,7 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'SML') }}</title>
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -46,5 +46,19 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+        <script>
+            function adjustZoom() {
+            const width = window.innerWidth;
+            
+            if (width <= 1366) {
+                document.body.style.zoom = "80%";
+            } else {
+                document.body.style.zoom = "100%";
+            }
+            }
+
+            window.addEventListener("load", adjustZoom);
+            window.addEventListener("resize", adjustZoom);
+        </script>
     </body>
 </html>

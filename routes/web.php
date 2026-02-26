@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::put("offering-request/{id}", [OfferingController::class, 'offeringRequestUpdate'])->name("offering-price.store");
 
     Route::get("tarif", [OfferingController::class, 'tarif'])->name("tarif.index");
+    Route::put("tarif/{id}", [OfferingController::class, 'storeTarif'])->name("tarif.create");
     
     
 });
