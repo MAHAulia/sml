@@ -39,6 +39,12 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
 
     Route::resource('customer', CustomerController::class);
     Route::resource("offering", OfferingController::class);
+
+    Route::get("offering-request", [OfferingController::class, 'offeringRequest'])->name("offering-request.index");
+    Route::put("offering-request/{id}", [OfferingController::class, 'offeringRequestUpdate'])->name("offering-price.store");
+
+    Route::get("tarif", [OfferingController::class, 'tarif'])->name("tarif.index");
+    
     
 });
 

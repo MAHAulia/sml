@@ -131,7 +131,7 @@ return new class extends Migration
             // 50
             ["label" => "Customer Services", "route_name" => "", "icon" => "Headset", "is_parent" => true, "parent_id" => null, "order_number" => 3, "type" => "menu"],
             // 51
-            ["label" => "Offering", "route_name" => "offering-request.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "menu"],
+            ["label" => "Offering Request", "route_name" => "offering-request.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "menu"],
             // 52
             ["label" => "Set Tarif", "route_name" => "offering-price.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "form"],
             // 53
@@ -191,13 +191,19 @@ return new class extends Migration
             //76
             ["label" => "Accounting", "route_name" => "", "icon" => "CreditCard", "is_parent" => true, "parent_id" => null, "order_number" => 7, "type" => "menu"],
             //77
-            ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 1, "type" => "menu"],
+            ["label" => "Penawaran Tarif", "route_name" => "tarif.index", "icon" => "Banknote", "is_parent" => false, "parent_id" => 76, "order_number" => 1, "type" => "menu"],
             //78
-            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 2, "type" => "form"],
+            ["label" => "Penawaran Tarif", "route_name" => "tarif.create", "icon" => "Banknote", "is_parent" => false, "parent_id" => 76, "order_number" => 2, "type" => "form"],
             //79
-            ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 3, "type" => "form"],
+            ["label" => "Set Tarif", "route_name" => "tarif.show", "icon" => "Banknote", "is_parent" => false, "parent_id" => 76, "order_number" => 3, "type" => "form"],
             //80
-            ["label" => "Update Invoice", "route_name" => "invoice.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 4, "type" => "api"],
+            ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 4, "type" => "menu"],
+            //81
+            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 5, "type" => "form"],
+            //82
+            ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 6, "type" => "form"],
+            //83
+            ["label" => "Update Invoice", "route_name" => "invoice.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 7, "type" => "api"],
         ]);
     }
 

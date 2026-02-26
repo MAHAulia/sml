@@ -105,6 +105,9 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "78", "role_id" => "1"],
             ["menu_id" => "79", "role_id" => "1"],
             ["menu_id" => "80", "role_id" => "1"],
+            ["menu_id" => "81", "role_id" => "1"],
+            ["menu_id" => "82", "role_id" => "1"],
+            ["menu_id" => "83", "role_id" => "1"],
 
             // menu setting pengguna for it admin
             ["menu_id" => "2", "role_id" => "9"],
@@ -181,6 +184,9 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "78", "role_id" => "7"],
             ["menu_id" => "79", "role_id" => "7"],
             ["menu_id" => "80", "role_id" => "7"],
+            ["menu_id" => "81", "role_id" => "7"],
+            ["menu_id" => "82", "role_id" => "7"],
+            ["menu_id" => "83", "role_id" => "7"],
         ]);
     }
 }

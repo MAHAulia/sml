@@ -141,4 +141,47 @@ class OfferingController extends Controller
     {
         //
     }
+
+    public function offeringRequest() {
+        $datas = Offering::with("biaya", "customer")->latest()->get();
+        
+        return Inertia::render('offering-request/index', [
+            "datas" => $datas,
+            "customers" => Customer::all(["id", "name", "phone","email", "address"])
+        ]);
+    }
+    
+    public function offeringRequestUpdate(Request $request, string $id)
+    {
+        $user = Auth::user();
+        $offering = Offering::where('id', $id)
+                                ->where("user_id", $user->id)
+                                ->where("status", "pending")
+                                ->first();
+        if (!$offering) {
+            return to_route("offering.index")->with('flash', [
+                'type' => 'error',
+                'title' => 'Data Penawaran Tidak Ditemukan',
+                'message' => 'Data penawaran yang akan Anda ubah tidak dapat ditemukan',
+            ]);
+        }
+
+        $offering->status = "on_review";
+        $offering->save();
+
+        return to_route("offering-request.index")->with('flash', [
+            'type' => 'success',
+            'title' => 'Penawaran sedang dalam proses review dan penentuan harga',
+            'message' => 'Penawaran sedang dalam proses review dan penentuan harga oleh team financing',
+        ]);
+    }
+
+    public function tarif() {
+        $datas = Offering::with("biaya", "customer")->latest()->get();
+        
+        return Inertia::render('tarif/index', [
+            "datas" => $datas,
+            "customers" => Customer::all(["id", "name", "phone","email", "address"])
+        ]);
+    }
 }

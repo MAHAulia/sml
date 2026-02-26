@@ -95,21 +95,11 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
         e.preventDefault();
         console.log(data.action);
         if (data.action == 'add') {
-            post(route('offering.store'), {
-                onSuccess: () => {
-                    resetForm();
-                    if (setIsOpen) {
-                        setIsOpen(false);
-                    }
-                },
-                onError: (error) => {
-                    console.log(error);
-                },
-            });
+            
         }
 
         if (data.action == 'update') {
-            put(route('offering.update', selectedOffer?.id), {
+            put(route('offering-price.store', selectedOffer?.id), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -213,69 +203,6 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                     <div>
                         <form className="flex flex-col gap-6" onSubmit={submit}>
                             <div className="grid gap-6">
-                            
-                                { (data.action == 'add' ||  data.action == 'update' && !isView) && <div className="grid gap-2">
-                                    <Label htmlFor="customer">Customer</Label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Popover open={selectIsOpen} onOpenChange={setSelectIsOpen} >
-                                            <PopoverTrigger asChild className="w-full">
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    aria-expanded={selectIsOpen}
-                                                    className="w-full justify-between"
-                                                    tabIndex={3}
-                                                >
-                                                    {
-                                                        data.senderName != "" ? data.senderName : 'Silahkan pilih customer'
-                                                    }
-                                                    <Icons.ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-full p-0" >
-                                                <Command>
-                                                    <CommandInput placeholder="Cari icons..." />
-                                                    <CommandList>
-                                                        <CommandEmpty>Tidak customer yang ditemukan.</CommandEmpty>
-                                                        <CommandGroup>
-                                                            <ErrorBoundary>
-                                                                {customers.map((customer, i) => {
-                                                                    return (
-                                                                        <CommandItem
-                                                                            key={i}
-                                                                            value={customer.id.toString()}
-                                                                            onSelect={(currentValue) => {
-                                                                                const customer = customers.find((item) => item.id == Number(currentValue))
-                                                                                setData('senderName', customer?.name ?? "");
-                                                                                setData('senderAddress', customer?.address ?? "");
-                                                                                setData('senderPhone', customer?.phone ?? "");
-                                                                                setData('customerId', customer?.id ?? null);
-                                                                                setSelectIsOpen(false);
-                                                                            }}
-                                                                            className="flex items-center justify-between"
-                                                                        >
-                                                                            <div className="flex items-center gap-2">
-                                                                                [{customer.phone}/{customer.email}] -  {customer.name}
-                                                                            </div>
-                                                                            <Icons.Check
-                                                                                className={cn(
-                                                                                    "mr-2 h-4 w-4",
-                                                                                    data.senderName === customer.id.toString() ? "opacity-100" : "opacity-0"
-                                                                                )}
-                                                                            />
-                                                                        </CommandItem>
-                                                                    );
-                                                                })
-                                                                }
-                                                            </ErrorBoundary>
-                                                        </CommandGroup>
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
-                                    <Button type="button" onClick={() => router.visit(route('customer.index', {'f': 'offering'})) }>Tambah Customer Baru</Button>
-                                    </div>
-                                </div>}
 
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="grid gap-2">
@@ -291,6 +218,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('senderName', e.target.value)}
                                                 placeholder="contoh. Fulan bin Fulan"
                                                 disabled={isView}
+                                                readOnly
                                             />
                                             <InputError message={errors.senderName} />
                                         </div>
@@ -308,6 +236,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('senderPhone', e.target.value)}
                                                 placeholder="contoh. 08123456789"
                                                 disabled={isView}
+                                                readOnly
                                             />
                                             <InputError message={errors.senderPhone} />
                                         </div>
@@ -323,6 +252,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('senderAddress', e.target.value)}
                                                 placeholder="contoh. Jl. Sumatra No. 123"
                                                 disabled={isView}
+                                                readOnly
                                                 className="h-24"
                                             />
                                             <InputError message={errors.senderAddress} />
@@ -341,6 +271,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('receiverName', e.target.value)}
                                                 placeholder="contoh. Rozi"
                                                 disabled={isView}
+                                                readOnly
                                             />
                                             <InputError message={errors.receiverName} />
                                         </div>
@@ -358,6 +289,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 placeholder="contoh. 08123456789"
                                                 maxLength={15}
                                                 disabled={isView}
+                                                readOnly
                                             />
                                             <InputError message={errors.receiverPhone} />
                                         </div>
@@ -373,6 +305,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('receiverAddress', e.target.value)}
                                                 placeholder="contoh. Jl. Aceh No. 123"
                                                 disabled={isView}
+                                                readOnly
                                                 className="h-24"
                                             />
                                             <InputError message={errors.receiverAddress} />
@@ -395,6 +328,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('jumlah', e.target.value == '' ? 0 : Number(e.target.value))}
                                                 placeholder="contoh. 2"
                                                 disabled={isView}
+                                                readOnly
                                             />
                                             <InputError message={errors.jumlah} />
                                         </div>
@@ -413,6 +347,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                     onChange={(e) => setData('p', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Panjang"
                                                     disabled={isView}
+                                                    readOnly
                                                 />
                                                 <InputError message={errors.p} />
                                                 <Input
@@ -425,6 +360,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                     onChange={(e) => setData('l', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Lebar"
                                                     disabled={isView}
+                                                    readOnly
                                                 />
                                                 <InputError message={errors.l} />
                                                 <Input
@@ -437,6 +373,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                     onChange={(e) => setData('t', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Tinggi"
                                                     disabled={isView}
+                                                    readOnly
                                                 />
                                                 <InputError message={errors.t} />
                                             </div>
@@ -458,6 +395,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 }}
                                                 placeholder="contoh. 12.5"
                                                 disabled={isView}
+                                                readOnly
                                             />
                                             <InputError message={errors.berat} />
                                         </div>
@@ -475,6 +413,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('isiKiriman', e.target.value)}
                                                 placeholder="contoh. Buku Cetak"
                                                 disabled={isView}
+                                                readOnly
                                             />
                                             <InputError message={errors.isiKiriman} />
                                         </div>
@@ -489,6 +428,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 onChange={(e) => setData('catatan', e.target.value)}
                                                 placeholder="contoh. Tolong ditangani dengan baik"
                                                 disabled={isView}
+                                                readOnly
                                                 className="h-24"
                                             />
                                             <InputError message={errors.catatan} />
@@ -499,7 +439,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
 
                                 {!isView && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                    Simpan
+                                    Minta Tarif Ke Team Financing
                                 </Button>}
                                 {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={15} disabled={processing} onClick={() => resetForm()}>
                                     Batal
