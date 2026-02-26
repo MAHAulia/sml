@@ -187,20 +187,35 @@ class OfferingController extends Controller
     }
 
     public function storeTarif(Request $request, string $id) {
-        $offering = Offering::where('id', $id)
-                                ->whereIn("status", ["on_review", "price_set", "on_nego"])
+
+    
+        if ($request->state) {
+            $offering = Offering::where('id', $id)
+                                ->whereIn("status", ["on_review_nego", "rejected"])
                                 ->with('biaya')
                                 ->first();
+        } else {
+            $offering = Offering::where('id', $id)
+                                ->whereIn("status", ["on_review", "price_set", "on_nego", "rejected"])
+                                ->with('biaya')
+                                ->first();
+        }
+        
         if (!$offering) {
-            return to_route("tarif.index")->with('flash', [
+            return redirect()->back()->with('flash', [
                 'type' => 'error',
                 'title' => 'Data Penawaran Tidak Ditemukan',
                 'message' => 'Data penawaran yang akan Anda ubah tidak dapat ditemukan',
             ]);
         }
 
+        
         $user = Auth::user();
         $status = $request->status ?? "pending"; // ["pending", "on_nego", "accepted", "rejected"]
+
+        if ($request->state) {
+            $status = $request->state == "approve" ? "accepted": "rejected";
+        }
 
         $data = [
             'user_id'        => $user->id,
@@ -217,27 +232,31 @@ class OfferingController extends Controller
             unset($data["base_price"]);
             unset($data["offering_price"]);
         } else if ($user->hasRole('Customer Services')) {
-            $status = "review";
+            $status = "on_review_nego";
+            $data["status"] = "on_review_nego";
             unset($data["deal_price"]);
             unset($data["base_price"]);
             unset($data["offering_price"]);
             unset($data["nego_price"]);
         }
-
-        if ($status == "review") {
-            $data["status"] = "on_nego";
+        
+        if ($request->state) {
+            $offering->biaya()->update([
+                "status" => $status
+            ]);
+        } else {
+            $offering->biaya()->updateOrCreate(
+                ['offering_id' => $offering->id], // condition
+                $data
+            );
         }
-
-        $offering->biaya()->updateOrCreate(
-            ['offering_id' => $offering->id], // condition
-            $data
-        );
+        
 
         $offering->update([
             "status" => $status == "pending" ? "price_set" : $status
         ]);
 
-        return to_route("tarif.index")->with('flash', [
+        return redirect()->back()->with('flash', [
             'type' => 'success',
             'title' => 'Tarif berhasil disimpan',
             'message' => 'Penawaran tarif berhasil disimpan',

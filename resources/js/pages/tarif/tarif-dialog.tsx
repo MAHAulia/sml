@@ -22,6 +22,8 @@ interface OfferingFormDialog {
     selectedOffer: Offerings | null;
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
+    confirmApprove: (selectedOffer: Offerings | null) => void;
+    confirmReject: (selectedOffer: Offerings | null) => void;
     isView: boolean;
 }
 
@@ -40,15 +42,16 @@ type OfferingForm = {
     berat: number;
     isiKiriman: string;
     catatan: string;
-    basePrice: number,
-    offeringPrice: number,
-    dealPrice: number,
-    negoPrice: number,
+    basePrice: number;
+    offeringPrice: number;
+    dealPrice: number;
+    negoPrice: number;
+    status: string;
     action: string;
 };
 
 
-export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView = true }: OfferingFormDialog) {
+export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView = true, confirmApprove, confirmReject  }: OfferingFormDialog) {
     const [selectIsOpen, setSelectIsOpen] = useState(false)
     const page = usePage();
     const customers = page.props.customers as CustomerData[];
@@ -71,6 +74,7 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
         offeringPrice: 0,
         dealPrice: 0,
         negoPrice: 0,
+        status: "pending",
         action: 'add',
     });
 
@@ -501,7 +505,17 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
                                                     tabIndex={16}
                                                     autoComplete="dealPrice"
                                                     value={formatCurrency(data.dealPrice)}
-                                                    onChange={handleChange}
+                                                    onChange={(e) => {
+                                                        const value = handleChange(e)
+                                                        if (selectedOffer?.status == "on_review_nego") {
+                                                            if (value == 0) {
+
+                                                            }
+                                                        } else {
+                                                            setData('status', "pending")
+                                                        }
+                                                        
+                                                    }}
                                                     placeholder="contoh. 20.000"
                                                 />
                                                 <InputError message={errors.dealPrice} />
@@ -529,9 +543,17 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
 
 
 
-                                <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
+                                {selectedOffer?.status !== "on_review_nego" && <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                    Simpan Harga Penawaran
+                                    Simpan harga penawaran
+                                </Button>}
+                                <Button type="button" className="w-full" tabIndex={19} disabled={processing} onClick={() => confirmApprove(selectedOffer)}>
+                                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                    Terima harga penawaran
+                                </Button>
+                                <Button type="button" variant={"outline"} className="w-full" tabIndex={20} disabled={processing} onClick={() => confirmReject(selectedOffer)}>
+                                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                    Tolak harga penawaran
                                 </Button>
                             </div>
 

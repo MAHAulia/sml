@@ -8,11 +8,13 @@ interface UserInfoDialog {
     message: string;
     isOpen: boolean;
     isLoading: boolean;
+    label?: string;
+    danger?: boolean;
     onOpenChange: (open: boolean) => void;
     onConfirm: (open: boolean) => void;
 }
 
-export default function DeleteConfirmation({ title, subtitle, message, isOpen, isLoading, onOpenChange, onConfirm }: UserInfoDialog) {
+export default function ConfirmationDialog({ title, subtitle, message, isOpen, isLoading, label, danger, onOpenChange, onConfirm }: UserInfoDialog) {
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[512px]">
@@ -32,9 +34,9 @@ export default function DeleteConfirmation({ title, subtitle, message, isOpen, i
                         </Button>
                     </DialogClose>
                     <DialogClose asChild>
-                        <Button type="button" variant="default" className="bg-red-500" onClick={() => onConfirm(true)} disabled={isLoading}>
+                        <Button type="button" variant="default" className={danger ? 'bg-red-500' : ''} onClick={() => onConfirm(true)} disabled={isLoading}>
                             {isLoading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Hapus
+                            {label ?? "Hapus"}
                         </Button>
                     </DialogClose>
                 </DialogFooter>

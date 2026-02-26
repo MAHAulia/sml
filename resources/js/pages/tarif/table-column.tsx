@@ -151,7 +151,7 @@ export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {(data.status === "on_review" || data.status === "price_set") && <DropdownMenuItem
+            {(data.status === "on_review" || data.status === "price_set" || data.status === "on_review_nego") && <DropdownMenuItem
               onClick={() => onEdit(data)}
             >
               <Edit3 /> Set Tarif

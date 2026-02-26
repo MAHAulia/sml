@@ -142,7 +142,7 @@ export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: Co
             >
               <Edit3 /> Ubah
             </DropdownMenuItem>}
-            {data.status === "price_set" && <DropdownMenuItem
+            {(data.status === "price_set" || data.status === "rejected") && <DropdownMenuItem
               onClick={() => onSetTarif(data)}
             >
               <Edit3 /> Set Tarif

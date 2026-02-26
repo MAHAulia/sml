@@ -10,6 +10,7 @@ import { CustomerData } from '@/types/customer';
 import OfferingTable from './table';
 import OfferingFormDialog from './form-dialog';
 import TarifDialog from './tarif-dialog';
+import ConfirmationDialog from '@/components/confirm-dialog';
 
 
 interface OfferingProps {
@@ -25,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Marketing({ datas }: OfferingProps) {
 
-    const { delete: destroy, processing } = useForm();
+    const { delete: destroy, put, processing } = useForm();
 
     const [selectedOffering, setSelectedOffering] = useState<Offerings | null>(null)
     const [deleteOffering, setDeleteOffering] = useState<Offerings>()
@@ -33,6 +34,14 @@ export default function Marketing({ datas }: OfferingProps) {
     const [tarifOpen, setTarifOpen] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
     const [isView, setisView] = useState(false)
+    const [confirmation, setConfirmation] = useState({
+        title: "",
+        subtitle: "",
+        message: "",
+        action: "",
+        label: "",
+        danger: false,
+    })
 
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('f');
@@ -55,8 +64,26 @@ export default function Marketing({ datas }: OfferingProps) {
         // setisView(false)
     }
 
-    const handleDelete = () => {
-        destroy(route('menu.destroy', selectedOffering?.id));
+    const handleConfirmation = () => {
+        console.log({id: selectedOffering?.id, state: confirmation.action})
+        put(route('tarif.create', {id: selectedOffering?.id, state: confirmation.action}), {
+            onSuccess: () => {
+                if (tarifOpen) {
+                    setTarifOpen(false)
+                }
+                setConfirmation({
+                    title: "",
+                    subtitle: "",
+                    message: "",
+                    action: "",
+                    label: "",
+                    danger: false,
+                })
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        });
     }
 
     const handleAdd = () => {
@@ -69,7 +96,7 @@ export default function Marketing({ datas }: OfferingProps) {
         if (filter) {
             handleAdd()
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -81,15 +108,43 @@ export default function Marketing({ datas }: OfferingProps) {
                     <div className="w-full ml-2">
                         <OfferingTable data={datas} columns={tarifTableColumn({ onView: handleView, onEdit: handleSetTarif, onDelete: confirmDelete })} />
                         <OfferingFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedOffer={selectedOffering} isView={isView} />
-                        <TarifDialog selectedOffer={selectedOffering} isOpen={tarifOpen} setIsOpen={setTarifOpen} isView={true} />
-                        <DeleteConfirmation
-                            title='Hapus Data Menu'
-                            subtitle='Proses penghapusan data Menu'
-                            message='Apakah Anda yakin akan menghapus data'
+                        <TarifDialog
+                            selectedOffer={selectedOffering}
+                            isOpen={tarifOpen}
+                            setIsOpen={setTarifOpen}
+                            isView={true}
+                            confirmApprove={(data) => {
+                                setConfirmation({
+                                    title: "Persetujuan Harta",
+                                    subtitle: "Approval Penentuan Harga",
+                                    message: "Apakah Anda yakin ingin melakukan approval harga?",
+                                    action: "approve",
+                                    label: "Ya, Terima",
+                                    danger: false,
+                                })
+                                setShowConfirm(true)
+                            }}
+                            confirmReject={(data) => {
+                                setConfirmation({
+                                    title: "Persetujuan Harga",
+                                    subtitle: "Tolak Penentuan Harga",
+                                    message: "Apakah Anda yakin ingin melakukan penolakan harga?",
+                                    action: "reject",
+                                    label: "Ya, Tolak!",
+                                    danger: true,
+                                })
+                                setShowConfirm(true)
+                            }} />
+                        <ConfirmationDialog
+                            title={confirmation.title}
+                            subtitle={confirmation.subtitle}
+                            message={confirmation.message}
+                            label={confirmation.label}
+                            danger={confirmation.danger}
                             isOpen={showConfirm}
                             isLoading={processing}
                             onOpenChange={setShowConfirm}
-                            onConfirm={handleDelete} />
+                            onConfirm={handleConfirmation} />
                     </div>
                 </div>
             </PageLayout>
