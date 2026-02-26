@@ -18,9 +18,10 @@ type ColumnProps = {
   onView: (data: Offerings) => void;
   onEdit: (data: Offerings) => void;
   onDelete: (data: Offerings) => void;
+  onSetTarif: (data: Offerings) => void;
 };
 
-export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<Offerings>[] => [
+export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: ColumnProps): ColumnDef<Offerings>[] => [
   {
     id: "no",
     header: ({ column }) => {
@@ -140,6 +141,11 @@ export const menuTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Colu
               onClick={() => onEdit(data)}
             >
               <Edit3 /> Ubah
+            </DropdownMenuItem>}
+            {data.status === "price_set" && <DropdownMenuItem
+              onClick={() => onSetTarif(data)}
+            >
+              <Edit3 /> Set Tarif
             </DropdownMenuItem>}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>

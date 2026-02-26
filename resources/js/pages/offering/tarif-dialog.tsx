@@ -40,11 +40,16 @@ type OfferingForm = {
     berat: number;
     isiKiriman: string;
     catatan: string;
+    basePrice: number;
+    offeringPrice: number;
+    dealPrice: number;
+    negoPrice: number;
+    status: string;
     action: string;
 };
 
 
-export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, isView = true }: OfferingFormDialog) {
+export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView = true }: OfferingFormDialog) {
     const [selectIsOpen, setSelectIsOpen] = useState(false)
     const page = usePage();
     const customers = page.props.customers as CustomerData[];
@@ -63,13 +68,18 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
         berat: 0,
         isiKiriman: "",
         catatan: "",
+        basePrice: 0,
+        offeringPrice: 0,
+        dealPrice: 0,
+        negoPrice: 0,
+        status: "",
         action: 'add',
     });
 
     useEffect(() => {
 
         if (selectedOffer != null) {
-            console.log('selectedOffer', selectedOffer  )
+            setData("status", "on_nego");
             setData('customerId', selectedOffer.customer_id);
             setData('senderName', selectedOffer.senderName);
             setData('senderAddress', selectedOffer.senderAddress);
@@ -84,22 +94,25 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
             setData('isiKiriman', selectedOffer.isiKiriman);
             setData('catatan', selectedOffer.catatan ?? "");
             setData('jumlah', selectedOffer.total_item);
+            setData('basePrice', selectedOffer.biaya?.base_price ?? 0);
+            setData('offeringPrice', selectedOffer.biaya?.offering_price ?? 0);
+            setData('dealPrice', selectedOffer.biaya?.deal_price ?? 0);
+            setData('negoPrice', selectedOffer.biaya?.nego_price ?? 0);
             setData('action', 'update');
         } else {
             resetForm()
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedOffer]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        console.log(data.action);
         if (data.action == 'add') {
-            
+
         }
 
         if (data.action == 'update') {
-            put(route('offering-price.store', selectedOffer?.id), {
+            put(route('tarif.create', selectedOffer?.id), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -128,6 +141,10 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
         reset('isiKiriman');
         reset('jumlah');
         reset('catatan');
+        reset('basePrice');
+        reset('offeringPrice');
+        reset('dealPrice');
+        reset('negoPrice');
         reset('action');
     };
 
@@ -152,7 +169,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
             case 'rejected':
                 variant = "destructive"
                 break;
-    
+
             default:
                 variant = "default"
                 break;
@@ -190,13 +207,29 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
         return label
     }
 
+    const formatCurrency = (value: number) => {
+        if (!value) return '0';
+        return new Intl.NumberFormat('id-ID').format(value);
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // Remove all non-numeric characters
+        const rawValue = e.target.value.replace(/\D/g, '');
+
+        // Convert to number
+        const numericValue = rawValue ? Number(rawValue) : 0;
+
+        setData(e.target.name as keyof OfferingForm, numericValue);
+        return numericValue
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-9/12">
                 <DialogHeader>
                     <DialogTitle>Penawaran {isView && <Badge variant={getVariant(selectedOffer?.status)}>{getLabel(selectedOffer?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
-                        Formulir data penawaran layanan
+                        Kelola taif untuk penawaran layanan pengiriman dokumen
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
@@ -204,7 +237,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                         <form className="flex flex-col gap-6" onSubmit={submit}>
                             <div className="grid gap-6">
 
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-3 gap-2">
                                     <div className="grid gap-2">
                                         <div className="grid gap-2">
                                             <Label htmlFor="senderName">Nama Pengirim</Label>
@@ -215,7 +248,6 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 tabIndex={1}
                                                 autoComplete="senderName"
                                                 value={data.senderName}
-                                                onChange={(e) => setData('senderName', e.target.value)}
                                                 placeholder="contoh. Fulan bin Fulan"
                                                 disabled={isView}
                                                 readOnly
@@ -233,7 +265,6 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 autoComplete="senderPhone"
                                                 maxLength={15}
                                                 value={data.senderPhone}
-                                                onChange={(e) => setData('senderPhone', e.target.value)}
                                                 placeholder="contoh. 08123456789"
                                                 disabled={isView}
                                                 readOnly
@@ -249,7 +280,6 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 tabIndex={3}
                                                 autoComplete="senderAddress"
                                                 value={data.senderAddress}
-                                                onChange={(e) => setData('senderAddress', e.target.value)}
                                                 placeholder="contoh. Jl. Sumatra No. 123"
                                                 disabled={isView}
                                                 readOnly
@@ -268,7 +298,6 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 tabIndex={4}
                                                 autoComplete="receiverName"
                                                 value={data.receiverName}
-                                                onChange={(e) => setData('receiverName', e.target.value)}
                                                 placeholder="contoh. Rozi"
                                                 disabled={isView}
                                                 readOnly
@@ -285,7 +314,6 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 tabIndex={5}
                                                 autoComplete="receiverPhone"
                                                 value={data.receiverPhone}
-                                                onChange={(e) => setData('receiverPhone', e.target.value)}
                                                 placeholder="contoh. 08123456789"
                                                 maxLength={15}
                                                 disabled={isView}
@@ -302,13 +330,45 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 tabIndex={6}
                                                 autoComplete="receiverAddress"
                                                 value={data.receiverAddress}
-                                                onChange={(e) => setData('receiverAddress', e.target.value)}
                                                 placeholder="contoh. Jl. Aceh No. 123"
                                                 disabled={isView}
                                                 readOnly
                                                 className="h-24"
                                             />
                                             <InputError message={errors.receiverAddress} />
+                                        </div>
+
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="isiKiriman">Isi Kiriman</Label>
+                                            <Input
+                                                id="isiKiriman"
+                                                type="text"
+                                                required
+                                                tabIndex={7}
+                                                autoComplete="isiKiriman"
+                                                value={data.isiKiriman}
+                                                placeholder="contoh. Buku Cetak"
+                                                disabled={isView}
+                                                readOnly
+                                            />
+                                            <InputError message={errors.isiKiriman} />
+                                        </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="catatan">Catatan</Label>
+                                            <TextArea
+                                                id="catatan"
+                                                tabIndex={8}
+                                                autoComplete="catatan"
+                                                value={data.catatan}
+                                                placeholder="contoh. Tolong ditangani dengan baik"
+                                                disabled={isView}
+                                                readOnly
+                                                className="h-40"
+                                            />
+                                            <InputError message={errors.catatan} />
                                         </div>
 
                                     </div>
@@ -322,10 +382,9 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 id="jumlah"
                                                 type="number"
                                                 required
-                                                tabIndex={7}
+                                                tabIndex={9}
                                                 autoComplete="jumlah"
                                                 value={data.jumlah}
-                                                onChange={(e) => setData('jumlah', e.target.value == '' ? 0 : Number(e.target.value))}
                                                 placeholder="contoh. 2"
                                                 disabled={isView}
                                                 readOnly
@@ -333,18 +392,18 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                             <InputError message={errors.jumlah} />
                                         </div>
 
+
                                         <div className="grid gap-2">
                                             <Label htmlFor="dimension">Dimensi Barang (cm)</Label>
                                             <div className="grid grid-cols-3 gap-2">
                                                 <Input
                                                     id="p"
                                                     type="number"
-                                                    tabIndex={8}
-                                                    step="any" 
+                                                    tabIndex={10}
+                                                    step="any"
                                                     inputMode="decimal"
                                                     autoComplete="off"
                                                     value={data.p}
-                                                    onChange={(e) => setData('p', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Panjang"
                                                     disabled={isView}
                                                     readOnly
@@ -354,10 +413,9 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                     id="l"
                                                     type="number"
                                                     required
-                                                    tabIndex={9}
+                                                    tabIndex={11}
                                                     autoComplete="l"
                                                     value={data.l}
-                                                    onChange={(e) => setData('l', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Lebar"
                                                     disabled={isView}
                                                     readOnly
@@ -367,10 +425,9 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                     id="t"
                                                     type="number"
                                                     required
-                                                    tabIndex={10}
+                                                    tabIndex={12}
                                                     autoComplete="t"
                                                     value={data.t}
-                                                    onChange={(e) => setData('t', e.target.value == '' ? 0 : Number(e.target.value))}
                                                     placeholder="Tinggi"
                                                     disabled={isView}
                                                     readOnly
@@ -384,15 +441,11 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                                 id="berat"
                                                 type="number"
                                                 required
-                                                tabIndex={11}
-                                                step="any" 
+                                                tabIndex={13}
+                                                step="any"
                                                 inputMode="decimal"
                                                 autoComplete="off"
                                                 value={data.berat}
-                                                onChange={(e) => {
-                                                    const value = e.target.value
-                                                    setData('berat', value === '' ? 0 : parseFloat(value))
-                                                }}
                                                 placeholder="contoh. 12.5"
                                                 disabled={isView}
                                                 readOnly
@@ -400,50 +453,74 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
                                             <InputError message={errors.berat} />
                                         </div>
                                     </div>
-                                    <div className="grid gap-2">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="isiKiriman">Isi Kiriman</Label>
-                                            <Input
-                                                id="isiKiriman"
-                                                type="text"
-                                                required
-                                                tabIndex={12}
-                                                autoComplete="isiKiriman"
-                                                value={data.isiKiriman}
-                                                onChange={(e) => setData('isiKiriman', e.target.value)}
-                                                placeholder="contoh. Buku Cetak"
-                                                disabled={isView}
-                                                readOnly
-                                            />
-                                            <InputError message={errors.isiKiriman} />
+                                    <div className="grid gap-2 px-8">
+                                        <h3 className="text-xl font-bold">Penawaran Harga</h3>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="offeringPrice">Harga Penawaran</Label>
+                                                <Input
+                                                    id="offeringPrice"
+                                                    name="offeringPrice"
+                                                    type="tel"
+                                                    required
+                                                    tabIndex={15}
+                                                    autoComplete="offeringPrice"
+                                                    value={formatCurrency(data.offeringPrice)}
+                                                    onChange={(e) => {
+                                                        let value = handleChange(e)
+                                                        setData('dealPrice', value)
+                                                    }}
+                                                    placeholder="contoh. 20.000"
+                                                    disabled
+                                                    readOnly
+                                                />
+                                                <InputError message={errors.offeringPrice} />
+                                            </div>
                                         </div>
 
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="catatan">Catatan</Label>
-                                            <TextArea
-                                                id="catatan"
-                                                tabIndex={13}
-                                                autoComplete="catatan"
-                                                value={data.catatan}
-                                                onChange={(e) => setData('catatan', e.target.value)}
-                                                placeholder="contoh. Tolong ditangani dengan baik"
-                                                disabled={isView}
-                                                readOnly
-                                                className="h-24"
-                                            />
-                                            <InputError message={errors.catatan} />
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="dealPrice">Harga Kesepakatan</Label>
+                                                <Input
+                                                    id="dealPrice"
+                                                    name="dealPrice"
+                                                    type="tel"
+                                                    required
+                                                    tabIndex={16}
+                                                    autoComplete="dealPrice"
+                                                    value={formatCurrency(data.dealPrice)}
+                                                    onChange={handleChange}
+                                                    placeholder="contoh. 20.000"
+                                                    disabled
+                                                    readOnly
+                                                />
+                                                <InputError message={errors.dealPrice} />
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="negoPrice">Harga Negosiasi</Label>
+                                                <Input
+                                                    id="negoPrice"
+                                                    name="negoPrice"
+                                                    type="tel"
+                                                    required
+                                                    tabIndex={17}
+                                                    autoComplete="negoPrice"
+                                                    value={formatCurrency(data.negoPrice)}
+                                                    onChange={handleChange}
+                                                    placeholder="contoh. 15.000"
+                                                />
+                                                <InputError message={errors.negoPrice} />
+                                            </div>
                                         </div>
-
                                     </div>
                                 </div>
 
-                                {(!isView && (selectedOffer?.status == "pending" || selectedOffer?.status == "on_nego")) && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
+
+
+                                <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                    {selectedOffer?.status == "pending" ? "Minta tarif ke team Financing" : selectedOffer?.status == "on_nego" ? "Teruskann ke team financing" : ""}
-                                </Button>}
-                                {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={15} disabled={processing} onClick={() => resetForm()}>
-                                    Batal
-                                </Button>}
+                                    Simpan Harga Nego
+                                </Button>
                             </div>
 
                         </form>

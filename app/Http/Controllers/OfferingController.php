@@ -188,7 +188,7 @@ class OfferingController extends Controller
 
     public function storeTarif(Request $request, string $id) {
         $offering = Offering::where('id', $id)
-                                ->where("status", "on_review")
+                                ->whereIn("status", ["on_review", "price_set", "on_nego"])
                                 ->with('biaya')
                                 ->first();
         if (!$offering) {
@@ -207,14 +207,26 @@ class OfferingController extends Controller
             'base_price'     => $request->basePrice,
             'offering_price' => $request->offeringPrice,
             'deal_price'     => $request->dealPrice,
+            'nego_price'     => $request->negoPrice,
             'status'         => $status
         ];
 
-        // if ($user->hasRole('Marketing') || $user->hasRole('Customer Services')) {
-        //     $status = "on_nego";
-        //     unset($data["base_price"]);
-        //     unset($data["offering_price"]);
-        // }
+        if ($user->hasRole('Marketing')) {
+            $status = "on_nego";
+            unset($data["deal_price"]);
+            unset($data["base_price"]);
+            unset($data["offering_price"]);
+        } else if ($user->hasRole('Customer Services')) {
+            $status = "review";
+            unset($data["deal_price"]);
+            unset($data["base_price"]);
+            unset($data["offering_price"]);
+            unset($data["nego_price"]);
+        }
+
+        if ($status == "review") {
+            $data["status"] = "on_nego";
+        }
 
         $offering->biaya()->updateOrCreate(
             ['offering_id' => $offering->id], // condition
@@ -222,7 +234,7 @@ class OfferingController extends Controller
         );
 
         $offering->update([
-            "status" => "price_set"
+            "status" => $status == "pending" ? "price_set" : $status
         ]);
 
         return to_route("tarif.index")->with('flash', [

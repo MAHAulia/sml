@@ -20,7 +20,7 @@ return new class extends Migration
             $table->double("offering_price");
             $table->double("deal_price")->nullable();
             $table->double("nego_price")->nullable();
-            $table->enum("status", ["pending", "on_nego", "accepted", "rejected"])->default("pending");
+            $table->enum("status", ["pending", "on_nego", "on_review_nego", "accepted", "rejected"])->default("pending");
             $table->timestamps();
         });
     }
