@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('thepasswordissecret'),
             'created_at' => now(),
             'updated_at' => now()
-        ]);
+        ]); // 1
         DB::table('users')->insert([
             'name' => 'IT Administrator',
             'email' => 'it-admin@email.com',
@@ -30,7 +30,63 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('thepasswordissecret'),
             'created_at' => now(),
             'updated_at' => now()
-        ]);
+        ]); // 2
+        DB::table('users')->insert([
+            'name' => 'Marketing',
+            'email' => 'marketing@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 3
+        DB::table('users')->insert([
+            'name' => 'Customer Services',
+            'email' => 'cs@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 4
+        DB::table('users')->insert([
+            'name' => 'Pick Up',
+            'email' => 'pickup@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 5
+        DB::table('users')->insert([
+            'name' => 'Delivery',
+            'email' => 'delivery@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 6
+        DB::table('users')->insert([
+            'name' => 'Warehouse',
+            'email' => 'warehouse@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 7
+        DB::table('users')->insert([
+            'name' => 'Accounting',
+            'email' => 'accounting@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 8
+        DB::table('users')->insert([
+            'name' => 'Human Resources',
+            'email' => 'hr@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 9
 
     }
 }

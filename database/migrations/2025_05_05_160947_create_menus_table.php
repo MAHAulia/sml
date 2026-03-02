@@ -29,7 +29,7 @@ return new class extends Migration
             ["label" => "Dashboard", "route_name" => "dashboard", "icon" => "LayoutGrid", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "menu"],
 
             // 2
-            ["label" => "Settings", "route_name" => "", "icon" => "Settings", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "menu"],
+            ["label" => "Settings", "route_name" => "settings", "icon" => "Settings", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "menu"],
             // 3
             ["label" => "Pengguna", "route_name" => "pengguna.index", "icon" => "Settings", "is_parent" => false, "parent_id" => 2, "order_number" => 1, "type" => "menu"],
             // 4
@@ -83,7 +83,7 @@ return new class extends Migration
 
             // Marketing
             // 28
-            ["label" => "Marketing", "route_name" => "", "icon" => "Megaphone", "is_parent" => true, "parent_id" => null, "order_number" => 2, "type" => "menu"],
+            ["label" => "Marketing", "route_name" => "marketing", "icon" => "Megaphone", "is_parent" => true, "parent_id" => null, "order_number" => 2, "type" => "menu"],
             // 29
             ["label" => "Customer", "route_name" => "customer.index", "icon" => "Users", "is_parent" => false, "parent_id" => 28, "order_number" => 1, "type" => "menu"],
             // 30
@@ -147,7 +147,7 @@ return new class extends Migration
             
             // Pickup
             //58
-            ["label" => "Pickup", "route_name" => "", "icon" => "FileBox", "is_parent" => true, "parent_id" => null, "order_number" => 4, "type" => "menu"],
+            ["label" => "Pickup", "route_name" => "pickup", "icon" => "FileBox", "is_parent" => true, "parent_id" => null, "order_number" => 4, "type" => "menu"],
             //59
             ["label" => "Request Pickup", "route_name" => "pickup.index", "icon" => "FileBox", "is_parent" => false, "parent_id" => 58, "order_number" => 1, "type" => "menu"],
             //60
@@ -157,7 +157,7 @@ return new class extends Migration
 
             // Warehouse
             //62
-            ["label" => "Warehouse", "route_name" => "", "icon" => "Warehouse", "is_parent" => true, "parent_id" => null, "order_number" => 5, "type" => "menu"],
+            ["label" => "Warehouse", "route_name" => "warehouse", "icon" => "Warehouse", "is_parent" => true, "parent_id" => null, "order_number" => 5, "type" => "menu"],
             //63
             ["label" => "Manifest", "route_name" => "manifest.index", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 1, "type" => "menu"],
             //64
@@ -169,7 +169,7 @@ return new class extends Migration
 
             // Delivery
             //67
-            ["label" => "Delivery", "route_name" => "", "icon" => "Truck", "is_parent" => true, "parent_id" => null, "order_number" => 6, "type" => "menu"],
+            ["label" => "Delivery", "route_name" => "delivery", "icon" => "Truck", "is_parent" => true, "parent_id" => null, "order_number" => 6, "type" => "menu"],
             //68
             ["label" => "Delivery Order", "route_name" => "delivery-order.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 1, "type" => "menu"],
             //69
@@ -189,7 +189,7 @@ return new class extends Migration
 
             // Accounting
             //76
-            ["label" => "Accounting", "route_name" => "", "icon" => "CreditCard", "is_parent" => true, "parent_id" => null, "order_number" => 7, "type" => "menu"],
+            ["label" => "Accounting", "route_name" => "accounting", "icon" => "CreditCard", "is_parent" => true, "parent_id" => null, "order_number" => 7, "type" => "menu"],
             //77
             ["label" => "Penawaran Tarif", "route_name" => "tarif.index", "icon" => "Banknote", "is_parent" => false, "parent_id" => 76, "order_number" => 1, "type" => "menu"],
             //78

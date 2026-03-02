@@ -24,7 +24,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         try {
             $menus = (new Menu())->allMenuWithRole();
-            
             foreach ($menus as $menu) {
                 Gate::define(
                     $menu->route_name,
