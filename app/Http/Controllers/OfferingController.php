@@ -152,15 +152,20 @@ class OfferingController extends Controller
         ]);
     }
     
-    public function offeringRequestUpdate(Request $request, string $id)
+    public function offeringRequestUpdate(Request $request, $id)
     {
         $user = Auth::user();
         $offering = Offering::where('id', $id)
-                                ->where("user_id", $user->id)
-                                ->where("status", "pending")
-                                ->first();
+                                ->where("status", "pending");
+
+        if ($user->hasRole('Marketing')) {
+            $offering->where("user_id", $user->id);
+        }
+
+        $offering = $offering->first();
+
         if (!$offering) {
-            return to_route("offering.index")->with('flash', [
+            return redirect()->back()->with('flash', [
                 'type' => 'error',
                 'title' => 'Data Penawaran Tidak Ditemukan',
                 'message' => 'Data penawaran yang akan Anda ubah tidak dapat ditemukan',
@@ -170,7 +175,7 @@ class OfferingController extends Controller
         $offering->status = "on_review";
         $offering->save();
 
-        return to_route("offering-request.index")->with('flash', [
+        return redirect()->back()->with('flash', [
             'type' => 'success',
             'title' => 'Penawaran sedang dalam proses review dan penentuan harga',
             'message' => 'Penawaran sedang dalam proses review dan penentuan harga oleh team financing',

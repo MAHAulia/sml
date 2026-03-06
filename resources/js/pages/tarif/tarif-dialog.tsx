@@ -547,14 +547,15 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                     Simpan harga penawaran
                                 </Button>}
-                                <Button type="button" className="w-full" tabIndex={19} disabled={processing} onClick={() => confirmApprove(selectedOffer)}>
+
+                                {selectedOffer?.status === "on_review_nego" &&  <><Button type="button" className="w-full" tabIndex={19} disabled={processing} onClick={() => confirmApprove(selectedOffer)}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                     Terima harga penawaran
                                 </Button>
                                 <Button type="button" variant={"outline"} className="w-full" tabIndex={20} disabled={processing} onClick={() => confirmReject(selectedOffer)}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                     Tolak harga penawaran
-                                </Button>
+                                </Button></>}
                             </div>
 
                         </form>
