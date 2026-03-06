@@ -22,6 +22,37 @@ type ColumnProps = {
 
 export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<Offerings>[] => [
   {
+    id: "actions",
+    cell: ({ row }) => {
+      const data = row.original
+      
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Buka menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => onView(data)}
+            >
+              <SearchIcon /> Lihat
+            </DropdownMenuItem>
+            {(data.status === "on_review" || data.status === "price_set" || data.status === "on_review_nego") && <DropdownMenuItem
+              onClick={() => onEdit(data)}
+            >
+              <Edit3 /> Set Tarif
+            </DropdownMenuItem>}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  },
+  {
     id: "no",
     header: ({ column }) => {
       return (
@@ -130,35 +161,5 @@ export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
   //     )
   //   }
   // },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const data = row.original
-      
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onView(data)}
-            >
-              <SearchIcon /> Lihat
-            </DropdownMenuItem>
-            {(data.status === "on_review" || data.status === "price_set" || data.status === "on_review_nego") && <DropdownMenuItem
-              onClick={() => onEdit(data)}
-            >
-              <Edit3 /> Set Tarif
-            </DropdownMenuItem>}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },
+  
 ]

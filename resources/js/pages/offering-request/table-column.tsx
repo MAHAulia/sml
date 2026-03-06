@@ -23,6 +23,42 @@ type ColumnProps = {
 
 export const menuTableColumn = ({ onView, onEdit, onDelete, onReviewTarif }: ColumnProps): ColumnDef<Offerings>[] => [
   {
+    id: "actions",
+    cell: ({ row }) => {
+      const data = row.original
+      
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Buka menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => onView(data)}
+            >
+              <SearchIcon /> Lihat
+            </DropdownMenuItem>
+            {(data.status === "pending" || data.status === "price_set") && <DropdownMenuItem
+              onClick={() => onEdit(data)}
+            >
+              <Edit3 /> Review
+            </DropdownMenuItem>}
+            {(data.status === "on_nego") && <DropdownMenuItem
+              onClick={() => onReviewTarif(data)}
+            >
+              <Edit3 /> Review Tarif
+            </DropdownMenuItem>}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  },
+  {
     id: "no",
     header: ({ column }) => {
       return (
@@ -131,40 +167,5 @@ export const menuTableColumn = ({ onView, onEdit, onDelete, onReviewTarif }: Col
   //     )
   //   }
   // },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const data = row.original
-      
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onView(data)}
-            >
-              <SearchIcon /> Lihat
-            </DropdownMenuItem>
-            {(data.status === "pending" || data.status === "price_set") && <DropdownMenuItem
-              onClick={() => onEdit(data)}
-            >
-              <Edit3 /> Review
-            </DropdownMenuItem>}
-            {(data.status === "on_nego") && <DropdownMenuItem
-              onClick={() => onReviewTarif(data)}
-            >
-              <Edit3 /> Review Tarif
-            </DropdownMenuItem>}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },
+  
 ]

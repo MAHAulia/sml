@@ -23,6 +23,49 @@ type ColumnProps = {
 
 export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: ColumnProps): ColumnDef<Offerings>[] => [
   {
+    id: "actions",
+    cell: ({ row }) => {
+      const data = row.original
+      
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Buka menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => onView(data)}
+            >
+              <SearchIcon /> Lihat
+            </DropdownMenuItem>
+            {data.status === "pending" && <DropdownMenuItem
+              onClick={() => onEdit(data)}
+            >
+              <Edit3 /> Ubah
+            </DropdownMenuItem>}
+            {(data.status === "price_set" || data.status === "rejected") && <DropdownMenuItem
+              onClick={() => onSetTarif(data)}
+            >
+              <Edit3 /> Set Tarif
+            </DropdownMenuItem>}
+            {(data.status === "accepted") && <DropdownMenuItem
+              onClick={() => onSetTarif(data)}
+            >
+              <Edit3 /> Request Pickup
+            </DropdownMenuItem>}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  },
+  {
     id: "no",
     header: ({ column }) => {
       return (
@@ -40,6 +83,21 @@ export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: Co
       const index = row.index + 1;
       return <div className="text-center">{index}</div>
     }
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-auto h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "customer.name",
@@ -115,43 +173,5 @@ export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: Co
         </Button>
       )
     }
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const data = row.original
-      
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onView(data)}
-            >
-              <SearchIcon /> Lihat
-            </DropdownMenuItem>
-            {data.status === "pending" && <DropdownMenuItem
-              onClick={() => onEdit(data)}
-            >
-              <Edit3 /> Ubah
-            </DropdownMenuItem>}
-            {(data.status === "price_set" || data.status === "rejected") && <DropdownMenuItem
-              onClick={() => onSetTarif(data)}
-            >
-              <Edit3 /> Set Tarif
-            </DropdownMenuItem>}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
   },
 ]
