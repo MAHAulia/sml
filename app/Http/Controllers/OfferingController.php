@@ -70,7 +70,7 @@ class OfferingController extends Controller
             "catatan" => $request->catatan,
         ]);
 
-        return to_route("offering.index")->with('flash', [
+        return redirect()->back()->with('flash', [
             'type' => 'success',
             'title' => 'Penawaran berhasil dibuat',
             'message' => 'Penawaran berhasil dibuat, silahkan hubungi customer service untuk mempercepat proses validasi.',
@@ -104,7 +104,7 @@ class OfferingController extends Controller
                                 ->where("status", "pending")
                                 ->first();
         if (!$offering) {
-            return to_route("offering.index")->with('flash', [
+            return redirect()->back()->with('flash', [
                 'type' => 'error',
                 'title' => 'Data Penawaran Tidak Ditemukan',
                 'message' => 'Data penawaran yang akan Anda ubah tidak dapat ditemukan',
@@ -128,7 +128,7 @@ class OfferingController extends Controller
         $offering->catatan = $request->catatan;
         $offering->save();
 
-        return to_route("offering.index")->with('flash', [
+        return redirect()->back()->with('flash', [
             'type' => 'success',
             'title' => 'Penawaran berhasil diperbaharui',
             'message' => 'Penawaran berhasil diperbaharui, silahkan hubungi customer service untuk mempercepat proses validasi.',

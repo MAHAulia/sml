@@ -13,20 +13,23 @@ import {
 } from "@/components/ui/dropdown-menu"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { Offerings } from "@/types/marketing"
+import { getStatusConfig } from "@/lib/status-config"
+import { Badge } from "@/components/ui/badge"
 import { StatusBadge } from "@/components/status-badge"
 
 type ColumnProps = {
   onView: (data: Offerings) => void;
   onEdit: (data: Offerings) => void;
   onDelete: (data: Offerings) => void;
+  onRequestPickup: (data: Offerings) => void;
 };
 
-export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<Offerings>[] => [
+export const offeringTableColumn = ({ onView, onEdit, onDelete, onRequestPickup }: ColumnProps): ColumnDef<Offerings>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
-
+      
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -43,10 +46,10 @@ export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {(data.status === "on_review" || data.status === "price_set" || data.status === "on_review_nego") && <DropdownMenuItem
-              onClick={() => onEdit(data)}
+            {(data.status === "accepted" && data.pickup_status === "request") && <DropdownMenuItem
+              onClick={() => onRequestPickup(data)}
             >
-              <Edit3 /> Set Tarif
+              <Edit3 /> Set Petugas Pickup
             </DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -73,7 +76,7 @@ export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
     }
   },
   {
-    accessorKey: "status",
+    accessorKey: "pickup_status",
     header: ({ column }) => {
       return (
         <Button
@@ -89,7 +92,7 @@ export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
     cell: ({ row }) => {
       const data = row.original
       return <div className="text-center">
-        <StatusBadge status={data.status} />
+        <StatusBadge status={data.pickup_status} />
       </div>
     }
   },
@@ -123,21 +126,21 @@ export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
       )
     },
   },
-  // {
-  //   accessorKey: "senderAddress",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         className="w-full"
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Alamat Pengirim
-  //         <ArrowUpDown className="ml-auto h-4 w-4" />
-  //       </Button>
-  //     )
-  //   }
-  // },
+  {
+    accessorKey: "senderAddress",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Alamat Pengirim
+          <ArrowUpDown className="ml-auto h-4 w-4" />
+        </Button>
+      )
+    }
+  },
   {
     accessorKey: "receiverName",
     header: ({ column }) => {
@@ -153,20 +156,19 @@ export const tarifTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
       )
     }
   },
-  // {
-  //   accessorKey: "receiverAddress",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         className="w-full"
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Alamat Penerima
-  //         <ArrowUpDown className="ml-auto h-4 w-4" />
-  //       </Button>
-  //     )
-  //   }
-  // },
-
+  {
+    accessorKey: "receiverAddress",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Alamat Penerima
+          <ArrowUpDown className="ml-auto h-4 w-4" />
+        </Button>
+      )
+    }
+  },
 ]

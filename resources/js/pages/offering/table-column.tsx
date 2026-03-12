@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { Offerings } from "@/types/marketing"
+import { getStatusConfig } from "@/lib/status-config"
+import { Badge } from "@/components/ui/badge"
+import { StatusBadge } from "@/components/status-badge"
 
 type ColumnProps = {
   onView: (data: Offerings) => void;
@@ -98,6 +101,33 @@ export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: Co
         </Button>
       )
     },
+    cell: ({ row }) => {
+      const data = row.original
+      return <div className="text-center">
+        <StatusBadge status={data.status} />
+      </div>
+    }
+  },
+  {
+    accessorKey: "pickup_status",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-auto h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const data = row.original
+      return <div className="text-center">
+        <StatusBadge status={data.pickup_status} />
+      </div>
+    }
   },
   {
     accessorKey: "customer.name",

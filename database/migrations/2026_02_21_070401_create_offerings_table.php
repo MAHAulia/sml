@@ -16,6 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->noActionOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained('customers')->noActionOnDelete();
             $table->foreignId('biaya_id')->nullable()->constrained('biayas')->noActionOnDelete();
+            $table->foreignId('pickuper_id')
+                ->nullable()
+                ->constrained('users')
+                ->noActionOnDelete()
+                ->after('user_id');
             $table->string("senderName");
             $table->string("senderPhone");
             $table->string("senderAddress");
@@ -30,6 +35,7 @@ return new class extends Migration
             $table->string("isiKiriman");
             $table->string("catatan")->nullable();
             $table->enum("status", ["pending", "on_review", "price_set", "on_nego","on_review_nego", "accepted", "rejected"])->default("pending");
+            $table->enum("pickup_status", ["null","request", "on_pickup", "success_pickup", "failed_pickup"])->default("null");
             $table->timestamps();
         });
     }

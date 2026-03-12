@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { Offerings } from "@/types/marketing"
+import { StatusBadge } from "@/components/status-badge"
 
 type ColumnProps = {
   onView: (data: Offerings) => void;
@@ -26,7 +27,7 @@ export const menuTableColumn = ({ onView, onEdit, onDelete, onReviewTarif }: Col
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
-      
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -91,6 +92,12 @@ export const menuTableColumn = ({ onView, onEdit, onDelete, onReviewTarif }: Col
         </Button>
       )
     },
+    cell: ({ row }) => {
+      const data = row.original
+      return <div className="text-center">
+        <StatusBadge status={data.status} />
+      </div>
+    }
   },
   {
     accessorKey: "customer.name",
@@ -167,5 +174,5 @@ export const menuTableColumn = ({ onView, onEdit, onDelete, onReviewTarif }: Col
   //     )
   //   }
   // },
-  
+
 ]

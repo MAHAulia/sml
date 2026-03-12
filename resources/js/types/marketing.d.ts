@@ -19,6 +19,7 @@ export interface Offerings {
     isiKiriman: string;
     catatan: string | null;
     status: string;
+    pickup_status: string;
     created_at: string;
     updated_at: string;
     biaya: Biayas;

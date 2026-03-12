@@ -81,13 +81,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return (new Menu())->displayMenus();
     }
 
-    public function formulirs()
+    public function pickups()
     {
-        return $this->hasMany(Form::class, 'user_id', 'id');
-    }
-
-    public function formulirData()
-    {
-        return $this->hasManyThrough(FormData::class, Form::class, 'user_id', 'formulir_id', 'id', 'id');
+        return $this->hasMany(Offering::class, 'pickuper_id');
     }
 }

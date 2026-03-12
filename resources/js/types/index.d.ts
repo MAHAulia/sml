@@ -238,3 +238,8 @@ type TopUpData = {
     expired_at: string;
     payment_info: QrPayment;
 }
+
+
+interface StatusBadgeProps {
+  status: string
+}

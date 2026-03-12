@@ -2,11 +2,13 @@
 
 use App\AiHelper\OpenRouterAI;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PickupOfferingController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
 use App\Http\Controllers\OfferingController;
+use App\Http\Controllers\PickupRequestController;
 use App\Http\Controllers\Settings\MenuController;
 use App\Http\Controllers\Settings\RoleController;
 use App\Http\Controllers\SocialLogin\GoogleController;
@@ -45,7 +47,13 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
 
     Route::get("tarif", [OfferingController::class, 'tarif'])->name("tarif.index");
     Route::put("tarif/{id}", [OfferingController::class, 'storeTarif'])->name("tarif.create");
+
+    Route::resource('pickup-offering', PickupOfferingController::class);
+
+    Route::resource('pickup-request', PickupRequestController::class);
+    Route::post('pickup-request/{id}', [PickupRequestController::class, 'savemanage'])->name('pickup-request.savemanage');
     
+
     
 });
 
