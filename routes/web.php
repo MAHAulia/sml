@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
+use App\Http\Controllers\ManifestController;
 use App\Http\Controllers\OfferingController;
 use App\Http\Controllers\PickupController;
 use App\Http\Controllers\PickupRequestController;
@@ -55,10 +56,8 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::post('pickup-request/{id}', [PickupRequestController::class, 'savemanage'])->name('pickup-request.savemanage');
 
     Route::resource('pickup', PickupController::class);
-    
 
-
-    
+    Route::resource('manifest', ManifestController::class);
 });
 
 Route::get('/mailable', function () {
