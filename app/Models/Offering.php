@@ -10,6 +10,7 @@ class Offering extends Model
         "user_id",
         "customer_id",
         "biaya_id",
+        "pickuper_id",
         "senderName",
         "senderPhone",
         "senderAddress",
@@ -23,7 +24,8 @@ class Offering extends Model
         "weight",
         "isiKiriman",
         "catatan",
-        "status"
+        "status",
+        "pickup_status"
     ];
 
     protected function casts(): array

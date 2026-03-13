@@ -250,10 +250,14 @@ class OfferingController extends Controller
                 "status" => $status
             ]);
         } else {
-            $offering->biaya()->updateOrCreate(
+            $biaya = $offering->biaya()->updateOrCreate(
                 ['offering_id' => $offering->id], // condition
                 $data
             );
+
+            $offering->update([
+                "biaya_id" => $biaya->id,
+            ]);
         }
         
 

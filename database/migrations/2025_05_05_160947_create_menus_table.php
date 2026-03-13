@@ -113,7 +113,7 @@ return new class extends Migration
             // 42
             ["label" => "Hapus Offering", "route_name" => "offering.destroy", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 28, "order_number" => 2, "type" => "api"],
             // 43
-            ["label" => "Request Pickup", "route_name" => "pickup-offering.index", "icon" => "Package", "is_parent" => true, "parent_id" => 28, "order_number" => 3, "type" => "menu"],
+            ["label" => "Request Pickup", "route_name" => "pickup-offering.index", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "menu"],
             // 44
             ["label" => "Tambah Request Pickup", "route_name" => "pickup-offering.create", "icon" => "Package", "is_parent" => false, "parent_id" => 28, "order_number" => 3, "type" => "form"],
             // 45
@@ -129,7 +129,7 @@ return new class extends Migration
 
             // Customer Services
             // 50
-            ["label" => "Customer Services", "route_name" => "", "icon" => "Headset", "is_parent" => true, "parent_id" => null, "order_number" => 3, "type" => "menu"],
+            ["label" => "Customer Services", "route_name" => "customer-services", "icon" => "Headset", "is_parent" => true, "parent_id" => null, "order_number" => 3, "type" => "menu"],
             // 51
             ["label" => "Offering Request", "route_name" => "offering-request.index", "icon" => "Megaphone", "is_parent" => false, "parent_id" => 50, "order_number" => 1, "type" => "menu"],
             // 52
