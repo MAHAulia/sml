@@ -9,24 +9,21 @@ import {
 } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
+import { ChevronDown } from 'lucide-react';
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger
 } from './ui/collapsible';
-import { ChevronDown } from 'lucide-react';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage<SharedData>();
     const { can } = page.props;
-    console.log(items)
-    console.log(can)
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Menu</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item, i) => {
-                    console.log(item.name, can[item.name])
                     if (!can[item.name]) return null;
                     
                     const isActive = item.href.includes(page.url.split("/")[1]);

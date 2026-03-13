@@ -10,19 +10,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Edit3, MoreHorizontal, SearchIcon } from "lucide-react"
+import { ArrowUpDown, Edit3, MapPinnedIcon, MoreHorizontal, SearchIcon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { Offerings } from "@/types/marketing"
 
 type ColumnProps = {
   onView: (data: Offerings) => void;
-  onEdit: (data: Offerings) => void;
-  onDelete: (data: Offerings) => void;
+  onViewLocation: (data: Offerings) => void;
   onRequestPickup: (data: Offerings) => void;
 };
 
-export const offeringTableColumn = ({ onView, onRequestPickup }: ColumnProps): ColumnDef<Offerings>[] => [
+export const offeringTableColumn = ({ onView, onViewLocation, onRequestPickup }: ColumnProps): ColumnDef<Offerings>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -44,10 +43,15 @@ export const offeringTableColumn = ({ onView, onRequestPickup }: ColumnProps): C
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {(data.status === "accepted" && data.pickup_status === "request") && <DropdownMenuItem
+            <DropdownMenuItem
+              onClick={() => onViewLocation(data)}
+            >
+              <MapPinnedIcon /> Lihat Lokasi Pickup
+            </DropdownMenuItem>
+            {(data.status === "accepted" && data.pickup_status === "on_pickup") && <DropdownMenuItem
               onClick={() => onRequestPickup(data)}
             >
-              <Edit3 /> Set Petugas Pickup
+              <Edit3 /> Update Status Pickup
             </DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>

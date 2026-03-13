@@ -1,35 +1,32 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
+import { router, useForm, usePage } from "@inertiajs/react";
 import ErrorBoundary from '@/components/error-boundary';
 import InputError from '@/components/input-error';
-import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TextArea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { UserData } from "@/types";
-import { Offerings } from "@/types/marketing";
-import { useForm, usePage } from "@inertiajs/react";
 import * as Icons from 'lucide-react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { TextArea } from "@/components/ui/textarea";
+import { CustomerData } from "@/types/customer";
+import { Offerings } from "@/types/marketing";
+import { Badge } from "@/components/ui/badge";
 
 
-interface PickupFormDialog {
+interface OfferingFormDialog {
     selectedOffer: Offerings | null;
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
 }
 
-type PickupForm = {
+type OfferingForm = {
     customerId: number | null;
-    pickuperId: number | null;
-    pickuperName: string;
-    pickuperEmail: string;
     senderName: string;
     senderPhone: string;
     senderAddress: string;
@@ -43,24 +40,16 @@ type PickupForm = {
     berat: number;
     isiKiriman: string;
     catatan: string;
-    basePrice: number;
-    offeringPrice: number;
-    dealPrice: number;
-    negoPrice: number;
-    status: string;
     action: string;
 };
 
 
-export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView = true }: PickupFormDialog) {
+export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, isView = true }: OfferingFormDialog) {
     const [selectIsOpen, setSelectIsOpen] = useState(false)
     const page = usePage();
-    const pickupers = page.props.pickuper as UserData[];
-    const { data, setData, post, processing, errors, reset } = useForm<Required<PickupForm>>({
+    const customers = [] as CustomerData[];
+    const { data, setData, post, put, processing, errors, reset } = useForm<Required<OfferingForm>>({
         customerId: null,
-        pickuperId: null,
-        pickuperName: "",
-        pickuperEmail: "",
         senderName: "",
         senderAddress: "",
         senderPhone: "",
@@ -74,18 +63,13 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
         berat: 0,
         isiKiriman: "",
         catatan: "",
-        basePrice: 0,
-        offeringPrice: 0,
-        dealPrice: 0,
-        negoPrice: 0,
-        status: "",
         action: 'add',
     });
 
     useEffect(() => {
 
         if (selectedOffer != null) {
-            setData("status", "request");
+            console.log('selectedOffer', selectedOffer  )
             setData('customerId', selectedOffer.customer_id);
             setData('senderName', selectedOffer.senderName);
             setData('senderAddress', selectedOffer.senderAddress);
@@ -100,22 +84,32 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
             setData('isiKiriman', selectedOffer.isiKiriman);
             setData('catatan', selectedOffer.catatan ?? "");
             setData('jumlah', selectedOffer.total_item);
-            setData('basePrice', selectedOffer.biaya?.base_price ?? 0);
-            setData('offeringPrice', selectedOffer.biaya?.offering_price ?? 0);
-            setData('dealPrice', selectedOffer.biaya?.deal_price ?? 0);
-            setData('negoPrice', selectedOffer.biaya?.nego_price ?? 0);
             setData('action', 'update');
         } else {
             resetForm()
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedOffer]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        console.log(data.action);
+        if (data.action == 'add') {
+            post(route('offering.store'), {
+                onSuccess: () => {
+                    resetForm();
+                    if (setIsOpen) {
+                        setIsOpen(false);
+                    }
+                },
+                onError: (error) => {
+                    console.log(error);
+                },
+            });
+        }
 
         if (data.action == 'update') {
-            post(route('pickup-request.savemanage', selectedOffer?.id), {
+            put(route('offering.update', selectedOffer?.id), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -144,10 +138,6 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
         reset('isiKiriman');
         reset('jumlah');
         reset('catatan');
-        reset('basePrice');
-        reset('offeringPrice');
-        reset('dealPrice');
-        reset('negoPrice');
         reset('action');
     };
 
@@ -172,7 +162,7 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
             case 'rejected':
                 variant = "destructive"
                 break;
-
+    
             default:
                 variant = "default"
                 break;
@@ -229,17 +219,80 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-9/12">
                 <DialogHeader>
-                    <DialogTitle>Set Pickuper &nbsp; {isView && <Badge variant={getVariant(selectedOffer?.pickup_status)}>{getLabel(selectedOffer?.pickup_status)}</Badge>}</DialogTitle>
+                    <DialogTitle>Pickup Kiriman &nbsp; {isView && <Badge variant={getVariant(selectedOffer?.pickup_status)}>{getLabel(selectedOffer?.pickup_status)}</Badge>}</DialogTitle>
                     <DialogDescription>
-                        Kelola taif untuk penawaran layanan pengiriman dokumen
+                        Formulir data penawaran layanan
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div>
                         <form className="flex flex-col gap-6" onSubmit={submit}>
                             <div className="grid gap-6">
+                            
+                                { (data.action == 'add' ||  data.action == 'update' && !isView) && <div className="grid gap-2">
+                                    <Label htmlFor="customer">Customer</Label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Popover open={selectIsOpen} onOpenChange={setSelectIsOpen} >
+                                            <PopoverTrigger asChild className="w-full">
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    aria-expanded={selectIsOpen}
+                                                    className="w-full justify-between"
+                                                    tabIndex={3}
+                                                >
+                                                    {
+                                                        data.senderName != "" ? data.senderName : 'Silahkan pilih customer'
+                                                    }
+                                                    <Icons.ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-full p-0" >
+                                                <Command>
+                                                    <CommandInput placeholder="Cari icons..." />
+                                                    <CommandList>
+                                                        <CommandEmpty>Tidak customer yang ditemukan.</CommandEmpty>
+                                                        <CommandGroup>
+                                                            <ErrorBoundary>
+                                                                {customers.map((customer, i) => {
+                                                                    return (
+                                                                        <CommandItem
+                                                                            key={i}
+                                                                            value={customer.id.toString()}
+                                                                            onSelect={(currentValue) => {
+                                                                                const customer = customers.find((item) => item.id == Number(currentValue))
+                                                                                setData('senderName', customer?.name ?? "");
+                                                                                setData('senderAddress', customer?.address ?? "");
+                                                                                setData('senderPhone', customer?.phone ?? "");
+                                                                                setData('customerId', customer?.id ?? null);
+                                                                                setSelectIsOpen(false);
+                                                                            }}
+                                                                            className="flex items-center justify-between"
+                                                                        >
+                                                                            <div className="flex items-center gap-2">
+                                                                                [{customer.phone}/{customer.email}] -  {customer.name}
+                                                                            </div>
+                                                                            <Icons.Check
+                                                                                className={cn(
+                                                                                    "mr-2 h-4 w-4",
+                                                                                    data.senderName === customer.id.toString() ? "opacity-100" : "opacity-0"
+                                                                                )}
+                                                                            />
+                                                                        </CommandItem>
+                                                                    );
+                                                                })
+                                                                }
+                                                            </ErrorBoundary>
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                    <Button type="button" onClick={() => router.visit(route('customer.index', {'f': 'offering'})) }>Tambah Customer Baru</Button>
+                                    </div>
+                                </div>}
 
-                                <div className="grid grid-cols-3 gap-2">
+                                <div className="grid grid-cols-2 gap-2">
                                     <div className="grid gap-2">
                                         <div className="grid gap-2">
                                             <Label htmlFor="senderName">Nama Pengirim</Label>
@@ -250,9 +303,9 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 tabIndex={1}
                                                 autoComplete="senderName"
                                                 value={data.senderName}
+                                                onChange={(e) => setData('senderName', e.target.value)}
                                                 placeholder="contoh. Fulan bin Fulan"
                                                 disabled={isView}
-                                                readOnly
                                             />
                                             <InputError message={errors.senderName} />
                                         </div>
@@ -267,9 +320,9 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 autoComplete="senderPhone"
                                                 maxLength={15}
                                                 value={data.senderPhone}
+                                                onChange={(e) => setData('senderPhone', e.target.value)}
                                                 placeholder="contoh. 08123456789"
                                                 disabled={isView}
-                                                readOnly
                                             />
                                             <InputError message={errors.senderPhone} />
                                         </div>
@@ -282,9 +335,9 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 tabIndex={3}
                                                 autoComplete="senderAddress"
                                                 value={data.senderAddress}
+                                                onChange={(e) => setData('senderAddress', e.target.value)}
                                                 placeholder="contoh. Jl. Sumatra No. 123"
                                                 disabled={isView}
-                                                readOnly
                                                 className="h-24"
                                             />
                                             <InputError message={errors.senderAddress} />
@@ -300,9 +353,9 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 tabIndex={4}
                                                 autoComplete="receiverName"
                                                 value={data.receiverName}
+                                                onChange={(e) => setData('receiverName', e.target.value)}
                                                 placeholder="contoh. Rozi"
                                                 disabled={isView}
-                                                readOnly
                                             />
                                             <InputError message={errors.receiverName} />
                                         </div>
@@ -316,10 +369,10 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 tabIndex={5}
                                                 autoComplete="receiverPhone"
                                                 value={data.receiverPhone}
+                                                onChange={(e) => setData('receiverPhone', e.target.value)}
                                                 placeholder="contoh. 08123456789"
                                                 maxLength={15}
                                                 disabled={isView}
-                                                readOnly
                                             />
                                             <InputError message={errors.receiverPhone} />
                                         </div>
@@ -332,45 +385,12 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 tabIndex={6}
                                                 autoComplete="receiverAddress"
                                                 value={data.receiverAddress}
+                                                onChange={(e) => setData('receiverAddress', e.target.value)}
                                                 placeholder="contoh. Jl. Aceh No. 123"
                                                 disabled={isView}
-                                                readOnly
                                                 className="h-24"
                                             />
                                             <InputError message={errors.receiverAddress} />
-                                        </div>
-
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="isiKiriman">Isi Kiriman</Label>
-                                            <Input
-                                                id="isiKiriman"
-                                                type="text"
-                                                required
-                                                tabIndex={7}
-                                                autoComplete="isiKiriman"
-                                                value={data.isiKiriman}
-                                                placeholder="contoh. Buku Cetak"
-                                                disabled={isView}
-                                                readOnly
-                                            />
-                                            <InputError message={errors.isiKiriman} />
-                                        </div>
-
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="catatan">Catatan</Label>
-                                            <TextArea
-                                                id="catatan"
-                                                tabIndex={8}
-                                                autoComplete="catatan"
-                                                value={data.catatan}
-                                                placeholder="contoh. Tolong ditangani dengan baik"
-                                                disabled={isView}
-                                                readOnly
-                                                className="h-40"
-                                            />
-                                            <InputError message={errors.catatan} />
                                         </div>
 
                                     </div>
@@ -384,57 +404,65 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 id="jumlah"
                                                 type="number"
                                                 required
-                                                tabIndex={9}
+                                                tabIndex={7}
                                                 autoComplete="jumlah"
                                                 value={data.jumlah}
+                                                onChange={(e) => setData('jumlah', e.target.value == '' ? 0 : Number(e.target.value))}
                                                 placeholder="contoh. 2"
                                                 disabled={isView}
-                                                readOnly
                                             />
                                             <InputError message={errors.jumlah} />
                                         </div>
 
-
                                         <div className="grid gap-2">
-                                            <Label htmlFor="dimension">Dimensi Barang (cm)</Label>
-                                            <div className="grid grid-cols-3 gap-2">
-                                                <Input
-                                                    id="p"
-                                                    type="number"
-                                                    tabIndex={10}
-                                                    step="any"
-                                                    inputMode="decimal"
-                                                    autoComplete="off"
-                                                    value={data.p}
-                                                    placeholder="Panjang"
-                                                    disabled={isView}
-                                                    readOnly
-                                                />
-                                                <InputError message={errors.p} />
-                                                <Input
-                                                    id="l"
-                                                    type="number"
-                                                    required
-                                                    tabIndex={11}
-                                                    autoComplete="l"
-                                                    value={data.l}
-                                                    placeholder="Lebar"
-                                                    disabled={isView}
-                                                    readOnly
-                                                />
-                                                <InputError message={errors.l} />
-                                                <Input
-                                                    id="t"
-                                                    type="number"
-                                                    required
-                                                    tabIndex={12}
-                                                    autoComplete="t"
-                                                    value={data.t}
-                                                    placeholder="Tinggi"
-                                                    disabled={isView}
-                                                    readOnly
-                                                />
-                                                <InputError message={errors.t} />
+                                            <Label htmlFor="dimension">Dimensi Barang</Label>
+                                            <div className="grid grid-cols-3 gap-4">
+                                                <div className="grid grid-cols-2 items-center">
+                                                    <Label htmlFor="p">Panjang (cm)</Label>
+                                                    <Input
+                                                        id="p"
+                                                        type="number"
+                                                        tabIndex={8}
+                                                        step="any" 
+                                                        inputMode="decimal"
+                                                        autoComplete="off"
+                                                        value={data.p}
+                                                        onChange={(e) => setData('p', e.target.value == '' ? 0 : Number(e.target.value))}
+                                                        placeholder="Panjang"
+                                                        disabled={isView}
+                                                    />
+                                                    <InputError message={errors.p} />
+                                                </div>
+                                                <div className="grid grid-cols-2 items-center">
+                                                    <Label htmlFor="l">Lebar (cm)</Label>
+                                                    <Input
+                                                        id="l"
+                                                        type="number"
+                                                        required
+                                                        tabIndex={9}
+                                                        autoComplete="l"
+                                                        value={data.l}
+                                                        onChange={(e) => setData('l', e.target.value == '' ? 0 : Number(e.target.value))}
+                                                        placeholder="Lebar"
+                                                        disabled={isView}
+                                                    />
+                                                    <InputError message={errors.l} />
+                                                </div>
+                                                <div className="grid grid-cols-2 items-center">
+                                                    <Label htmlFor="t">Tinggi (cm)</Label>
+                                                    <Input
+                                                        id="t"
+                                                        type="number"
+                                                        required
+                                                        tabIndex={10}
+                                                        autoComplete="t"
+                                                        value={data.t}
+                                                        onChange={(e) => setData('t', e.target.value == '' ? 0 : Number(e.target.value))}
+                                                        placeholder="Tinggi"
+                                                        disabled={isView}
+                                                    />
+                                                    <InputError message={errors.t} />
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="grid gap-2">
@@ -443,88 +471,63 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                                                 id="berat"
                                                 type="number"
                                                 required
-                                                tabIndex={13}
-                                                step="any"
+                                                tabIndex={11}
+                                                step="any" 
                                                 inputMode="decimal"
                                                 autoComplete="off"
                                                 value={data.berat}
+                                                onChange={(e) => {
+                                                    const value = e.target.value
+                                                    setData('berat', value === '' ? 0 : parseFloat(value))
+                                                }}
                                                 placeholder="contoh. 12.5"
                                                 disabled={isView}
-                                                readOnly
                                             />
                                             <InputError message={errors.berat} />
                                         </div>
                                     </div>
-
-                                    <div className="">
-                                        <h3 className="text-xl font-bold mb-2">Pickup</h3>
+                                    <div className="grid gap-2">
                                         <div className="grid gap-2">
-                                            <Label htmlFor="offeringPrice">Petugas Pickup</Label>
-                                            <Popover open={selectIsOpen} onOpenChange={setSelectIsOpen} >
-                                                <PopoverTrigger asChild className="w-full">
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        aria-expanded={selectIsOpen}
-                                                        className="w-full justify-between"
-                                                        tabIndex={3}
-                                                    >
-                                                        {
-                                                            data.pickuperName != "" ? data.pickuperName +  " - " + data.pickuperEmail : 'Silahkan pilih customer'
-                                                        }
-                                                        <Icons.ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-full p-0" >
-                                                    <Command>
-                                                        <CommandInput placeholder="Cari icons..." />
-                                                        <CommandList>
-                                                            <CommandEmpty>Tidak Ada Pickuper yang ditemukan.</CommandEmpty>
-                                                            <CommandGroup>
-                                                                <ErrorBoundary>
-                                                                    {pickupers.map((pickuper, i) => {
-                                                                        return (
-                                                                            <CommandItem
-                                                                                key={i}
-                                                                                value={pickuper.id.toString()}
-                                                                                onSelect={(currentValue) => {
-                                                                                    const pickuper = pickupers.find((item) => item.id == Number(currentValue))
-                                                                                    setData('pickuperName', pickuper?.name ?? "");
-                                                                                    setData('pickuperEmail', pickuper?.email ?? "");
-                                                                                    setData('pickuperId', pickuper?.id ?? null);
-                                                                                    setSelectIsOpen(false);
-                                                                                }}
-                                                                                className="flex items-center justify-between"
-                                                                            >
-                                                                                <div className="flex items-center gap-2">
-                                                                                    {pickuper.name} - {pickuper.email}
-                                                                                </div>
-                                                                                <Icons.Check
-                                                                                    className={cn(
-                                                                                        "mr-2 h-4 w-4",
-                                                                                        data.pickuperName === pickuper.name.toString() ? "opacity-100" : "opacity-0"
-                                                                                    )}
-                                                                                />
-                                                                            </CommandItem>
-                                                                        );
-                                                                    })
-                                                                    }
-                                                                </ErrorBoundary>
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-                                            <InputError message={errors.offeringPrice} />
+                                            <Label htmlFor="isiKiriman">Isi Kiriman</Label>
+                                            <Input
+                                                id="isiKiriman"
+                                                type="text"
+                                                required
+                                                tabIndex={12}
+                                                autoComplete="isiKiriman"
+                                                value={data.isiKiriman}
+                                                onChange={(e) => setData('isiKiriman', e.target.value)}
+                                                placeholder="contoh. Buku Cetak"
+                                                disabled={isView}
+                                            />
+                                            <InputError message={errors.isiKiriman} />
                                         </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="catatan">Catatan</Label>
+                                            <TextArea
+                                                id="catatan"
+                                                tabIndex={13}
+                                                autoComplete="catatan"
+                                                value={data.catatan}
+                                                onChange={(e) => setData('catatan', e.target.value)}
+                                                placeholder="contoh. Tolong ditangani dengan baik"
+                                                disabled={isView}
+                                                className="h-24"
+                                            />
+                                            <InputError message={errors.catatan} />
+                                        </div>
+
                                     </div>
                                 </div>
 
-
-                                <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
+                                {!isView && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                    Set Pickuper
-                                </Button>
+                                    Simpan
+                                </Button>}
+                                {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={15} disabled={processing} onClick={() => resetForm()}>
+                                    Batal
+                                </Button>}
                             </div>
 
                         </form>

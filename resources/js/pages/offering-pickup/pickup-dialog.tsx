@@ -1,21 +1,15 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { router, useForm, usePage } from "@inertiajs/react";
-import ErrorBoundary from '@/components/error-boundary';
 import InputError from '@/components/input-error';
+import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import * as Icons from 'lucide-react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 import { TextArea } from "@/components/ui/textarea";
-import { CustomerData } from "@/types/customer";
 import { Offerings } from "@/types/marketing";
-import { Badge } from "@/components/ui/badge";
+import { useForm } from "@inertiajs/react";
+import { LoaderCircle } from 'lucide-react';
+import { FormEventHandler, useEffect } from 'react';
 
 
 interface PickupFormDialog {
@@ -50,10 +44,8 @@ type PickupForm = {
 
 
 export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView = true }: PickupFormDialog) {
-    const [selectIsOpen, setSelectIsOpen] = useState(false)
-    const page = usePage();
-    const customers = page.props.customers as CustomerData[];
-    const { data, setData, post, put, processing, errors, reset } = useForm<Required<PickupForm>>({
+    
+    const { data, setData, put, processing, errors, reset } = useForm<Required<PickupForm>>({
         customerId: null,
         senderName: "",
         senderAddress: "",
@@ -79,7 +71,7 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
     useEffect(() => {
 
         if (selectedOffer != null) {
-            setData("status", "on_nego");
+            setData("status", "request");
             setData('customerId', selectedOffer.customer_id);
             setData('senderName', selectedOffer.senderName);
             setData('senderAddress', selectedOffer.senderAddress);
@@ -107,10 +99,6 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        if (data.action == 'add') {
-
-        }
-
         if (data.action == 'update') {
             put(route('pickup-offering.update', selectedOffer?.id), {
                 onSuccess: () => {
@@ -221,22 +209,6 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
 
         return label
     }
-
-    const formatCurrency = (value: number) => {
-        if (!value) return '0';
-        return new Intl.NumberFormat('id-ID').format(value);
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Remove all non-numeric characters
-        const rawValue = e.target.value.replace(/\D/g, '');
-
-        // Convert to number
-        const numericValue = rawValue ? Number(rawValue) : 0;
-
-        setData(e.target.name as keyof PickupForm, numericValue);
-        return numericValue
-    };
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>

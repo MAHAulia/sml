@@ -8,6 +8,7 @@ use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
 use App\Http\Controllers\OfferingController;
+use App\Http\Controllers\PickupController;
 use App\Http\Controllers\PickupRequestController;
 use App\Http\Controllers\Settings\MenuController;
 use App\Http\Controllers\Settings\RoleController;
@@ -52,7 +53,10 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
 
     Route::resource('pickup-request', PickupRequestController::class);
     Route::post('pickup-request/{id}', [PickupRequestController::class, 'savemanage'])->name('pickup-request.savemanage');
+
+    Route::resource('pickup', PickupController::class);
     
+
 
     
 });
