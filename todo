@@ -1,0 +1,7 @@
+1. User Pickup Buat Menu Manifest Serah, dari pickup ke warehouse
+2. User Warehous Buat Menu Manifest Terima, dari pickup ke warehouse
+3. User Warehouse buat menu bagging
+4. User warehouse buat menu manifest untuk bagging dari warehouse asal ke warehouse tujuan
+5. User warehouse buat menu manifest terima dari warehouse kirim di warehouse terima
+6. User warehouse buat menu manifest dari warehouse ke delivery
+7. User Delivery buat menu DO untuk membuat list antaran

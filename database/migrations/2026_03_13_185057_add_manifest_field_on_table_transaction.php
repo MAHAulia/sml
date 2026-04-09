@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->foreignId('bag_id')->constrained('bags')->noActionOnDelete()->nullable();
-            $table->foreignId('manifest_id')->constrained('manifests')->noActionOnDelete()->nullable();
+            $table->foreignId('bag_id')->nullable()->constrained('bags')->noActionOnDelete();
+            $table->foreignId('manifest_id')->nullable()->constrained('manifests')->noActionOnDelete();
             $table->enum("shipment_status", ["on_hold", "bagged", "manifested", "uplifted", "in_transit", "arrived", "incomplete", "delivered"])->default("on_hold");
         });
     }
