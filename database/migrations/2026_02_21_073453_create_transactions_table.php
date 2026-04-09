@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreignId('pickuper_id')
                 ->nullable()
                 ->constrained('users')
-                ->noActionOnDelete()
-                ->after('user_id');
+                ->noActionOnDelete();
+            $table->string("order_number")->after("id");
             $table->string("senderName");
             $table->string("senderPhone");
             $table->string("senderAddress");
@@ -35,6 +35,10 @@ return new class extends Migration
             $table->double("weight");
             $table->string("isiKiriman");
             $table->string("catatan")->nullable();
+            $table->enum("status", ["pending", "on_review", "price_set", "on_nego","on_review_nego", "accepted", "rejected"])->default("pending");
+            $table->enum("pickup_status", ["null","request", "on_pickup", "success_pickup", "failed_pickup"])->default("null");
+            $table->enum("outgoing_status", ["null","hold", "bagging", "manifested"])->default("null");
+            $table->enum("delivery_status", ["null","request", "on_pickup", "success_pickup", "failed_pickup"])->default("null");
             $table->timestamps();
         });
     }
