@@ -8,6 +8,7 @@ use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
 use App\Http\Controllers\ManifestController;
+use App\Http\Controllers\ManifestSerahController;
 use App\Http\Controllers\OfferingController;
 use App\Http\Controllers\PickupController;
 use App\Http\Controllers\PickupRequestController;
@@ -21,7 +22,7 @@ use App\Notifications\EmailVerificationNotification;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', [LandingPageController::class, 'index'])->name('home');
-Route::get('/', function() {
+Route::get('/', function () {
     return redirect()->route("login");
 })->name('home');
 Route::get('/syarat-dan-ketentuan', [LandingPageController::class, 'termsAndConditions'])->name('termsAndConditions');
@@ -56,6 +57,10 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::post('pickup-request/{id}', [PickupRequestController::class, 'savemanage'])->name('pickup-request.savemanage');
 
     Route::resource('pickup', PickupController::class);
+    Route::get("pickup/manifest/serah", [PickupController::class, 'manifestSerah'])->name("pickup.manifest_serah");
+    // Route::get("pickup/manifest/serah/create", [PickupController::class, 'createManifestSerah'])->name("pickup.create_manifest_serah");
+    Route::post("pickup/manifest/serah/create", [PickupController::class, 'createManifestSerah'])->name("pickup.save_manifest_serah");
+    Route::get("pickup/manifest/serah/show/{id}", [PickupController::class, 'showManifestSerah'])->name("pickup.show_manifest_serah");
 
     Route::resource('manifest', ManifestController::class);
 });

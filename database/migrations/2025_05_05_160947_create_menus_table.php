@@ -144,7 +144,7 @@ return new class extends Migration
             ["label" => "Kelola Pickup", "route_name" => "pickup-request.manage", "icon" => "Package", "is_parent" => false, "parent_id" => 50, "order_number" => 2, "type" => "form"],
             // 57
             ["label" => "Simpan Kelola Pickup", "route_name" => "pickup-request.savemanage", "icon" => "Package", "is_parent" => false, "parent_id" => 50, "order_number" => 2, "type" => "api"],
-            
+
             // Pickup
             //58
             ["label" => "Pickup", "route_name" => "pickup", "icon" => "FileBox", "is_parent" => true, "parent_id" => null, "order_number" => 4, "type" => "menu"],
@@ -157,7 +157,7 @@ return new class extends Migration
             //62
             ["label" => "Manifest Serah", "route_name" => "pickup.manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 4, "type" => "menu"],
             //63
-            ["label" => "Show Manifest Serah", "route_name" => "pickup.show_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 5, "type" => "menu"],
+            ["label" => "Show Manifest Serah", "route_name" => "pickup.show_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 5, "type" => "form"],
             //64
             ["label" => "Buat Menifest Serah", "route_name" => "pickup.create_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 6, "type" => "form"],
             //65
@@ -185,7 +185,7 @@ return new class extends Migration
             //75
             ["label" => "Manifest Serah", "route_name" => "warehouse.manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 9, "type" => "menu"],
             //76
-            ["label" => "Show Manifest Serah", "route_name" => "warehouse.show_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 10, "type" => "menu"],
+            ["label" => "Show Manifest Serah", "route_name" => "warehouse.show_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 10, "type" => "form"],
             //77
             ["label" => "Buat Menifest Serah", "route_name" => "warehouse.create_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 11, "type" => "form"],
             //78
