@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('bags', function (Blueprint $table) {
             $table->id();
+            $table->string("code")->unique();
+            $table->foreignId('user_id')->constrained('users')->noActionOnDelete();
+            $table->enum("status", ["created", "manifested", "received", "rejected"])->default("created");
             $table->timestamps();
         });
     }

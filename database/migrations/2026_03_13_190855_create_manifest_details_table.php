@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('manifest_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('manifest_id')->constrained('manifests')->noActionOnDelete();
+            $table->unsignedBigInteger('item_id');
             $table->timestamps();
         });
     }

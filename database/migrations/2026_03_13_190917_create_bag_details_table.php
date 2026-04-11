@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('bag_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('bag_id')->constrained('bags')->noActionOnDelete();
+            $table->foreignId('transaction_id')->constrained('transactions')->noActionOnDelete();
             $table->timestamps();
         });
     }
