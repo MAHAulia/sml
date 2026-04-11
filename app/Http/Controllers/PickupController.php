@@ -56,6 +56,8 @@ class PickupController extends Controller
             $data = $offering;
             $data->offering_id = $offering->id;
             $data->order_number = $orderNumber;
+            unset($data->created_at);
+            unset($data->updated_at);
             Transaction::insert($data->toArray());
 
             // Send Email To Customer
@@ -67,7 +69,6 @@ class PickupController extends Controller
                 'message' => 'Status pickup berhasil diperbaharui, silahkan hubungi customer service untuk mempercepat proses validasi.',
             ]);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             return redirect()->back()->with('flash', [
                 'type' => 'error',
                 'title' => 'Update status pickup gagal',

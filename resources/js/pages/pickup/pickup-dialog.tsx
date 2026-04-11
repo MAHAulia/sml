@@ -246,7 +246,7 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
                             Kelola taif untuk penawaran layanan pengiriman dokumen
                         </DialogDescription>
                     </DialogHeader>
-                    const [confirmIsShow, setConfirmIsShow] = useState(false)
+                    
                     <div className="grid gap-4 py-4">
                         <div>
                             <form className="flex flex-col gap-6" onSubmit={submit}>

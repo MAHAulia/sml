@@ -30,12 +30,12 @@ class Transaction extends Model
         "pickup_status"
     ];
 
-    protected function casts(): array
-    {
-        return [
+    // protected function casts(): array
+    // {
+    //     return [
             
-        ];
-    }
+    //     ];
+    // }
 
     public function biaya()
     {

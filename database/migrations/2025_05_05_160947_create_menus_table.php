@@ -154,56 +154,80 @@ return new class extends Migration
             ["label" => "Show Pickup", "route_name" => "pickup.show", "icon" => "FileBox", "is_parent" => false, "parent_id" => 58, "order_number" => 1, "type" => "form"],
             //61
             ["label" => "Update Pickup", "route_name" => "pickup.update", "icon" => "FileBox", "is_parent" => false, "parent_id" => 58, "order_number" => 1, "type" => "api"],
+            //62
+            ["label" => "Manifest Serah", "route_name" => "pickup.manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 4, "type" => "menu"],
+            //63
+            ["label" => "Show Manifest Serah", "route_name" => "pickup.show_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 5, "type" => "menu"],
+            //64
+            ["label" => "Buat Menifest Serah", "route_name" => "pickup.create_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 6, "type" => "form"],
+            //65
+            ["label" => "Simpan Manifest Serah", "route_name" => "pickup.save_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 58, "order_number" => 7, "type" => "api"],
 
             // Warehouse
-            //62
-            ["label" => "Warehouse", "route_name" => "warehouse", "icon" => "Warehouse", "is_parent" => true, "parent_id" => null, "order_number" => 5, "type" => "menu"],
-            //63
-            ["label" => "Manifest", "route_name" => "manifest.index", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 1, "type" => "menu"],
-            //64
-            ["label" => "Create Manifest", "route_name" => "manifest.create", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 2, "type" => "form"],
-            //65
-            ["label" => "Show Manifest", "route_name" => "manifest.show", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 3, "type" => "form"],
             //66
-            ["label" => "Update Manifest", "route_name" => "manifest.update", "icon" => "Warehouse", "is_parent" => false, "parent_id" => 62, "order_number" => 4, "type" => "api"],
+            ["label" => "Warehouse", "route_name" => "warehouse", "icon" => "Warehouse", "is_parent" => true, "parent_id" => null, "order_number" => 5, "type" => "menu"],
+            //67
+            ["label" => "Manifest Terima", "route_name" => "warehouse.manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 1, "type" => "menu"],
+            //68
+            ["label" => "Show Manifest Terima", "route_name" => "warehouse.show_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 2, "type" => "menu"],
+            //69
+            ["label" => "Buat Menifest Terima", "route_name" => "warehouse.create_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 3, "type" => "form"],
+            //70
+            ["label" => "Simpan Manifest Terima", "route_name" => "warehouse.save_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 4, "type" => "api"],
+            //71
+            ["label" => "Bagging", "route_name" => "warehouse.baging", "icon" => "Boxes", "is_parent" => false, "parent_id" => 66, "order_number" => 5, "type" => "menu"],
+            //72
+            ["label" => "Lihat Bagging", "route_name" => "warehouse.create_baging", "icon" => "Boxes", "is_parent" => false, "parent_id" => 66, "order_number" => 6, "type" => "form"],
+            //73
+            ["label" => "Buat Bagging", "route_name" => "warehouse.create_baging", "icon" => "Boxes", "is_parent" => false, "parent_id" => 66, "order_number" => 7, "type" => "form"],
+            //74
+            ["label" => "Simpan Simpan Bagging", "route_name" => "warehouse.save_baging", "icon" => "Boxes", "is_parent" => false, "parent_id" => 66, "order_number" => 8, "type" => "api"],
+            //75
+            ["label" => "Manifest Serah", "route_name" => "warehouse.manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 9, "type" => "menu"],
+            //76
+            ["label" => "Show Manifest Serah", "route_name" => "warehouse.show_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 10, "type" => "menu"],
+            //77
+            ["label" => "Buat Menifest Serah", "route_name" => "warehouse.create_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 11, "type" => "form"],
+            //78
+            ["label" => "Simpan Manifest Serah", "route_name" => "warehouse.save_manifest_serah", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 66, "order_number" => 12, "type" => "api"],
 
             // Delivery
-            //67
+            //79
             ["label" => "Delivery", "route_name" => "delivery", "icon" => "Truck", "is_parent" => true, "parent_id" => null, "order_number" => 6, "type" => "menu"],
-            //68
-            ["label" => "Delivery Order", "route_name" => "delivery-order.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 1, "type" => "menu"],
-            //69
-            ["label" => "Create Delivery Order", "route_name" => "delivery-order.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 2, "type" => "form"],
-            //70
-            ["label" => "Show Delivery Order", "route_name" => "delivery-order.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 3, "type" => "form"],
-            //71
-            ["label" => "Update Delivery Order", "route_name" => "delivery-order.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 4, "type" => "api"],
-            //72
-            ["label" => "POD", "route_name" => "pod.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 67, "order_number" => 5, "type" => "menu"],
-            //73
-            ["label" => "Create POD", "route_name" => "pod.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 67, "order_number" => 6, "type" => "form"],
-            //74
-            ["label" => "Show POD", "route_name" => "pod.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 67, "order_number" => 7, "type" => "form"],
-            //75
-            ["label" => "Update POD", "route_name" => "pod.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 67, "order_number" => 8, "type" => "api"],
+            //80
+            ["label" => "Manifest Terima", "route_name" => "delivery.manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 1, "type" => "menu"],
+            //81
+            ["label" => "Show Manifest Terima", "route_name" => "delivery.show_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 2, "type" => "menu"],
+            //82
+            ["label" => "Buat Menifest Terima", "route_name" => "delivery.create_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 3, "type" => "form"],
+            //83
+            ["label" => "Simpan Manifest Terima", "route_name" => "delivery.save_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 4, "type" => "api"],
+            //84
+            ["label" => "Delivery Order", "route_name" => "delivery-order.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 5, "type" => "menu"],
+            //85
+            ["label" => "Create Delivery Order", "route_name" => "delivery-order.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 6, "type" => "form"],
+            //86
+            ["label" => "Show Delivery Order", "route_name" => "delivery-order.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 7, "type" => "form"],
+            //87
+            ["label" => "Update Delivery Order", "route_name" => "delivery-order.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 8, "type" => "api"],
 
             // Accounting
-            //76
+            //88
             ["label" => "Accounting", "route_name" => "accounting", "icon" => "CreditCard", "is_parent" => true, "parent_id" => null, "order_number" => 7, "type" => "menu"],
-            //77
-            ["label" => "Penawaran Tarif", "route_name" => "tarif.index", "icon" => "Banknote", "is_parent" => false, "parent_id" => 76, "order_number" => 1, "type" => "menu"],
-            //78
-            ["label" => "Penawaran Tarif", "route_name" => "tarif.create", "icon" => "Banknote", "is_parent" => false, "parent_id" => 76, "order_number" => 2, "type" => "form"],
-            //79
-            ["label" => "Set Tarif", "route_name" => "tarif.show", "icon" => "Banknote", "is_parent" => false, "parent_id" => 76, "order_number" => 3, "type" => "form"],
-            //80
-            ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 4, "type" => "menu"],
-            //81
-            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 5, "type" => "form"],
-            //82
-            ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 6, "type" => "form"],
-            //83
-            ["label" => "Update Invoice", "route_name" => "invoice.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 76, "order_number" => 7, "type" => "api"],
+            //89
+            ["label" => "Penawaran Tarif", "route_name" => "tarif.index", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 1, "type" => "menu"],
+            //90
+            ["label" => "Penawaran Tarif", "route_name" => "tarif.create", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 2, "type" => "form"],
+            //91
+            ["label" => "Set Tarif", "route_name" => "tarif.show", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 3, "type" => "form"],
+            //92
+            ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 4, "type" => "menu"],
+            //93
+            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 5, "type" => "form"],
+            //94
+            ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 6, "type" => "form"],
+            //95
+            ["label" => "Update Invoice", "route_name" => "invoice.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 7, "type" => "api"],
         ]);
     }
 

@@ -1,7 +1,5 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Edit3, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -11,11 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown, Edit3, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
-import { Offerings } from "@/types/marketing"
-import { getStatusConfig } from "@/lib/status-config"
-import { Badge } from "@/components/ui/badge"
 import { StatusBadge } from "@/components/status-badge"
+import { Offerings } from "@/types/marketing"
 
 type ColumnProps = {
   onView: (data: Offerings) => void;
@@ -56,11 +54,11 @@ export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: Co
             >
               <Edit3 /> Set Tarif
             </DropdownMenuItem>}
-            {(data.status === "accepted") && <DropdownMenuItem
+            {/* {(data.status === "accepted") && <DropdownMenuItem
               onClick={() => onSetTarif(data)}
             >
               <Edit3 /> Request Pickup
-            </DropdownMenuItem>}
+            </DropdownMenuItem>} */}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>
           </DropdownMenuContent>
