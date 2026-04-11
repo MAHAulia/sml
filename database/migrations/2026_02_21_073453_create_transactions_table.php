@@ -16,12 +16,11 @@ return new class extends Migration
             $table->foreignId('offering_id')->constrained('offerings')->noActionOnDelete();
             $table->foreignId('user_id')->constrained('users')->noActionOnDelete();
             $table->foreignId('customer_id')->constrained('customers')->noActionOnDelete()->nullable();
-            $table->foreignId('biaya_id')->constrained('biayas')->noActionOnDelete()->nullable();
             $table->foreignId('pickuper_id')
                 ->nullable()
                 ->constrained('users')
                 ->noActionOnDelete();
-            $table->string("order_number")->after("id");
+            $table->string("order_number");
             $table->string("senderName");
             $table->string("senderPhone");
             $table->string("senderAddress");

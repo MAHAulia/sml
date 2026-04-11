@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->noActionOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained('customers')->noActionOnDelete();
-            $table->foreignId('biaya_id')->nullable()->constrained('biayas')->noActionOnDelete();
             $table->foreignId('pickuper_id')
                 ->nullable()
                 ->constrained('users')
