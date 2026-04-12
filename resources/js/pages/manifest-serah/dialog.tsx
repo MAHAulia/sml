@@ -224,57 +224,13 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
                                     </div>
                                 </div>
 
-                                <div className={data.type === "linehaul" ? "grid grid-cols-3 gap-2" : "grid grid-cols-2 gap-2"}>
+                                <div className="grid grid-cols-2 gap-2">
                                     <div className="grid gap-2">
                                         <Label htmlFor="officeTo">Barang Belum Diproses</Label>
-                                        {/* {manifests.map((manifest) => (
-                                            <div key={manifest.id} className="border p-2">
-                                                {manifest.code}
-                                            </div>
-                                        ))} */}
-                                        {/* <Select
-                                            value={data.office_to}
-                                            onValueChange={(value) => setData('office_to', value)}
-                                            required
-                                            disabled={isView}
-                                        >
-                                            <SelectTrigger id="officeTo" tabIndex={4} className="w-full">
-                                                <SelectValue placeholder="Kantor Tujuan" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Kantor Tujuan</SelectLabel>
-                                                    {kantors.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : kantor.code !== auth.user.office).map((kantor) => (
-                                                        <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select> */}
-                                        <InputError message={errors.office_to} />
+                                        
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="to">Barang Terpilih</Label>
-                                        {/* <Select
-                                            value={data.to}
-                                            onValueChange={(value) => setData('to', value)}
-                                            required
-                                            disabled={isView}
-                                        >
-                                            <SelectTrigger id="to" tabIndex={4} className="w-full">
-                                                <SelectValue placeholder="Bagian Tujuan" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Bagian Tujuan</SelectLabel>
-                                                    {tujuans.filter((tujuan) => data.type === "local" ? tujuan.name === "Delivery" : tujuan.name === "Warehouse").map((tujuan) => (
-                                                        <SelectItem key={tujuan.id} value={tujuan.name}>
-                                                            {tujuan.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select> */}
-                                        <InputError message={errors.office_to} />
                                     </div>
                                 </div>
 
