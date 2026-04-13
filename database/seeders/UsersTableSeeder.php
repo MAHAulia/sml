@@ -20,6 +20,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'super-admin@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 1
@@ -28,6 +29,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'it-admin@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 2
@@ -36,6 +38,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'marketing@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 3
@@ -44,6 +47,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'cs@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 4
@@ -52,6 +56,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'pickup@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 5
@@ -60,6 +65,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'delivery@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 6
@@ -68,6 +74,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'warehouse@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 7
@@ -76,6 +83,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'accounting@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 8
@@ -84,6 +92,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'hr@email.com',
             'email_verified_at' => now(),
             'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
             'created_at' => now(),
             'updated_at' => now()
         ]); // 9

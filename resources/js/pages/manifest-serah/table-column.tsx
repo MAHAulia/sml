@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { ManifestSerahData } from "@/types/manifest-serah"
@@ -19,9 +19,10 @@ type ColumnProps = {
   onView: (data: ManifestSerahData) => void;
   onEdit: (data: ManifestSerahData) => void;
   onDelete: (data: ManifestSerahData) => void;
+  onTutupManifest: (data: ManifestSerahData) => void;
 };
 
-export const manifestSerahTableColumns = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<ManifestSerahData>[] => [
+export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<ManifestSerahData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -48,6 +49,11 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete }: ColumnPr
               onClick={() => onEdit(data)}
             >
               <PlusCircle /> Tambah Item Manifest
+            </DropdownMenuItem>}
+            {(data.items.length != 0) && <DropdownMenuItem
+              onClick={() => onTutupManifest(data)}
+            >
+              <BoxIcon /> Tutup Manifest
             </DropdownMenuItem>}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>

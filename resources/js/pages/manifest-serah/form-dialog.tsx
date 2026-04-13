@@ -224,7 +224,7 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
                                             <SelectContent>
                                                 <SelectGroup>
                                                     <SelectLabel>Bagian Tujuan</SelectLabel>
-                                                    {tujuans.filter((tujuan) => data.type === "local" ? tujuan.name === "Delivery" : tujuan.name ==="Warehouse").map((tujuan) => (
+                                                    {tujuans.filter((tujuan) => data.type !== "local" ? tujuan.name === "Warehouse" : true).map((tujuan) => (
                                                         <SelectItem key={tujuan.id} value={tujuan.name}>
                                                             {tujuan.name}
                                                         </SelectItem>

@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Offering extends Model
 {
+
+    use HasFactory;
+    
     protected $fillable = [
         "user_id",
         "customer_id",
@@ -30,9 +34,7 @@ class Offering extends Model
 
     protected function casts(): array
     {
-        return [
-            
-        ];
+        return [];
     }
 
     public function biaya()

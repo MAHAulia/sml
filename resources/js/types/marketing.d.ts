@@ -37,4 +37,29 @@ export interface Biayas {
     updated_at: string;
 }
 
- 
+ export interface TransactionsData {
+    id: number;
+    order_number: string;
+    user_id: number;
+    customer_id: number;
+    biaya_id: number | null;
+    senderName: string;
+    senderPhone: string;
+    senderAddress: string;
+    receiverName: string;
+    receiverPhone: string;
+    receiverAddress: string;
+    total_item: number;
+    p: number;
+    l: number;
+    t: number;
+    weight: number;
+    isiKiriman: string;
+    catatan: string | null;
+    status: string;
+    pickup_status: string;
+    created_at: string;
+    updated_at: string;
+    biaya: Biayas;
+    customer: CustomerData;
+}

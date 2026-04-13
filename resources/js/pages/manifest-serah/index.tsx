@@ -77,6 +77,10 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
 
     }
 
+    const onTutupManifest = (data: ManifestSerahData) => {
+        
+    }
+
     useEffect(() => {
         if (filter) {
             handleAdd()
@@ -91,7 +95,7 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
             <PageLayout title='Manifest Serah' description="Kelola penyerahan barang">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <ManifestSerahTable data={datas} onAddButtonClicked={handleAdd} columns={manifestSerahTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete })} />
+                        <ManifestSerahTable data={datas} onAddButtonClicked={handleAdd} columns={manifestSerahTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
                         <ManifestSerahFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
                         <ManifestDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <DeleteConfirmation

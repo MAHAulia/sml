@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { SharedData } from "@/types";
 import { BagianTujuan, Kantor, ManifestSerahData } from "@/types/manifest-serah";
 import { useForm, usePage } from "@inertiajs/react";
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler, useEffect } from 'react';
+import { ArrowRight, LoaderCircle, X } from 'lucide-react';
+import { FormEventHandler, useEffect, useState } from 'react';
+import { TransactionsData } from "@/types/marketing";
 
 
 interface ManifestSerahFormDialog {
@@ -20,9 +21,11 @@ interface ManifestSerahFormDialog {
 }
 
 type ManifestSerahForm = {
+    manifest: string;
     to: string;
     office_to: string;
     type: string;
+    selectedItem: number[];
     action: 'add' | 'update';
 };
 
@@ -32,25 +35,68 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const tujuans = page.props.tujuans as BagianTujuan[];
-    const { data, setData, put, processing, errors, reset } = useForm<Required<ManifestSerahForm>>({
+    const { data, setData, post, get, processing, errors, reset } = useForm<Required<ManifestSerahForm>>({
+        manifest: "",
         to: "",
         office_to: "",
         type: "",
         action: 'add',
+        selectedItem: [],
     });
+
+    const [itemManifest, setItemManifest] = useState<TransactionsData[]>([])
+    const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
+
+    const getListItem = (selectedData: ManifestSerahData) => {
+        if (selectedData.type === 'local') {
+            console.log("Get data for local")
+            get(route('pickup.manifest_serah', {t: selectedData.type, m: selectedData.code}), {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    setItemManifest(page.props.data_manifest as TransactionsData[])
+                    let dataSelected = page.props.data_selected as TransactionsData[]
+                    setSelectedManifestItem(dataSelected)
+                    setData("selectedItem", dataSelected.map(item => item.id));
+                },
+                onError: (error) => {
+                    console.log(error);
+                },
+            })
+        } else {
+            console.log("Get for not local")
+        }
+    }
 
     useEffect(() => {
 
         if (selectedData != null) {
+            console.log('selectedData', selectedData)
+            setData('manifest', selectedData.code)
             setData('to', selectedData.to);
             setData('office_to', selectedData.office_to);
             setData('type', selectedData.type);
             setData('action', 'update');
+            getListItem(selectedData);
         } else {
             resetForm()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedData]);
+
+    const handleSelectItem = (item: TransactionsData) => {
+        // add to selected
+        setSelectedManifestItem((prev) => [...prev, item]);
+        setData("selectedItem", [...data.selectedItem, item.id]);
+        // remove from left list
+        setItemManifest((prev) => prev.filter((i) => i.id !== item.id));
+    };
+
+    const handleRemoveItem = (item: TransactionsData) => {
+        setItemManifest((prev) => [...prev, item]);
+        setSelectedManifestItem((prev) => prev.filter((i) => i.id !== item.id));
+        setData("selectedItem", data.selectedItem.filter((id) => id !== item.id));
+    };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -59,7 +105,7 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
         // }
 
         if (data.action == 'update') {
-            put(route('tarif.create', selectedData?.id), {
+            post(route('pickup.save_manifest_serah', selectedData?.id), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -224,13 +270,18 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-2">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="officeTo">Barang Belum Diproses</Label>
-                                        
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="gap-2">
+                                        <Label htmlFor="officeTo">Item Belum Diproses</Label>
+                                        <div className="border-2 rounded-xl p-4 mt-3">
+                                            {itemManifest?.map((item) => <div key={`item-${item.id}`} onClick={() => handleSelectItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <ArrowRight /> </div>)}
+                                        </div>
                                     </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="to">Barang Terpilih</Label>
+                                    <div className="gap-2">
+                                        <Label htmlFor="to">Item Terpilih</Label>
+                                        <div className="border-2 rounded-xl p-4 mt-4">
+                                            {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X/></div>)}
+                                        </div>
                                     </div>
                                 </div>
 
