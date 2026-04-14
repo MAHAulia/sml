@@ -285,7 +285,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
 
                         <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Simpan Data Manifest
+                            {itemManifest.length == 0 ? 'Simpan dan Tutup Manifest' : 'Simpan Data Manifest'}
                         </Button>
                     </form>
 
