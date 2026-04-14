@@ -18,6 +18,7 @@ use App\Http\Controllers\SocialLogin\GoogleController;
 use App\Http\Controllers\Support\SupportController;
 use App\Http\Controllers\Tanggapan\TanggapanController;
 use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\WarehouseController;
 use App\Notifications\EmailVerificationNotification;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,13 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::get("pickup/manifest/serah/show/{id}", [PickupController::class, 'showManifestSerah'])->name("pickup.show_manifest_serah");
 
     Route::resource('manifest', ManifestController::class);
+
+    Route::resource('warehouse', WarehouseController::class);
+    Route::get("warehouse/manifest/terima", [WarehouseController::class, 'manifestTerima'])->name("warehouse.manifest_terima");
+    // Route::get("warehouse/manifest/terima/create", [WarehouseController::class, 'createManifestTerima'])->name("warehouse.create_manifest_terima");
+    Route::post("warehouse/manifest/terima/create", [WarehouseController::class, 'createManifestTerima'])->name("warehouse.save_manifest_terima");
+    Route::get("warehouse/manifest/terima/show/{id}", [WarehouseController::class, 'showManifestTerima'])->name("warehouse.show_manifest_terima");
+
 });
 
 Route::get('/mailable', function () {
