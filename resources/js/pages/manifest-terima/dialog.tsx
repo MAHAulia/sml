@@ -11,6 +11,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import { ArrowRight, LoaderCircle, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import { TransactionsData } from "@/types/marketing";
+import { ManifestSerahData } from "@/types/manifest-serah";
 
 
 interface ManifestTerimaFormDialog {
@@ -50,7 +51,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     const getListItem = (selectedData: ManifestTerimaData) => {
         if (selectedData.type === 'local') {
             console.log("Get data for local")
-            get(route('pickup.manifest_Terima', { t: selectedData.type, m: selectedData.code }), {
+            get(route('warehouse.manifest_terima', { t: selectedData.type, m: selectedData.code }), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
@@ -105,17 +106,17 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
         // }
 
         if (data.action == 'update') {
-            post(route('pickup.save_manifest_Terima', selectedData?.id), {
-                onSuccess: () => {
-                    resetForm();
-                    if (setIsOpen) {
-                        setIsOpen(false);
-                    }
-                },
-                onError: (error) => {
-                    console.log(error);
-                },
-            });
+            post(route('warehouse.save_manifest_terima', { a: 'approval', m: selectedData?.code }), {
+            onSuccess: () => {
+                resetForm();
+                if (setIsOpen) {
+                    setIsOpen(false);
+                }
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        });
         }
     };
 
@@ -189,7 +190,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-9/12">
                 <DialogHeader>
-                    <DialogTitle>Tambah Data Detail Manifest {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
+                    <DialogTitle>Terima Data Manifest {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
                         Kelola penambahan detail data manifest Terima. Pastikan data yang dimasukkan sudah benar sebelum menyimpan.
                     </DialogDescription>
@@ -255,7 +256,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
                                     <SelectContent>
                                         <SelectGroup>
                                             <SelectLabel>Bagian Tujuan</SelectLabel>
-                                            {tujuans.filter((tujuan) => data.type === "local" ? tujuan.name === "Delivery" : tujuan.name === "Warehouse").map((tujuan) => (
+                                            {tujuans.map((tujuan) => (
                                                 <SelectItem key={tujuan.id} value={tujuan.name}>
                                                     {tujuan.name}
                                                 </SelectItem>
@@ -277,7 +278,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
                             <div className="w-full">
                                 <Label htmlFor="to">Item Terpilih</Label>
                                 <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto  h-4/5 w-full">
-                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X/></div>)}
+                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X /></div>)}
                                 </div>
                             </div>
                         </div>

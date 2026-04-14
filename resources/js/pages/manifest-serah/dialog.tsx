@@ -49,7 +49,6 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
 
     const getListItem = (selectedData: ManifestSerahData) => {
         if (selectedData.type === 'local') {
-            console.log("Get data for local")
             get(route('pickup.manifest_serah', { t: selectedData.type, m: selectedData.code }), {
                 preserveState: true,
                 preserveScroll: true,

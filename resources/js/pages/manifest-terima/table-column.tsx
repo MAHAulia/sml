@@ -27,7 +27,6 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupMa
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
-      console.log(data.status !== "created")
 
       return (
         <DropdownMenu>
@@ -45,9 +44,9 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupMa
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
+            {(data.items.length != 0 && data.status == 'send') && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
-            >
+            > 
               <BoxIcon /> Terima Manifest
             </DropdownMenuItem>}
           </DropdownMenuContent>

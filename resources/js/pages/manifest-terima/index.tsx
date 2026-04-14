@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import ManifestDialog from './dialog';
 import ManifestTerimaFormDialog from './form-dialog';
 import ManifestTerimaTable from './table';
-import AlertDialog from '@/components/alert-dialog';
 import ConfirmationDialog from '@/components/confirm-dialog';
 import { manifestTerimaTableColumns } from './table-column';
 
@@ -29,6 +28,7 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
     const { delete: destroy, post, processing } = useForm();
 
     const [selectedData, setSelectedData] = useState<ManifestTerimaData | null>(null)
+    const [selectedDataManifest, setSelectedDataManifest] = useState<ManifestTerimaData | null>(null)
     const [deleteMenu, setDeleteMenu] = useState<ManifestTerimaData>()
     const [isOpen, setIsOpen] = useState(false)
     const [tambahData, setTambahData] = useState(false)
@@ -54,33 +54,30 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
     }
 
     const handleEdit = (data: ManifestTerimaData) => {
-        setTambahData(true)
-        setSelectedData(data)
-        setisView(false)
+        // setTambahData(true)
+        // setSelectedData(data)
+        // setisView(false)
     }
 
     const confirmDelete = (data: ManifestTerimaData) => {
-        setDeleteMenu(data)
-        setShowConfirm(true)
-        setisView(false)
-        setSelectedData(data)
+        
     }
 
     const handleDelete = () => {
-        post(route('pickup.save_manifest_serah', { a: 'delete', m: selectedData?.code }), {
-            onSuccess: () => {
-                setShowConfirm(false)
-            },
-            onError: (error) => {
-                console.log(error);
-            },
-        });
+        // post(route('pickup.save_manifest_serah', { a: 'delete', m: selectedData?.code }), {
+        //     onSuccess: () => {
+        //         setShowConfirm(false)
+        //     },
+        //     onError: (error) => {
+        //         console.log(error);
+        //     },
+        // });
     }
 
     const handleAdd = () => {
-        setIsOpen(true)
-        setSelectedData(null)
-        setisView(false)
+        // setIsOpen(true)
+        // setSelectedData(null)
+        // setisView(false)
         // Call API Create Manifest
         // post(route('pickup.save_manifest_serah'), {
         //     onSuccess: () => {
@@ -97,16 +94,9 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
     }
 
     const onTutupManifest = (data: ManifestTerimaData) => {
-        setSelectedData(data)
-        setConfirmation({
-            title: "Tutup Manifest",
-            subtitle: "Proses Tutup Manifest",
-            message: "Apakah Anda yakin ingin menutup manifest, untuk proses berikutnya",
-            action: "approve",
-            label: "Ya, Tutup",
-            danger: false,
-            isShow: true,
-        })
+        setSelectedDataManifest(data)
+        setTambahData(true)
+        setisView(false)
     }
 
     const handleConfirmation = () => {
@@ -129,13 +119,6 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
         });
     }
 
-    useEffect(() => {
-        if (filter) {
-            handleAdd()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pickup - Manifest Serah" />
@@ -145,7 +128,7 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
                     <div className="w-full ml-2">
                         <ManifestTerimaTable data={datas} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
                         <ManifestTerimaFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
-                        <ManifestDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
+                        <ManifestDialog selectedData={selectedDataManifest} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog
                             title={confirmation.title}
                             subtitle={confirmation.subtitle}

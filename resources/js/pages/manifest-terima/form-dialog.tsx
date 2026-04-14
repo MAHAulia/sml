@@ -24,6 +24,7 @@ type ManifestTerimaForm = {
     to: string;
     office_to: string;
     type: string;
+    selectedItem: number[];
     action: 'add' | 'update';
 };
 
@@ -33,6 +34,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const tujuans = page.props.tujuans as BagianTujuan[];
+    const [itemManifest, setItemManifest] = useState<TransactionsData[]>([])
     const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
 
     const { data, setData, get, post, put, processing, errors, reset } = useForm<Required<ManifestTerimaForm>>({
@@ -40,17 +42,20 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
         office_to: "",
         type: "",
         action: 'add',
+        selectedItem: [],
     });
 
     const getListItem = (selectedData: ManifestTerimaData) => {
         if (selectedData.type === 'local') {
             console.log("Get data for local")
-            get(route('pickup.manifest_Terima', { t: selectedData.type, m: selectedData.code }), {
+            get(route('warehouse.manifest_terima', { t: selectedData.type, m: selectedData.code }), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
+                    setItemManifest(page.props.data_manifest as TransactionsData[])
                     let dataSelected = page.props.data_selected as TransactionsData[]
                     setSelectedManifestItem(dataSelected)
+                    setData("selectedItem", dataSelected.map(item => item.id));
                 },
                 onError: (error) => {
                     console.log(error);
@@ -79,7 +84,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
         e.preventDefault();
         console.log(data.action);
         if (data.action == 'add') {
-            post(route('pickup.save_manifest_Terima'), {
+            post(route('warehouse.save_manifest_terima'), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -260,7 +265,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
                             {isView && <div>
                                 <h1>Data Manifest</h1>
                                 <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto h-1/3 w-full">
-                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number}</div>)}
+                                    {itemManifest?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number}</div>)}
                                 </div>
                             </div>}
 
