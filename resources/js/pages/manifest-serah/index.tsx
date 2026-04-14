@@ -9,6 +9,8 @@ import ManifestDialog from './dialog';
 import ManifestSerahFormDialog from './form-dialog';
 import ManifestSerahTable from './table';
 import { manifestSerahTableColumns } from './table-column';
+import AlertDialog from '@/components/alert-dialog';
+import ConfirmationDialog from '@/components/confirm-dialog';
 
 
 interface ManifestSerahProps {
@@ -24,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ManifestSerah({ datas }: ManifestSerahProps) {
-    const { delete: destroy, processing } = useForm();
+    const { delete: destroy, post, processing } = useForm();
 
     const [selectedData, setSelectedData] = useState<ManifestSerahData | null>(null)
     const [deleteMenu, setDeleteMenu] = useState<ManifestSerahData>()
@@ -32,6 +34,15 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
     const [tambahData, setTambahData] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
     const [isView, setisView] = useState(false)
+    const [confirmation, setConfirmation] = useState({
+        title: "",
+        subtitle: "",
+        message: "",
+        action: "",
+        label: "",
+        danger: false,
+        isShow: false,
+    })
 
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('f');
@@ -52,10 +63,18 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
         setDeleteMenu(data)
         setShowConfirm(true)
         setisView(false)
+        setSelectedData(data)
     }
 
     const handleDelete = () => {
-        destroy(route('menu.destroy', deleteMenu?.id));
+        post(route('pickup.save_manifest_serah', { a: 'delete', m: selectedData?.code }), {
+            onSuccess: () => {
+                setShowConfirm(false)
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        });
     }
 
     const handleAdd = () => {
@@ -78,7 +97,36 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
     }
 
     const onTutupManifest = (data: ManifestSerahData) => {
-        
+        setSelectedData(data)
+        setConfirmation({
+            title: "Tutup Manifest",
+            subtitle: "Proses Tutup Manifest",
+            message: "Apakah Anda yakin ingin menutup manifest, untuk proses berikutnya",
+            action: "approve",
+            label: "Ya, Tutup",
+            danger: false,
+            isShow: true,
+        })
+    }
+
+    const handleConfirmation = () => {
+        post(route('pickup.save_manifest_serah', { a: 'approval', m: selectedData?.code }), {
+            onSuccess: () => {
+                setShowConfirm(false)
+                setConfirmation({
+                    title: "",
+                    subtitle: "",
+                    message: "",
+                    action: "",
+                    label: "",
+                    danger: false,
+                    isShow: false,
+                })
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        });
     }
 
     useEffect(() => {
@@ -98,9 +146,24 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
                         <ManifestSerahTable data={datas} onAddButtonClicked={handleAdd} columns={manifestSerahTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
                         <ManifestSerahFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
                         <ManifestDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
+                        <ConfirmationDialog
+                            title={confirmation.title}
+                            subtitle={confirmation.subtitle}
+                            message={confirmation.message}
+                            label={confirmation.label}
+                            danger={confirmation.danger}
+                            isOpen={confirmation.isShow}
+                            isLoading={processing}
+                            onOpenChange={(open) =>
+                                setConfirmation((prev) => ({
+                                    ...prev,
+                                    isShow: open,
+                                }))
+                            }
+                            onConfirm={handleConfirmation} />
                         <DeleteConfirmation
-                            title='Hapus Data Menu'
-                            subtitle='Proses penghapusan data Menu'
+                            title='Hapus Data'
+                            subtitle='Proses penghapusan data'
                             message='Apakah Anda yakin akan menghapus data'
                             isOpen={showConfirm}
                             isLoading={processing}

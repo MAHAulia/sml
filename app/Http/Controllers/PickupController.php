@@ -86,6 +86,7 @@ class PickupController extends Controller
     public function manifestSerah(Request $request)
     {
         $user = Auth::user();
+
         $datas = Manifest::where("user_id", $user->id)->with("items")->latest()->get();
         $kantors = Kantor::all();
         $tujuans = Role::whereIn("name", ["Delivery", "Warehouse"])->get();
@@ -97,7 +98,7 @@ class PickupController extends Controller
                         ->select('transactions.*')
                         ->get();
             $dataSelected = Transaction::join('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
-                        ->where('manifest_details.manifest_id', $manifest->id)
+                        ->where('manifest_details.manifest_id', $manifest?->id)
                         ->where('transactions.pickuper_id', $user->id)
                         ->select('transactions.*')
                         ->get();
@@ -118,11 +119,70 @@ class PickupController extends Controller
     public function createManifestSerah(Request $request)
     {  
         $user = Auth::user();
+
+        if ($request->a == 'delete') {
+            $manifest = Manifest::where("code", $request->m)->first();
+            if (!$manifest) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Manifest Tidak Ditemukan',
+                    'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                ]);
+            }
+
+            if ($manifest->status != "created") {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Manifest Sudah Memiliki Status',
+                    'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                ]);
+            }
+
+            $manifest->delete();
+
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'title' => 'Data manifest berhasil disimpan',
+                'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+            ]);
+
+        }
+
+        if ($request->a == 'approval') {
+            $manifest = Manifest::where("code", $request->m)->first();
+            if (!$manifest) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Manifest Tidak Ditemukan',
+                    'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                ]);
+            }
+
+            if ($manifest->status != "created") {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Manifest Sudah Memiliki Status',
+                    'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                ]);
+            }
+
+            $manifest->status = "send";
+            $manifest->save();
+
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'title' => 'Data manifest berhasil disimpan',
+                'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+            ]);
+
+        }
+
         $role = $user->roles()->first();
         $isExist = Manifest::where("user_id", $user->id)
             ->where("office_to", $request->type == "local" ? $user->office : $request->office_to)
             ->where("to", $request->to)
             ->where("type", $request->type)
+            ->where("status", "created")
             ->first();
 
         if ($isExist) {

@@ -50,7 +50,7 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
     const getListItem = (selectedData: ManifestSerahData) => {
         if (selectedData.type === 'local') {
             console.log("Get data for local")
-            get(route('pickup.manifest_serah', {t: selectedData.type, m: selectedData.code}), {
+            get(route('pickup.manifest_serah', { t: selectedData.type, m: selectedData.code }), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
@@ -194,107 +194,101 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
                         Kelola penambahan detail data manifest serah. Pastikan data yang dimasukkan sudah benar sebelum menyimpan.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div>
-                        <form className="flex flex-col gap-6" onSubmit={submit}>
-                            <div className="grid gap-6">
-
-                                <div className={data.type === "linehaul" ? "grid grid-cols-3 gap-2" : "grid grid-cols-2 gap-2"}>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="senderPhone">Jenis</Label>
-                                        <Select
-                                            value={data.type}
-                                            onValueChange={(value) => setData('type', value)}
-                                            required
-                                            disabled={isView}
-                                        >
-                                            <SelectTrigger id="type" tabIndex={4} className="w-full">
-                                                <SelectValue placeholder="Lokal / Antar Cabang / Antar Kota" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Jenis Manifest</SelectLabel>
-                                                    <SelectItem value="local">Lokal</SelectItem>
-                                                    <SelectItem value="linehaul">Antar Cabang / Antar Kota</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                        <InputError message={errors.type} />
-                                    </div>
-
-                                    {data.type === "linehaul" && <div className="grid gap-2">
-                                        <Label htmlFor="officeTo">Kantor Tujuan</Label>
-                                        <Select
-                                            value={data.office_to}
-                                            onValueChange={(value) => setData('office_to', value)}
-                                            required
-                                            disabled={isView}
-                                        >
-                                            <SelectTrigger id="officeTo" tabIndex={4} className="w-full">
-                                                <SelectValue placeholder="Kantor Tujuan" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Kantor Tujuan</SelectLabel>
-                                                    {kantors.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : kantor.code !== auth.user.office).map((kantor) => (
-                                                        <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                        <InputError message={errors.office_to} />
-                                    </div>}
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="to">Bagian Tujuan</Label>
-                                        <Select
-                                            value={data.to}
-                                            onValueChange={(value) => setData('to', value)}
-                                            required
-                                            disabled={isView}
-                                        >
-                                            <SelectTrigger id="to" tabIndex={4} className="w-full">
-                                                <SelectValue placeholder="Bagian Tujuan" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Bagian Tujuan</SelectLabel>
-                                                    {tujuans.filter((tujuan) => data.type === "local" ? tujuan.name === "Delivery" : tujuan.name === "Warehouse").map((tujuan) => (
-                                                        <SelectItem key={tujuan.id} value={tujuan.name}>
-                                                            {tujuan.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                        <InputError message={errors.office_to} />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="gap-2">
-                                        <Label htmlFor="officeTo">Item Belum Diproses</Label>
-                                        <div className="border-2 rounded-xl p-4 mt-3">
-                                            {itemManifest?.map((item) => <div key={`item-${item.id}`} onClick={() => handleSelectItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <ArrowRight /> </div>)}
-                                        </div>
-                                    </div>
-                                    <div className="gap-2">
-                                        <Label htmlFor="to">Item Terpilih</Label>
-                                        <div className="border-2 rounded-xl p-4 mt-4">
-                                            {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X/></div>)}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
-                                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                    Simpan Data Manifest
-                                </Button>
+                <div className="gap-4 py-4">
+                    <form className="flex flex-col gap-6" onSubmit={submit}>
+                        <div className={data.type === "linehaul" ? "grid grid-cols-3 gap-2" : "grid grid-cols-2 gap-2"}>
+                            <div className="grid gap-2">
+                                <Label htmlFor="senderPhone">Jenis</Label>
+                                <Select
+                                    value={data.type}
+                                    onValueChange={(value) => setData('type', value)}
+                                    required
+                                    disabled={isView}
+                                >
+                                    <SelectTrigger id="type" tabIndex={4} className="w-full">
+                                        <SelectValue placeholder="Lokal / Antar Cabang / Antar Kota" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Jenis Manifest</SelectLabel>
+                                            <SelectItem value="local">Lokal</SelectItem>
+                                            <SelectItem value="linehaul">Antar Cabang / Antar Kota</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError message={errors.type} />
                             </div>
 
-                        </form>
+                            {data.type === "linehaul" && <div className="grid gap-2">
+                                <Label htmlFor="officeTo">Kantor Tujuan</Label>
+                                <Select
+                                    value={data.office_to}
+                                    onValueChange={(value) => setData('office_to', value)}
+                                    required
+                                    disabled={isView}
+                                >
+                                    <SelectTrigger id="officeTo" tabIndex={4} className="w-full">
+                                        <SelectValue placeholder="Kantor Tujuan" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Kantor Tujuan</SelectLabel>
+                                            {kantors.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : kantor.code !== auth.user.office).map((kantor) => (
+                                                <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError message={errors.office_to} />
+                            </div>}
+                            <div className="grid gap-2">
+                                <Label htmlFor="to">Bagian Tujuan</Label>
+                                <Select
+                                    value={data.to}
+                                    onValueChange={(value) => setData('to', value)}
+                                    required
+                                    disabled={isView}
+                                >
+                                    <SelectTrigger id="to" tabIndex={4} className="w-full">
+                                        <SelectValue placeholder="Bagian Tujuan" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Bagian Tujuan</SelectLabel>
+                                            {tujuans.filter((tujuan) => data.type === "local" ? tujuan.name === "Delivery" : tujuan.name === "Warehouse").map((tujuan) => (
+                                                <SelectItem key={tujuan.id} value={tujuan.name}>
+                                                    {tujuan.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError message={errors.office_to} />
+                            </div>
+                        </div>
 
-                        {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
-                    </div>
+                        <div className="flex w-full h-full gap-2">
+                            <div className="w-full">
+                                <Label htmlFor="officeTo">Item Belum Diproses</Label>
+                                <div className="border-2 rounded-xl p-4 mt-3 overflow-y-auto h-4/5 w-full">
+                                    {itemManifest?.map((item) => <div key={`item-${item.id}`} onClick={() => handleSelectItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <ArrowRight /> </div>)}
+                                </div>
+                            </div>
+                            <div className="w-full">
+                                <Label htmlFor="to">Item Terpilih</Label>
+                                <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto  h-4/5 w-full">
+                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X/></div>)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
+                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                            Simpan Data Manifest
+                        </Button>
+                    </form>
+
+                    {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
                 </div>
             </DialogContent>
         </Dialog>

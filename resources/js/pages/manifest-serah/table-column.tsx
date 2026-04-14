@@ -27,6 +27,7 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
+      console.log(data.status !== "created")
 
       return (
         <DropdownMenu>
@@ -45,18 +46,18 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
               <SearchIcon /> Lihat
             </DropdownMenuItem>
             
-            {(data.status !== "received" && data.status !== "rejected") && <DropdownMenuItem
+            {(data.status === "created") && <DropdownMenuItem
               onClick={() => onEdit(data)}
             >
               <PlusCircle /> Tambah Item Manifest
             </DropdownMenuItem>}
-            {(data.items.length != 0) && <DropdownMenuItem
+            {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
             >
               <BoxIcon /> Tutup Manifest
             </DropdownMenuItem>}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>
+            {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />}
+            {data.status !== "created" ? null : <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
       )
