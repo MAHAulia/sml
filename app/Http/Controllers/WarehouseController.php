@@ -77,7 +77,7 @@ class WarehouseController extends Controller
                             ->where("manifest_id", $manifest->id)
                             ->update(["status" => "created"]);
 
-            ManifestDetail::wheretIn("item_id", $request->selectedItem)
+            ManifestDetail::whereIn("item_id", $request->selectedItem)
                             ->where("manifest_id", $manifest->id)
                             ->update(["status" => "received"]);
             
