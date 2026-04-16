@@ -27,6 +27,7 @@ type ManifestTerimaForm = {
     office_to: string;
     type: string;
     selectedItem: number[];
+    items: number[];
     action: 'add' | 'update';
 };
 
@@ -43,6 +44,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
         type: "",
         action: 'add',
         selectedItem: [],
+        items: [],
     });
 
     const [itemManifest, setItemManifest] = useState<TransactionsData[]>([])
@@ -55,7 +57,9 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
-                    setItemManifest(page.props.data_manifest as TransactionsData[])
+                    let data = page.props.data_manifest as TransactionsData[]
+                    setItemManifest(data)
+                    setData("items", data.map(item => item.id));
                     let dataSelected = page.props.data_selected as TransactionsData[]
                     setSelectedManifestItem(dataSelected)
                     setData("selectedItem", dataSelected.map(item => item.id));
@@ -88,15 +92,39 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     const handleSelectItem = (item: TransactionsData) => {
         // add to selected
         setSelectedManifestItem((prev) => [...prev, item]);
-        setData("selectedItem", [...data.selectedItem, item.id]);
+
+        const updatedSelectedItems = data.selectedItem.includes(item.id)
+            ? data.selectedItem
+            : [...data.selectedItem, item.id];
+
         // remove from left list
-        setItemManifest((prev) => prev.filter((i) => i.id !== item.id));
+        const updatedItems = data.items.filter((id) => id !== item.id);
+
+        setData("selectedItem", updatedSelectedItems);
+        setData("items", updatedItems);
+
+        setItemManifest((prev) =>
+            prev.filter((i) => i.id !== item.id)
+        );
     };
 
     const handleRemoveItem = (item: TransactionsData) => {
         setItemManifest((prev) => [...prev, item]);
-        setSelectedManifestItem((prev) => prev.filter((i) => i.id !== item.id));
-        setData("selectedItem", data.selectedItem.filter((id) => id !== item.id));
+
+        const updatedItems = data.items.includes(item.id)
+            ? data.items
+            : [...data.items, item.id];
+
+        const updatedSelectedItems = data.selectedItem.filter(
+            (id) => id !== item.id
+        );
+
+        setData("items", updatedItems);
+        setData("selectedItem", updatedSelectedItems);
+
+        setSelectedManifestItem((prev) =>
+            prev.filter((i) => i.id !== item.id)
+        );
     };
 
     const submit: FormEventHandler = (e) => {

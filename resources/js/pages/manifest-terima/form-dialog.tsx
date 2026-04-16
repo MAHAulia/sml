@@ -48,7 +48,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     const getListItem = (selectedData: ManifestTerimaData) => {
         if (selectedData.type === 'local') {
             console.log("Get data for local")
-            get(route('warehouse.manifest_terima', { t: selectedData.type, m: selectedData.code }), {
+            get(route('warehouse.manifest_terima', { t: selectedData.type, m: selectedData.code, v: "T" }), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
