@@ -69,7 +69,11 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::get("warehouse/manifest/terima", [WarehouseController::class, 'manifestTerima'])->name("warehouse.manifest_terima");
     // Route::get("warehouse/manifest/terima/create", [WarehouseController::class, 'createManifestTerima'])->name("warehouse.create_manifest_terima");
     Route::post("warehouse/manifest/terima/create", [WarehouseController::class, 'createManifestTerima'])->name("warehouse.save_manifest_terima");
-    Route::get("warehouse/manifest/terima/show/{id}", [WarehouseController::class, 'showManifestTerima'])->name("warehouse.show_manifest_terima");
+    // Route::get("warehouse/manifest/terima/show/{id}", [WarehouseController::class, 'showManifestTerima'])->name("warehouse.show_manifest_terima");
+
+    Route::get("warehouse/bagging/create", [WarehouseController::class, 'baging'])->name("warehouse.baging");
+    Route::post("warehouse/bagging/create", [WarehouseController::class, 'createBagging'])->name("warehouse.create_baging");
+    // Route::get("warehouse/bagging/show/{id}", [WarehouseController::class, 'showManifestTerima'])->name("warehouse.show_manifest_terima");
 
 });
 
