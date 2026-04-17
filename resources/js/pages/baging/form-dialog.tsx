@@ -6,67 +6,69 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SharedData } from "@/types";
-import { BagianTujuan, Kantor, ManifestSerahData } from "@/types/manifest-serah";
+import { BagianTujuan, Kantor } from "@/types/manifest-serah";
 import { useForm, usePage } from "@inertiajs/react";
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import { TransactionsData } from "@/types/marketing";
+import { BagingData } from "@/types/baging";
 
 
-interface ManifestSerahFormDialog {
-    selectedData: ManifestSerahData | null;
+interface BaggingFormDialog {
+    selectedData: BagingData | null;
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
 }
 
-type ManifestSerahForm = {
-    to: string;
+type BaggingForm = {
+    code: string;
+    office: string;
+    status: string;
     office_to: string;
-    type: string;
+    to: string;
     action: 'add' | 'update';
 };
 
 
-export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: ManifestSerahFormDialog) {
+export default function BaggingFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: BaggingFormDialog) {
     const { auth } = usePage<SharedData>().props;
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const tujuans = page.props.tujuans as BagianTujuan[];
     const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
 
-    const { data, setData, get, post, put, processing, errors, reset } = useForm<Required<ManifestSerahForm>>({
-        to: "",
+    const { data, setData, get, post, put, processing, errors, reset } = useForm<Required<BaggingForm>>({
+        code: "",
+        office: "",
+        status: "",
         office_to: "",
-        type: "",
+        to: "",
         action: 'add',
     });
 
-    const getListItem = (selectedData: ManifestSerahData) => {
-        if (selectedData.type === 'local') {
-            console.log("Get data for local")
-            get(route('pickup.manifest_serah', { t: selectedData.type, m: selectedData.code }), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: (page) => {
-                    let dataSelected = page.props.data_selected as TransactionsData[]
-                    setSelectedManifestItem(dataSelected)
-                },
-                onError: (error) => {
-                    console.log(error);
-                },
-            })
-        } else {
-            console.log("Get for not local")
-        }
+    const getListItem = (selectedData: BagingData) => {
+        console.log("Get data for local")
+        get(route('warehouse.baging', { m: selectedData.code, v: "T" }), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                let dataSelected = page.props.data_selected as TransactionsData[]
+                setSelectedManifestItem(dataSelected)
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        })
     }
 
     useEffect(() => {
 
         if (selectedData != null) {
-            setData('to', selectedData.to);
+            setData('code', selectedData.code);
+            setData('office', selectedData.office);
             setData('office_to', selectedData.office_to);
-            setData('type', selectedData.type);
+            setData('status', selectedData.status);
             setData('action', 'update');
             getListItem(selectedData)
         } else {
@@ -108,10 +110,11 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
     };
 
     const resetForm = () => {
-        reset('to');
-        reset('office_to');
-        reset('type');
+        reset('code');
+        reset('office');
+        reset('status');
         reset('action');
+        reset('office_to');
     };
 
     const getVariant = (status: string | undefined) => {
@@ -175,7 +178,7 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className={data.type === "linehaul" ? "sm:max-w-6/12" : "sm:max-w-4/12"}>
+            <DialogContent className="sm:max-w-4/12">
                 <DialogHeader>
                     <DialogTitle>{isView ? 'Bagging' : 'Buat Bagging Baru'} {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
@@ -185,6 +188,38 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
                 <div className="grid gap-4 py-4">
                     <div>
                         <form className="flex flex-col gap-6" onSubmit={submit}>
+
+                            <div className={"grid grid-cols-1 gap-2"}>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="officeTo">Kantor Tujuan</Label>
+                                    <Select
+                                        value={data.office_to}
+                                        onValueChange={(value) => setData('office_to', value)}
+                                        required
+                                        disabled={isView}
+                                    >
+                                        <SelectTrigger id="officeTo" tabIndex={4} className="w-full">
+                                            <SelectValue placeholder="Kantor Tujuan" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Kantor Tujuan</SelectLabel>
+                                                {kantors.filter((kantor) => kantor.code !== auth.user.office).map((kantor) => (
+                                                    <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.office_to} />
+                                </div>
+                            </div>
+
+                            {isView && <div>
+                                <h1>Data Manifest</h1>
+                                <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto h-1/3 w-full">
+                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number}</div>)}
+                                </div>
+                            </div>}
 
                             {!isView && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}

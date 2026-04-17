@@ -31,7 +31,7 @@ interface DataTableProps<TData, TValue> {
   onAddButtonClicked?: () => void
 }
 
-export default function ManifestSerahTable<TData, TValue>({
+export default function BaggingTable<TData, TValue>({
   columns,
   data,
   onAddButtonClicked

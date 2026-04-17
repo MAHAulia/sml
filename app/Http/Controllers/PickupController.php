@@ -197,10 +197,14 @@ class PickupController extends Controller
                         ManifestDetail::where("manifest_id", $isExist->id)->delete();
                 } else {
                     foreach ($request->selectedItem as $key => $value) {
-                        $manifestDetail = new ManifestDetail();
-                        $manifestDetail->manifest_id = $isExist->id;
-                        $manifestDetail->item_id = $value;
-                        $manifestDetail->save();
+                        ManifestDetail::updateOrCreate(
+                            [
+                                'item_id' => $value, // kondisi pencarian
+                            ],
+                            [
+                                'manifest_id' => $isExist->id, // data yang diupdate / diinsert
+                            ]
+                        );
                     }
                 }
                 

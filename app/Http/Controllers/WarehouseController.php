@@ -105,9 +105,7 @@ class WarehouseController extends Controller
     public function baging(Request $request)
     {
         $user = Auth::user();
-        $role = $user->roles()->first();
-        $datas = Bag::where("status", "created")
-            ->where("user_id", $user->id)
+        $datas = Bag::where("user_id", $user->id)
             ->where("office", $user->office)
             ->with("items")
             ->latest()
@@ -115,25 +113,41 @@ class WarehouseController extends Controller
 
         $kantors = Kantor::all();
         $tujuans = Role::whereIn("name", ["Pickup", "Delivery", "Warehouse"])->get();
-        if ($request->t == "local") {
-            $manifest = Manifest::where("code", $request->m)->first();
+        if ($request->m) {
 
-            $dataManifest = Transaction::leftJoin('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
-                ->where('manifest_details.manifest_id', $manifest->id);
+            $bag = Bag::where("code", $request?->m)->first();
+
+            $dataBags = Transaction::leftJoin('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
+                ->leftJoin('manifests', 'manifest_details.manifest_id', '=', 'manifests.id')
+                ->leftJoin('bag_details', 'transactions.id', '=', 'bag_details.transaction_id')
+                ->whereNull('bag_details.transaction_id')
+                ->where('manifests.status', 'received')
+                ->where('manifest_details.status', 'received')
+                ->where('manifests.office_to', $user->office)
+                ->where('manifests.type', 'local');
+
+            $dataBags = $dataBags->select('transactions.*')
+                ->get();
+
+            $dataSelected = Transaction::leftJoin('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
+                ->leftJoin('manifests', 'manifest_details.manifest_id', '=', 'manifests.id')
+                ->leftJoin('bag_details', 'transactions.id', '=', 'bag_details.transaction_id')
+                ->where('manifests.status', 'received')
+                ->where('manifest_details.status', 'received')
+                ->where('manifests.office_to', $user->office)
+                ->where('manifests.type', 'local')
+                ->select('transactions.*');
 
             if ($request->v != "T") {
-                $dataManifest->where('manifest_details.status', 'created');
+                $dataSelected->where("bag_details.bag_id", $bag?->id)
+                            ->where('bag_details.status', 'created');
+            } else {
+                $dataSelected->where('bag_details.status', 'bagged');
             }
 
-            $dataManifest = $dataManifest->select('transactions.*')
-                ->get();
-            $dataSelected = Transaction::leftJoin('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
-                ->where('manifest_details.manifest_id', $manifest->id)
-                ->where('manifest_details.status', 'received')
-                ->select('transactions.*')
-                ->get();
+            $dataSelected = $dataSelected->get();
         } else {
-            $dataManifest = [];
+            $dataBags = [];
             $dataSelected = [];
         }
 
@@ -141,7 +155,7 @@ class WarehouseController extends Controller
             "datas" => $datas,
             "kantors" => $kantors,
             "tujuans" => $tujuans,
-            "data_manifest" => $dataManifest,
+            "data_bags" => $dataBags,
             "data_selected" => $dataSelected,
         ]);
     }
@@ -151,7 +165,7 @@ class WarehouseController extends Controller
         $user = Auth::user();
 
         if ($request->a == 'delete') {
-            $bag = Bag::where("code", $request->m)->first();
+            $bag = Bag::where("code", $request->m)->withCount('items')->first();
             if (!$bag) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
@@ -165,6 +179,14 @@ class WarehouseController extends Controller
                     'type' => 'error',
                     'title' => 'Kantong Sudah Memiliki Status',
                     'message' => 'Saat ini kantong ' . $request->m . ' sudah memiliki status ' . strtoupper($bag->status) . ".",
+                ]);
+            }
+
+            if ($bag->items_count > 0) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Kantong Masih Memiliki Item',
+                    'message' => 'Kantong yang akan anda hapus masih memiliki item, pastikan item sudah dipindahkan ke kantong lain atau dihapus.',
                 ]);
             }
 
@@ -195,8 +217,11 @@ class WarehouseController extends Controller
                 ]);
             }
 
-            // $bag->status = "manifested";
-            // $bag->save();
+            $bag->status = "bagged";
+            $bag->save();
+
+            BagDetail::where("bag_id", $bag->id)
+                ->update(["status" => "bagged"]);   
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
@@ -205,14 +230,13 @@ class WarehouseController extends Controller
             ]);
         }
 
-        $role = $user->roles()->first();
         $isExist = Bag::where("user_id", $user->id)
             ->where("office", $user->office)
             ->where("status", "created")
             ->first();
 
         if ($isExist) {
-            if (!$request->manifest) {
+            if (!$request->code) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
                     'title' => 'Kantong Sebelumnya Sudah Dibuat',
@@ -223,10 +247,14 @@ class WarehouseController extends Controller
                     BagDetail::where("bag_id", $isExist->id)->delete();
                 } else {
                     foreach ($request->selectedItem as $key => $value) {
-                        $bagDetail = new BagDetail();
-                        $bagDetail->bag_id = $isExist->id;
-                        $bagDetail->item_id = $value;
-                        $bagDetail->save();
+                        BagDetail::updateOrCreate(
+                            [
+                                'transaction_id' => $value, // kondisi pencarian
+                            ],
+                            [
+                                'bag_id' => $isExist->id, // data yang diupdate / diinsert
+                            ]
+                        );
                     }
                 }
 
@@ -241,6 +269,7 @@ class WarehouseController extends Controller
             $bag->code = "BAG" . $user->id . date("YmdHis");
             $bag->user_id = $user->id;
             $bag->office = $user->office;
+            $bag->office_to = $request->office_to;
             $bag->status = "created";
             $bag->save();
         }

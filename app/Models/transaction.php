@@ -46,4 +46,8 @@ class Transaction extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function manifestDetail() {
+        return $this->hasOne(ManifestDetail::class, "item_id");
+    }
 }

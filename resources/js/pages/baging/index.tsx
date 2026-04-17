@@ -5,31 +5,32 @@ import { type BreadcrumbItem } from '@/types';
 import { BagianTujuan, Kantor, ManifestSerahData } from '@/types/manifest-serah';
 import { Head, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import ManifestDialog from './dialog';
-import ManifestSerahFormDialog from './form-dialog';
-import ManifestSerahTable from './table';
-import { manifestSerahTableColumns } from './table-column';
-import AlertDialog from '@/components/alert-dialog';
 import ConfirmationDialog from '@/components/confirm-dialog';
+import BaggingTable from './table';
+import BaggingFormDialog from './form-dialog';
+import BagingFormDialog from './dialog';
+import { bagingTableColumns } from './table-column';
+import { BagingData } from '@/types/baging';
 
 
-interface ManifestSerahProps {
-    datas: ManifestSerahData[],
+interface BaggingProps {
+    datas: BagingData[],
     kantors: Kantor[],
     bagianTujuans: BagianTujuan[],
 }
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Manifest Serah',
-        href: '/Manifest Serah',
+        title: 'Kantong',
+        href: '/Kantong',
     },
 ];
 
-export default function ManifestSerah({ datas }: ManifestSerahProps) {
+export default function ManifestSerah({ datas }: BaggingProps) {
     const { delete: destroy, post, processing } = useForm();
 
-    const [selectedData, setSelectedData] = useState<ManifestSerahData | null>(null)
-    const [deleteMenu, setDeleteMenu] = useState<ManifestSerahData>()
+    const [selectedData, setSelectedData] = useState<BagingData | null>(null)
+    const [selectedViewData, setSelectedViewData] = useState<BagingData | null>(null)
+    const [deleteMenu, setDeleteMenu] = useState<BagingData>()
     const [isOpen, setIsOpen] = useState(false)
     const [tambahData, setTambahData] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
@@ -47,19 +48,19 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('f');
 
-    const handleView = (data: ManifestSerahData) => {
+    const handleView = (data: BagingData) => {
         setIsOpen(true)
-        setSelectedData(data)
+        setSelectedViewData(data)
         setisView(true)
     }
 
-    const handleEdit = (data: ManifestSerahData) => {
+    const onEdit = (data: BagingData) => {
         setTambahData(true)
         setSelectedData(data)
         setisView(false)
     }
 
-    const confirmDelete = (data: ManifestSerahData) => {
+    const confirmDelete = (data: BagingData) => {
         setDeleteMenu(data)
         setShowConfirm(true)
         setisView(false)
@@ -67,7 +68,7 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
     }
 
     const handleDelete = () => {
-        post(route('pickup.save_manifest_serah', { a: 'delete', m: selectedData?.code }), {
+        post(route('warehouse.create_baging', { a: 'delete', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)
             },
@@ -96,12 +97,12 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
 
     }
 
-    const onTutupManifest = (data: ManifestSerahData) => {
+    const onTutupManifest = (data: BagingData) => {
         setSelectedData(data)
         setConfirmation({
-            title: "Tutup Manifest",
-            subtitle: "Proses Tutup Manifest",
-            message: "Apakah Anda yakin ingin menutup manifest, untuk proses berikutnya",
+            title: "Tutup Kantong",
+            subtitle: "Proses Tutup Kantong",
+            message: "Apakah Anda yakin ingin menutup kantong, untuk proses berikutnya",
             action: "approve",
             label: "Ya, Tutup",
             danger: false,
@@ -110,7 +111,7 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
     }
 
     const handleConfirmation = () => {
-        post(route('pickup.save_manifest_serah', { a: 'approval', m: selectedData?.code }), {
+        post(route('warehouse.create_baging', { a: 'approval', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)
                 setConfirmation({
@@ -143,9 +144,9 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
             <PageLayout title='Baging' description="Kelola proses bagging">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <ManifestSerahTable data={datas} onAddButtonClicked={handleAdd} columns={manifestSerahTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
-                        <ManifestSerahFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
-                        <ManifestDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
+                        <BaggingTable data={datas} onAddButtonClicked={handleAdd} columns={bagingTableColumns({ onView: handleView, onEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <BaggingFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedViewData} isView={isView} />
+                        <BagingFormDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog
                             title={confirmation.title}
                             subtitle={confirmation.subtitle}

@@ -50,7 +50,6 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                             key={`collapsible-${item.name}-${i}`}
                             asChild
                             defaultOpen={item.children.some((child) => {
-                                
                                 return child.href.includes(page.url.split("/")[1])
                             })}
                             className="group/collapsible"
@@ -67,12 +66,15 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                     <SidebarMenuSub>
                                         {item.children.map((child) => {
                                             if (!can[child.name]) return null;
-                                            
+                                            let isActive = false;
+                                            if (route().has(child.name)) {
+                                                isActive = route().current(child.name);
+                                            }
                                             return (
                                                 <SidebarMenuSubItem key={`child-${item.name}-${child.name}`}>
                                                     <SidebarMenuButton
                                                         asChild
-                                                        isActive={child.href.includes(page.url.split("/")[1])}
+                                                        isActive={isActive}
                                                         tooltip={{ children: child.title }}
                                                     >
                                                         <Link href={child.href}>

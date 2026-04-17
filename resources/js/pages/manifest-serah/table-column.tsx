@@ -27,7 +27,6 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
-      console.log(data.status !== "created")
 
       return (
         <DropdownMenu>

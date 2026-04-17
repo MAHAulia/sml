@@ -13,21 +13,20 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
-import { ManifestSerahData } from "@/types/manifest-serah"
+import { BagingData } from "@/types/baging"
 
 type ColumnProps = {
-  onView: (data: ManifestSerahData) => void;
-  onEdit: (data: ManifestSerahData) => void;
-  onDelete: (data: ManifestSerahData) => void;
-  onTutupManifest: (data: ManifestSerahData) => void;
+  onView: (data: BagingData) => void;
+  onEdit: (data: BagingData) => void;
+  onDelete: (data: BagingData) => void;
+  onTutupManifest: (data: BagingData) => void;
 };
 
-export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<ManifestSerahData>[] => [
+export const bagingTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<BagingData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
-      console.log(data.status !== "created")
 
       return (
         <DropdownMenu>
@@ -49,12 +48,12 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
             {(data.status === "created") && <DropdownMenuItem
               onClick={() => onEdit(data)}
             >
-              <PlusCircle /> Tambah Item Manifest
+              <PlusCircle /> Tambah Item Kantong
             </DropdownMenuItem>}
             {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
             >
-              <BoxIcon /> Tutup Manifest
+              <BoxIcon /> Tutup Kantong
             </DropdownMenuItem>}
             {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />}
             {data.status !== "created" ? null : <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
@@ -104,7 +103,7 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
     }
   },
   {
-    accessorKey: "type",
+    accessorKey: "code",
     header: ({ column }) => {
       return (
         <Button
@@ -112,14 +111,14 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Jenis Manifest
+          No. Kantong
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
     },
   },
   {
-    accessorKey: "office_from",
+    accessorKey: "office",
     header: ({ column }) => {
       return (
         <Button
@@ -127,26 +126,11 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Office From
+          Kantor
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
     }
-  },
-  {
-    accessorKey: "from",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          From
-          <ArrowUpDown className="ml-auto h-4 w-4" />
-        </Button>
-      )
-    },
   },
   {
     accessorKey: "office_to",
@@ -157,25 +141,10 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Office To
+          Kantor Tujuan
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
     }
-  },
-  {
-    accessorKey: "to",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          To
-          <ArrowUpDown className="ml-auto h-4 w-4" />
-        </Button>
-      )
-    },
   },
 ]
