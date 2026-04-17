@@ -30,6 +30,7 @@ type ManifestSerahForm = {
 
 export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: ManifestSerahFormDialog) {
     const { auth } = usePage<SharedData>().props;
+    const role = auth.user.roles[0].name;
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const tujuans = page.props.tujuans as BagianTujuan[];
@@ -45,7 +46,11 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
     const getListItem = (selectedData: ManifestSerahData) => {
         if (selectedData.type === 'local') {
             console.log("Get data for local")
-            get(route('pickup.manifest_serah', { t: selectedData.type, m: selectedData.code }), {
+            let url = "pickup.manifest_serah";
+            if (role === "Warehouse") {
+                url = "warehouse.manifest_serah";
+            }
+            get(route(url, { t: selectedData.type, m: selectedData.code }), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
@@ -77,23 +82,14 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        console.log(data.action);
-        if (data.action == 'add') {
-            post(route('pickup.save_manifest_serah'), {
-                onSuccess: () => {
-                    resetForm();
-                    if (setIsOpen) {
-                        setIsOpen(false);
-                    }
-                },
-                onError: (error) => {
-                    console.log(error);
-                },
-            });
-        }
 
-        if (data.action == 'update') {
-            put(route('offering.update', selectedData?.id), {
+        if (data.action == 'add') {
+            let url = "pickup.manifest_serah";
+            if (role === "Warehouse") {
+                url = "warehouse.save_manifest_serah";
+            }
+
+            post(route(url), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {

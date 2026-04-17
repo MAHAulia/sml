@@ -32,6 +32,7 @@ type ManifestSerahForm = {
 
 export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: ManifestSerahFormDialog) {
     const { auth } = usePage<SharedData>().props;
+    const role = auth.user.roles[0].name;
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const tujuans = page.props.tujuans as BagianTujuan[];
@@ -48,23 +49,23 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
     const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
 
     const getListItem = (selectedData: ManifestSerahData) => {
-        if (selectedData.type === 'local') {
-            get(route('pickup.manifest_serah', { t: selectedData.type, m: selectedData.code }), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: (page) => {
-                    setItemManifest(page.props.data_manifest as TransactionsData[])
-                    let dataSelected = page.props.data_selected as TransactionsData[]
-                    setSelectedManifestItem(dataSelected)
-                    setData("selectedItem", dataSelected.map(item => item.id));
-                },
-                onError: (error) => {
-                    console.log(error);
-                },
-            })
-        } else {
-            console.log("Get for not local")
+        let url = "pickup.manifest_serah";
+        if (role === "Warehouse") {
+            url = "warehouse.manifest_serah";
         }
+        get(route(url, { t: selectedData.type, m: selectedData.code }), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                setItemManifest(page.props.data_manifest as TransactionsData[])
+                let dataSelected = page.props.data_selected as TransactionsData[]
+                setSelectedManifestItem(dataSelected)
+                setData("selectedItem", dataSelected.map(item => item.id));
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        })
     }
 
     useEffect(() => {
@@ -104,7 +105,11 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
         // }
 
         if (data.action == 'update') {
-            post(route('pickup.save_manifest_serah', selectedData?.id), {
+            let url = "pickup.save_manifest_serah";
+            if (role === "Warehouse") {
+                url = "warehouse.save_manifest_serah";
+            }
+            post(route(url, selectedData?.id), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -276,7 +281,7 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
                             <div className="w-full">
                                 <Label htmlFor="to">Item Terpilih</Label>
                                 <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto  h-4/5 w-full">
-                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X/></div>)}
+                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X /></div>)}
                                 </div>
                             </div>
                         </div>

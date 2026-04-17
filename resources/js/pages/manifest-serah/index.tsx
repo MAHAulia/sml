@@ -1,9 +1,9 @@
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
-import { type BreadcrumbItem } from '@/types';
+import { SharedData, type BreadcrumbItem } from '@/types';
 import { BagianTujuan, Kantor, ManifestSerahData } from '@/types/manifest-serah';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import ManifestDialog from './dialog';
 import ManifestSerahFormDialog from './form-dialog';
@@ -26,9 +26,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function ManifestSerah({ datas }: ManifestSerahProps) {
+    const { auth } = usePage<SharedData>().props;
+    const role = auth.user.roles[0].name;
     const { delete: destroy, post, processing } = useForm();
 
     const [selectedData, setSelectedData] = useState<ManifestSerahData | null>(null)
+    const [selectedItemData, setSelectedItemData] = useState<ManifestSerahData | null>(null)
     const [deleteMenu, setDeleteMenu] = useState<ManifestSerahData>()
     const [isOpen, setIsOpen] = useState(false)
     const [tambahData, setTambahData] = useState(false)
@@ -49,7 +52,7 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
 
     const handleView = (data: ManifestSerahData) => {
         setIsOpen(true)
-        setSelectedData(data)
+        setSelectedItemData(data)
         setisView(true)
     }
 
@@ -67,7 +70,11 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
     }
 
     const handleDelete = () => {
-        post(route('pickup.save_manifest_serah', { a: 'delete', m: selectedData?.code }), {
+        let url = "pickup.save_manifest_serah";
+        if (role === "Warehouse") {
+            url = "warehouse.save_manifest_serah";
+        }
+        post(route(url, { a: 'delete', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)
             },
@@ -110,7 +117,11 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
     }
 
     const handleConfirmation = () => {
-        post(route('pickup.save_manifest_serah', { a: 'approval', m: selectedData?.code }), {
+        let url = "pickup.save_manifest_serah";
+        if (role === "Warehouse") {
+            url = "warehouse.save_manifest_serah";
+        }
+        post(route(url, { a: 'approval', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)
                 setConfirmation({
@@ -144,7 +155,7 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
                         <ManifestSerahTable data={datas} onAddButtonClicked={handleAdd} columns={manifestSerahTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
-                        <ManifestSerahFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
+                        <ManifestSerahFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedItemData} isView={isView} />
                         <ManifestDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog
                             title={confirmation.title}
