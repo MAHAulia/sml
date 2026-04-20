@@ -298,20 +298,23 @@ class WarehouseController extends Controller
                         ->get();
         } else if ($request->t == "linehaul") {
             $manifest = Manifest::where("code", $request->m)->first();
-            $dataManifest = Bag::select('bags.*')
-                                ->leftJoin('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
-                                // ->whereNull('manifest_details.item_id')
-                                ->where('bags.user_id', $user->id)
-                                ->where('bags.office', $user->office)
-                                ->where('bags.status', 'bagged')
-                                ->get();
-            $dataSelected = Bag::select('bags.*')
-                                ->leftJoin('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
-                                ->where('bags.user_id', $user->id)
-                                ->where('bags.office', $user->office)
-                                ->get();
 
-                        dd($dataManifest, $dataSelected);
+            // Data yang BELUM masuk manifest manapun
+            $dataManifest = Bag::select('bags.*')
+                ->leftJoin('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
+                ->whereNull('manifest_details.item_id')
+                ->where('bags.user_id', $user->id)
+                ->where('bags.office', $user->office)
+                ->where('bags.status', 'bagged')
+                ->get();
+
+            // Data yang SUDAH masuk manifest tertentu
+            $dataSelected = Bag::select('bags.*')
+                ->join('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
+                ->where('manifest_details.manifest_id', $manifest?->id)
+                ->where('bags.user_id', $user->id)
+                ->where('bags.office', $user->office)
+                ->get();
         } else {
             $dataManifest = [];
             $dataSelected = [];

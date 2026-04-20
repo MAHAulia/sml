@@ -44,26 +44,22 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
     });
 
     const getListItem = (selectedData: ManifestSerahData) => {
-        if (selectedData.type === 'local') {
-            console.log("Get data for local")
-            let url = "pickup.manifest_serah";
-            if (role === "Warehouse") {
-                url = "warehouse.manifest_serah";
-            }
-            get(route(url, { t: selectedData.type, m: selectedData.code }), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: (page) => {
-                    let dataSelected = page.props.data_selected as TransactionsData[]
-                    setSelectedManifestItem(dataSelected)
-                },
-                onError: (error) => {
-                    console.log(error);
-                },
-            })
-        } else {
-            console.log("Get for not local")
+        let url = "pickup.manifest_serah";
+        if (role === "Warehouse") {
+            url = "warehouse.manifest_serah";
         }
+        get(route(url, { t: selectedData.type, m: selectedData.code }), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                let dataSelected = page.props.data_selected as TransactionsData[]
+
+                setSelectedManifestItem(dataSelected)
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        })
     }
 
     useEffect(() => {
@@ -256,7 +252,7 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
                             {isView && <div>
                                 <h1>Data Manifest</h1>
                                 <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto h-1/3 w-full">
-                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number}</div>)}
+                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code}</div>)}
                                 </div>
                             </div>}
 

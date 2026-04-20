@@ -62,4 +62,5 @@ export interface Biayas {
     updated_at: string;
     biaya: Biayas;
     customer: CustomerData;
+    code: string;
 }
