@@ -114,6 +114,21 @@ class WarehouseController extends Controller
                 $manifest->save();
             }
 
+            if ($manifest->type == 'linehaul') {
+                $manifestDetail = ManifestDetail::where("MANIFEST_id", $manifest->id)->get();
+                foreach ($manifestDetail as $value) {
+                    // Update bag
+                    $bag = Bag::where("id", $value->item_id)->first();
+                    if ($bag) {
+                        $bag->status = "received";
+                        $bag->save();
+
+                        BagDetail::where("bag_id", $bag->id)
+                            ->update(["status" => "received"]);
+                    }
+                }
+            }
+
             return redirect()->back()->with('flash', [
                 'type' => 'success',
                 'title' => 'Data manifest berhasil disimpan',

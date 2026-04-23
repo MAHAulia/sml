@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bag_details', function (Blueprint $table) {
-            $table->enum("status", ["created", "bagged", "manifested"])->default("created")->after("transaction_id");
+            $table->enum("status", ["created", "bagged", "manifested", "received"])->default("created")->after("transaction_id");
         });
     }
 
