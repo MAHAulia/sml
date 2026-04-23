@@ -45,6 +45,26 @@ class WarehouseController extends Controller
                 ->where('manifest_details.status', 'received')
                 ->select('transactions.*')
                 ->get();
+        } else if ($request->t == "linehaul") {
+            $manifest = Manifest::where("code", $request->m)->first();
+
+            // Data yang BELUM masuk manifest manapun
+            $dataManifest = Bag::select('bags.*')
+                ->leftJoin('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
+                // ->whereNull('manifest_details.item_id')
+                // ->where('bags.office', $user->office)
+                ->where('bags.status', 'manifested')
+                ->get();
+
+            // Data yang SUDAH masuk manifest tertentu
+            $dataSelected = Bag::select('bags.*')
+                ->join('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
+                ->where('manifest_details.manifest_id', $manifest?->id)
+                // ->where('bags.office', $user->office)
+                ->where('bags.status', 'received')
+                ->get();
+
+            // dd($dataManifest, $dataSelected);
         } else {
             $dataManifest = [];
             $dataSelected = [];
@@ -61,7 +81,9 @@ class WarehouseController extends Controller
 
     public function createManifestTerima(Request $request)
     {
-        if ($request->a == 'approval') {
+
+        if ($request->a == 'approval') {   
+
             $manifest = Manifest::where("code", $request->m)->first();
             if (!$manifest) {
                 return redirect()->back()->with('flash', [
@@ -361,8 +383,8 @@ class WarehouseController extends Controller
 
         }
 
-        if ($request->a == 'approval') {
-            $manifest = Manifest::where("code", $request->m)->first();
+        if ($request->a == 'approval') {      
+            $manifest = Manifest::where("code", $request->m)->with("items")->first();
             if (!$manifest) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
@@ -377,6 +399,13 @@ class WarehouseController extends Controller
                     'title' => 'Manifest Sudah Memiliki Status',
                     'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
                 ]);
+            }
+
+            foreach ($manifest->items as $value) {
+                BagDetail::where("bag_id", $value->item_id)
+                    ->update(["status" => "manifested"]);
+                Bag::where("id", $value->item_id)
+                    ->update(["status" => "manifested"]);
             }
 
             $manifest->status = "send";

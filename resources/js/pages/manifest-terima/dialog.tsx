@@ -51,8 +51,8 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
 
     const getListItem = (selectedData: ManifestTerimaData) => {
-        if (selectedData.type === 'local') {
-            console.log("Get data for local")
+        // if (selectedData.type === 'local') {
+        //     console.log("Get data for local")
             get(route('warehouse.manifest_terima', { t: selectedData.type, m: selectedData.code }), {
                 preserveState: true,
                 preserveScroll: true,
@@ -68,9 +68,9 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
                     console.log(error);
                 },
             })
-        } else {
-            console.log("Get for not local")
-        }
+        // } else {
+        //     console.log("Get for not local")
+        // }
     }
 
     useEffect(() => {
@@ -262,7 +262,7 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
                                     <SelectContent>
                                         <SelectGroup>
                                             <SelectLabel>Kantor Tujuan</SelectLabel>
-                                            {kantors.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : kantor.code !== auth.user.office).map((kantor) => (
+                                            {kantors.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : true).map((kantor) => (
                                                 <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
                                             ))}
                                         </SelectGroup>
@@ -300,13 +300,13 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
                             <div className="w-full">
                                 <Label htmlFor="officeTo">Item Belum Diproses</Label>
                                 <div className="border-2 rounded-xl p-4 mt-3 overflow-y-auto h-4/5 w-full">
-                                    {itemManifest?.map((item) => <div key={`item-${item.id}`} onClick={() => handleSelectItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <ArrowRight /> </div>)}
+                                    {itemManifest?.map((item) => <div key={`item-${item.id}`} onClick={() => handleSelectItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code} <ArrowRight /> </div>)}
                                 </div>
                             </div>
                             <div className="w-full">
                                 <Label htmlFor="to">Item Terpilih</Label>
                                 <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto  h-4/5 w-full">
-                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number} <X /></div>)}
+                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code} <X /></div>)}
                                 </div>
                             </div>
                         </div>
