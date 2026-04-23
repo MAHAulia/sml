@@ -197,7 +197,7 @@ return new class extends Migration
             //80
             ["label" => "Manifest Terima", "route_name" => "delivery.manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 1, "type" => "menu"],
             //81
-            ["label" => "Show Manifest Terima", "route_name" => "delivery.show_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 2, "type" => "menu"],
+            ["label" => "Show Manifest Terima", "route_name" => "delivery.show_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 2, "type" => "form"],
             //82
             ["label" => "Buat Menifest Terima", "route_name" => "delivery.create_manifest_terima", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 79, "order_number" => 3, "type" => "form"],
             //83
