@@ -4,6 +4,7 @@ use App\AiHelper\OpenRouterAI;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PickupOfferingController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
@@ -74,6 +75,10 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
 
     Route::get("warehouse/manifest/serah", [WarehouseController::class, 'manifestSerah'])->name("warehouse.manifest_serah");
     Route::post("warehouse/manifest/serah/create", [WarehouseController::class, 'createManifestSerah'])->name("warehouse.save_manifest_serah");
+
+    Route::resource('delivery', DeliveryController::class);
+    Route::get("delivery/manifest/terima", [DeliveryController::class, 'manifestTerima'])->name("delivery.manifest_terima");
+    Route::post("delivery/manifest/terima/create", [DeliveryController::class, 'createManifestTerima'])->name("delivery.save_manifest_terima");
 
 });
 

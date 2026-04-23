@@ -7,11 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SharedData } from "@/types";
 import { BagianTujuan, Kantor, ManifestTerimaData } from "@/types/manifest-terima";
+import { TransactionsData } from "@/types/marketing";
 import { useForm, usePage } from "@inertiajs/react";
 import { ArrowRight, LoaderCircle, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import { TransactionsData } from "@/types/marketing";
-import { ManifestSerahData } from "@/types/manifest-serah";
 
 
 interface ManifestTerimaFormDialog {
@@ -34,6 +33,7 @@ type ManifestTerimaForm = {
 
 export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: ManifestTerimaFormDialog) {
     const { auth } = usePage<SharedData>().props;
+    const role = auth.user.roles[0].name;
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const tujuans = page.props.tujuans as BagianTujuan[];
@@ -53,14 +53,19 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     const getListItem = (selectedData: ManifestTerimaData) => {
         // if (selectedData.type === 'local') {
         //     console.log("Get data for local")
-            get(route('warehouse.manifest_terima', { t: selectedData.type, m: selectedData.code }), {
+            let url = "warehouse.manifest_terima";
+            if (role === "Delivery") {
+                url = "delivery.manifest_terima";
+            }
+            
+            get(route(url, { t: selectedData.type, m: selectedData.code }), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
-                    let data = page.props.data_manifest as TransactionsData[]
+                    const data = page.props.data_manifest as TransactionsData[]
                     setItemManifest(data)
                     setData("items", data.map(item => item.id));
-                    let dataSelected = page.props.data_selected as TransactionsData[]
+                    const dataSelected = page.props.data_selected as TransactionsData[]
                     setSelectedManifestItem(dataSelected)
                     setData("selectedItem", dataSelected.map(item => item.id));
                 },
@@ -133,8 +138,12 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
 
         // }
 
+        let url = "warehouse.save_manifest_terima";
+        if (role === "Delivery") {
+            url = "delivery.save_manifest_terima";
+        }
         if (data.action == 'update') {
-            post(route('warehouse.save_manifest_terima', { a: 'approval', m: selectedData?.code }), {
+            post(route(url, { a: 'approval', m: selectedData?.code }), {
             onSuccess: () => {
                 resetForm();
                 if (setIsOpen) {

@@ -116,7 +116,7 @@ class WarehouseController extends Controller
             }
 
             if ($manifest->type == 'linehaul') {
-                $manifestDetail = ManifestDetail::where("MANIFEST_id", $manifest->id)->get();
+                $manifestDetail = ManifestDetail::where("manifest_id", $manifest->id)->get();
                 foreach ($manifestDetail as $value) {
                     // Update bag
                     $bag = Bag::where("id", $value->item_id)->first();

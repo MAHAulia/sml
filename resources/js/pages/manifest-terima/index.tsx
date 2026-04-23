@@ -60,7 +60,7 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
     }
 
     const confirmDelete = (data: ManifestTerimaData) => {
-        
+
     }
 
     const handleDelete = () => {
