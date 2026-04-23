@@ -80,7 +80,7 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
         e.preventDefault();
 
         if (data.action == 'add') {
-            let url = "pickup.manifest_serah";
+            let url = "pickup.save_manifest_serah";
             if (role === "Warehouse") {
                 url = "warehouse.save_manifest_serah";
             }

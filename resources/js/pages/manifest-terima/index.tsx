@@ -121,9 +121,9 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Pickup - Manifest Serah" />
+            <Head title="Pickup - Manifest Terima" />
 
-            <PageLayout title='Manifest Serah' description="Kelola penerimaan barang">
+            <PageLayout title='Manifest Terima' description="Kelola penerimaan barang">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
                         <ManifestTerimaTable data={datas} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />

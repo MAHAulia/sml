@@ -44,7 +44,7 @@ export const offeringTableColumn = ({ onView, onRequestPickup }: ColumnProps): C
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {(data.status === "accepted" && data.pickup_status === "request") && <DropdownMenuItem
+            {(data.status === "accepted" && (data.pickup_status === "request" || data.pickup_status === 'null')) && <DropdownMenuItem
               onClick={() => onRequestPickup(data)}
             >
               <Edit3 /> Set Petugas Pickup

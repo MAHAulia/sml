@@ -36,7 +36,7 @@ class PickupRequestController extends Controller
 
     public function savemanage(Request $request, $id) {
         $offering = Offering::where('id', $id)
-                                ->where("pickup_status", "request")
+                                ->whereIn("pickup_status", ["request", "null"])
                                 ->first();
 
         if (!$offering) {

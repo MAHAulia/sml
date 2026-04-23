@@ -44,7 +44,7 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupMa
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {(data.items.length != 0 && data.status == 'send') && <DropdownMenuItem
+            {(data.items.length != 0 && (data.status == 'send' || data.status == 'created')) && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
             > 
               <BoxIcon /> Terima Manifest
