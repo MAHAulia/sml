@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class WarehouseController extends Controller
@@ -82,7 +83,7 @@ class WarehouseController extends Controller
     public function createManifestTerima(Request $request)
     {
 
-        if ($request->a == 'approval') {   
+        if ($request->a == 'approval') {
 
             $manifest = Manifest::where("code", $request->m)->first();
             if (!$manifest) {
@@ -177,7 +178,7 @@ class WarehouseController extends Controller
 
             if ($request->v != "T") {
                 $dataSelected->where("bag_details.bag_id", $bag?->id)
-                            ->where('bag_details.status', 'created');
+                    ->where('bag_details.status', 'created');
             } else {
                 $dataSelected->where('bag_details.status', 'bagged');
             }
@@ -258,7 +259,7 @@ class WarehouseController extends Controller
             $bag->save();
 
             BagDetail::where("bag_id", $bag->id)
-                ->update(["status" => "bagged"]);   
+                ->update(["status" => "bagged"]);
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
@@ -287,6 +288,7 @@ class WarehouseController extends Controller
                         BagDetail::updateOrCreate(
                             [
                                 'transaction_id' => $value, // kondisi pencarian
+                                'bag_id' => $isExist->id, // tambahkan bag_id sebagai kondisi pencarian
                             ],
                             [
                                 'bag_id' => $isExist->id, // data yang diupdate / diinsert
@@ -317,22 +319,48 @@ class WarehouseController extends Controller
     public function manifestSerah(Request $request)
     {
         $user = Auth::user();
-
+        $role = $user->roles()->first();
         $datas = Manifest::where("user_id", $user->id)->with("items")->latest()->get();
         $kantors = Kantor::all();
         $tujuans = Role::whereIn("name", ["Delivery", "Warehouse"])->get();
         if ($request->t == "local") {
             $manifest = Manifest::where("code", $request->m)->first();
-            $dataManifest = Transaction::leftJoin('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
-                        ->whereNull('manifest_details.item_id')
-                        ->where('transactions.pickuper_id', $user->id)
-                        ->select('transactions.*')
+
+            if ($role->name == 'Warehouse') {
+
+                $dataSelected = collect();
+
+                if ($manifest) {
+                    $dataSelected = Transaction::select("transactions.*")
+                        ->leftJoin('manifest_details', 'manifest_details.item_id', '=', 'transactions.id')
+                        ->where("manifest_details.manifest_id", $manifest->id)
                         ->get();
-            $dataSelected = Transaction::join('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
-                        ->where('manifest_details.manifest_id', $manifest?->id)
-                        ->where('transactions.pickuper_id', $user->id)
-                        ->select('transactions.*')
-                        ->get();
+                }
+
+                $selectedTransaction = $dataSelected->pluck("id")->toArray();
+                $dataManifest = Transaction::select("transactions.*")
+                    ->leftJoin('bag_details', 'transactions.id', '=', 'bag_details.transaction_id')
+                    ->leftJoin('bags', 'bag_details.bag_id', '=', 'bags.id')
+                    ->leftJoin('manifest_details', 'manifest_details.item_id', '=', 'bags.id')
+                    ->where('bag_details.status', 'received')
+                    ->where('bags.office_to', $user->office)
+                    ->whereNotIn('transactions.id', $selectedTransaction)
+                    ->distinct()
+                    ->get();
+
+            } else {
+                $dataManifest = Transaction::leftJoin('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
+                    ->whereNull('manifest_details.item_id')
+                    // ->where('transactions.pickuper_id', $user->id)
+                    ->select('transactions.*')
+                    ->get();
+                $dataSelected = Transaction::join('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
+                    ->where('manifest_details.manifest_id', $manifest?->id)
+                    ->where('transactions.pickuper_id', $user->id)
+                    ->select('transactions.*')
+                    ->get();
+            }
+            // dd($dataManifest, $dataSelected);
         } else if ($request->t == "linehaul") {
             $manifest = Manifest::where("code", $request->m)->first();
 
@@ -367,7 +395,7 @@ class WarehouseController extends Controller
     }
 
     public function createManifestSerah(Request $request)
-    {  
+    {
         $user = Auth::user();
 
         if ($request->a == 'delete') {
@@ -395,10 +423,9 @@ class WarehouseController extends Controller
                 'title' => 'Data manifest berhasil disimpan',
                 'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
             ]);
-
         }
 
-        if ($request->a == 'approval') {      
+        if ($request->a == 'approval') {
             $manifest = Manifest::where("code", $request->m)->with("items")->first();
             if (!$manifest) {
                 return redirect()->back()->with('flash', [
@@ -431,7 +458,6 @@ class WarehouseController extends Controller
                 'title' => 'Data manifest berhasil disimpan',
                 'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
             ]);
-
         }
 
         $role = $user->roles()->first();
@@ -450,21 +476,23 @@ class WarehouseController extends Controller
                     'message' => 'Manifest untuk tujuan ini sudah dibuat sebelumnya.',
                 ]);
             } else {
-                if (count($request->selectedItem) == 0 ) {
-                        ManifestDetail::where("manifest_id", $isExist->id)->delete();
+                if (count($request->selectedItem) == 0) {
+                    ManifestDetail::where("manifest_id", $isExist->id)->delete();
                 } else {
                     foreach ($request->selectedItem as $key => $value) {
                         ManifestDetail::updateOrCreate(
                             [
                                 'item_id' => $value, // kondisi pencarian
+                                'manifest_id' => $isExist->id, // pastikan manifest_id juga jadi kondisi pencarian
                             ],
                             [
                                 'manifest_id' => $isExist->id, // data yang diupdate / diinsert
+                                'item_id' => $value,
                             ]
                         );
                     }
                 }
-                
+
                 return redirect()->back()->with('flash', [
                     'type' => 'success',
                     'title' => 'Data manifest berhasil disimpan',
