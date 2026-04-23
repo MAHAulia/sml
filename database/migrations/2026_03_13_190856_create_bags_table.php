@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("code")->unique();
             $table->foreignId('user_id')->constrained('users')->noActionOnDelete();
-            $table->enum("status", ["created", "manifested", "received", "rejected"])->default("created");
+            $table->enum("status", ["created", "bagged", "manifested", "received", "rejected"])->default("created");
             $table->timestamps();
         });
     }
