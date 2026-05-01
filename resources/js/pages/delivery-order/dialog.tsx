@@ -1,26 +1,24 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import InputError from '@/components/input-error';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SharedData } from "@/types";
-import { BagianTujuan, Kantor, ManifestSerahData } from "@/types/manifest-serah";
+import { DeliveryOrderData } from "@/types/delivery-order";
 import { TransactionsData } from "@/types/marketing";
 import { useForm, usePage } from "@inertiajs/react";
 import { ArrowRight, LoaderCircle, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
 
-interface ManifestSerahFormDialog {
-    selectedData: ManifestSerahData | null;
+interface DOFormDialog {
+    selectedData: DeliveryOrderData | null;
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
 }
 
-type ManifestSerahForm = {
+type DeliveryOrderForm = {
     manifest: string;
     to: string;
     office_to: string;
@@ -30,13 +28,10 @@ type ManifestSerahForm = {
 };
 
 
-export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: ManifestSerahFormDialog) {
+export default function DOFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: DOFormDialog) {
     const { auth } = usePage<SharedData>().props;
     const role = auth.user.roles[0].name;
-    const page = usePage();
-    const kantors = page.props.kantors as Kantor[];
-    const tujuans = page.props.tujuans as BagianTujuan[];
-    const { data, setData, post, get, processing, errors, reset } = useForm<Required<ManifestSerahForm>>({
+    const { data, setData, post, get, processing, errors, reset } = useForm<Required<DeliveryOrderForm>>({
         manifest: "",
         to: "",
         office_to: "",
@@ -48,35 +43,35 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
     const [itemManifest, setItemManifest] = useState<TransactionsData[]>([])
     const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
 
-    const getListItem = (selectedData: ManifestSerahData) => {
-        let url = "pickup.manifest_serah";
-        if (role === "Warehouse") {
-            url = "warehouse.manifest_serah";
-        }
-        get(route(url, { t: selectedData.type, m: selectedData.code }), {
-            preserveState: true,
-            preserveScroll: true,
-            onSuccess: (page) => {
-                setItemManifest(page.props.data_manifest as TransactionsData[])
-                const dataSelected = page.props.data_selected as TransactionsData[]
-                setSelectedManifestItem(dataSelected)
-                setData("selectedItem", dataSelected.map(item => item.id));
-            },
-            onError: (error) => {
-                console.log(error);
-            },
-        })
+    const getListItem = (selectedData: DeliveryOrderData) => {
+        // let url = "pickup.manifest_serah";
+        // if (role === "Warehouse") {
+        //     url = "warehouse.manifest_serah";
+        // }
+        // get(route(url, { t: selectedData.type, m: selectedData.code }), {
+        //     preserveState: true,
+        //     preserveScroll: true,
+        //     onSuccess: (page) => {
+        //         setItemManifest(page.props.data_manifest as TransactionsData[])
+        //         const dataSelected = page.props.data_selected as TransactionsData[]
+        //         setSelectedManifestItem(dataSelected)
+        //         setData("selectedItem", dataSelected.map(item => item.id));
+        //     },
+        //     onError: (error) => {
+        //         console.log(error);
+        //     },
+        // })
     }
 
     useEffect(() => {
 
         if (selectedData != null) {
             console.log('selectedData', selectedData)
-            setData('manifest', selectedData.code)
-            setData('to', selectedData.to);
-            setData('office_to', selectedData.office_to);
-            setData('type', selectedData.type);
-            setData('action', 'update');
+            // setData('manifest', selectedData.code)
+            // setData('to', selectedData.to);
+            // setData('office_to', selectedData.office_to);
+            // setData('type', selectedData.type);
+            // setData('action', 'update');
             getListItem(selectedData);
         } else {
             resetForm()
@@ -193,84 +188,13 @@ export default function ManifestSerahFormDialog({ selectedData, isOpen, setIsOpe
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-9/12">
                 <DialogHeader>
-                    <DialogTitle>Tambah Data Detail Manifest {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
+                    <DialogTitle>Tambah Data Delivery Order {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
-                        Kelola penambahan detail data manifest serah. Pastikan data yang dimasukkan sudah benar sebelum menyimpan.
+                        Kelola penambahan detail data delivery order. Pastikan data yang dimasukkan sudah benar sebelum menyimpan.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="gap-4 py-4">
                     <form className="flex flex-col gap-6" onSubmit={submit}>
-                        <div className={data.type === "linehaul" ? "grid grid-cols-3 gap-2" : "grid grid-cols-2 gap-2"}>
-                            <div className="grid gap-2">
-                                <Label htmlFor="senderPhone">Jenis</Label>
-                                <Select
-                                    value={data.type}
-                                    onValueChange={(value) => setData('type', value)}
-                                    required
-                                    disabled={isView}
-                                >
-                                    <SelectTrigger id="type" tabIndex={4} className="w-full">
-                                        <SelectValue placeholder="Lokal / Antar Cabang / Antar Kota" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Jenis Manifest</SelectLabel>
-                                            <SelectItem value="local">Lokal</SelectItem>
-                                            <SelectItem value="linehaul">Antar Cabang / Antar Kota</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.type} />
-                            </div>
-
-                            {data.type === "linehaul" && <div className="grid gap-2">
-                                <Label htmlFor="officeTo">Kantor Tujuan</Label>
-                                <Select
-                                    value={data.office_to}
-                                    onValueChange={(value) => setData('office_to', value)}
-                                    required
-                                    disabled={isView}
-                                >
-                                    <SelectTrigger id="officeTo" tabIndex={4} className="w-full">
-                                        <SelectValue placeholder="Kantor Tujuan" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Kantor Tujuan</SelectLabel>
-                                            {kantors.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : kantor.code !== auth.user.office).map((kantor) => (
-                                                <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
-                                            ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.office_to} />
-                            </div>}
-                            <div className="grid gap-2">
-                                <Label htmlFor="to">Bagian Tujuan</Label>
-                                <Select
-                                    value={data.to}
-                                    onValueChange={(value) => setData('to', value)}
-                                    required
-                                    disabled={isView}
-                                >
-                                    <SelectTrigger id="to" tabIndex={4} className="w-full">
-                                        <SelectValue placeholder="Bagian Tujuan" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Bagian Tujuan</SelectLabel>
-                                            {tujuans.map((tujuan) => (
-                                                <SelectItem key={tujuan.id} value={tujuan.name}>
-                                                    {tujuan.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.office_to} />
-                            </div>
-                        </div>
-
                         <div className="flex w-full h-full gap-2">
                             <div className="w-full">
                                 <Label htmlFor="officeTo">Item Belum Diproses</Label>

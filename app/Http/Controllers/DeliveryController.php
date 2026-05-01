@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Bag;
 use App\Models\BagDetail;
+use App\Models\DeliveryOrder;
+use App\Models\DeliveryOrderDetail;
 use App\Models\Kantor;
 use App\Models\Manifest;
 use App\Models\ManifestDetail;
@@ -15,6 +17,11 @@ use Inertia\Inertia;
 
 class DeliveryController extends Controller
 {
+    public function index()
+    {
+        return Inertia::render('delivery/index');
+    }
+
     public function manifestTerima(Request $request)
     {
         $user = Auth::user();
@@ -137,5 +144,129 @@ class DeliveryController extends Controller
         }
 
         return redirect()->route("warehouse.manifest_terima");
+    }
+
+    public function deliveryOrder(Request $request)
+    {
+        $user = Auth::user();
+        $role = $user->roles()->first();
+        $datas = DeliveryOrder::where("user_id", $user->id)
+            ->with("items")
+            ->latest()
+            ->get();
+
+        return Inertia::render('delivery-order/index', [
+            "datas" => $datas,
+        ]);
+    }
+
+    public function createDeliveryOrder(Request $request)
+    {
+
+        $user = Auth::user();
+
+        if ($request->a == 'delete') {
+            $do = DeliveryOrder::where("code", $request->m)->first();
+            if (!$do) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Delivery Order Tidak Ditemukan',
+                    'message' => 'Data delivery order yang akan anda tutup tidak ditemukan.',
+                ]);
+            }
+
+            if ($do->status != "created") {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Delivery Order Sudah Memiliki Status',
+                    'message' => 'Saat ini Delivery Order ' . $request->m . ' sudah memiliki status ' . strtoupper($do->status) . ".",
+                ]);
+            }
+
+            $do->delete();
+
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'title' => 'Data delivery order berhasil dihapus',
+                'message' => 'Data delivery order berhasil dihapus',
+            ]);
+
+        }
+
+        if ($request->a == 'approval') {
+            $do = DeliveryOrder::where("code", $request->m)->first();
+            if (!$do) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Delivery Order Tidak Ditemukan',
+                    'message' => 'Data delivery order yang akan anda tutup tidak ditemukan.',
+                ]);
+            }
+
+            if ($do->status != "created") {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Delivery Order Sudah Memiliki Status',
+                    'message' => 'Saat ini delivery order ' . $request->m . ' sudah memiliki status ' . strtoupper($do->status) . ".",
+                ]);
+            }
+
+            $do->status = "open";
+            $do->save();
+
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'title' => 'Data delivery order berhasil disimpan',
+                'message' => 'Data delivery order berhasil disimpan, silahkan lanjutkan proses berikutnya',
+            ]);
+
+        }
+
+        $isExist = DeliveryOrder::where("user_id", $user->id)
+            ->where("status", "created")
+            ->first();
+
+        if ($isExist) {
+            if (!$request->do) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Delivery Order Sebelumnya Sudah Dibuat',
+                    'message' => 'Delivery order untuk tujuan ini sudah dibuat sebelumnya.',
+                ]);
+            } else {
+                if (count($request->selectedItem) == 0 ) {
+                        DeliveryOrderDetail::where("delivery_order_id", $isExist->id)->delete();
+                } else {
+                    foreach ($request->selectedItem as $key => $value) {
+                        DeliveryOrderDetail::updateOrCreate(
+                            [
+                                'transaction_id' => $value, // kondisi pencarian
+                            ],
+                            [
+                                'delivery_order_id' => $isExist->id, // data yang diupdate / diinsert
+                            ]
+                        );
+                    }
+                }
+                
+                return redirect()->back()->with('flash', [
+                    'type' => 'success',
+                    'title' => 'Data delivery order berhasil disimpan',
+                    'message' => 'Data delivery order berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                ]);
+            }
+        } else {
+            $do = new DeliveryOrder();
+            $do->code = "DO" . $user->id . date("YmdHis");
+            $do->user_id = $user->id;
+            $do->status = "created";
+            $do->save();
+        }
+
+        return redirect()->back()->with('flash', [
+            'type' => 'success',
+            'title' => 'Delivery order berhasil dibuat',
+            'message' => 'Delivery order berhasil dibuat, silahkan lanjutkan proses berikutnya',
+        ]);
     }
 }

@@ -79,6 +79,8 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::resource('delivery', DeliveryController::class);
     Route::get("delivery/manifest/terima", [DeliveryController::class, 'manifestTerima'])->name("delivery.manifest_terima");
     Route::post("delivery/manifest/terima/create", [DeliveryController::class, 'createManifestTerima'])->name("delivery.save_manifest_terima");
+    Route::get("delivery/order/data", [DeliveryController::class, 'deliveryOrder'])->name("delivery-order.index");
+    Route::post("delivery/order/data", [DeliveryController::class, 'createDeliveryOrder'])->name("delivery-order.create");
 
 });
 
