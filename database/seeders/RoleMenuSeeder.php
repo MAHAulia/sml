@@ -191,16 +191,19 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "85", "role_id" => "5"],
             ["menu_id" => "86", "role_id" => "5"],
             ["menu_id" => "87", "role_id" => "5"],
+            ["menu_id" => "88", "role_id" => "5"],
+            ["menu_id" => "89", "role_id" => "5"],
+            ["menu_id" => "90", "role_id" => "5"],
 
             // Menu Accounting
-            ["menu_id" => "88", "role_id" => "7"],
-            ["menu_id" => "89", "role_id" => "7"],
-            ["menu_id" => "90", "role_id" => "7"],
             ["menu_id" => "91", "role_id" => "7"],
             ["menu_id" => "92", "role_id" => "7"],
             ["menu_id" => "93", "role_id" => "7"],
             ["menu_id" => "94", "role_id" => "7"],
             ["menu_id" => "95", "role_id" => "7"],
+            ["menu_id" => "96", "role_id" => "7"],
+            ["menu_id" => "97", "role_id" => "7"],
+            ["menu_id" => "98", "role_id" => "7"],
         ]);
     }
 }

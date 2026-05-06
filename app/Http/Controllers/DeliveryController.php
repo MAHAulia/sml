@@ -285,4 +285,8 @@ class DeliveryController extends Controller
             'message' => 'Delivery order berhasil dibuat, silahkan lanjutkan proses berikutnya',
         ]);
     }
+
+    public function deliveryAntaran() {
+        return Inertia::render('delivery-antaran/index');
+    }
 }

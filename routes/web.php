@@ -81,6 +81,9 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::post("delivery/manifest/terima/create", [DeliveryController::class, 'createManifestTerima'])->name("delivery.save_manifest_terima");
     Route::get("delivery/order/data", [DeliveryController::class, 'deliveryOrder'])->name("delivery-order.index");
     Route::post("delivery/order/data", [DeliveryController::class, 'createDeliveryOrder'])->name("delivery-order.create");
+    Route::get("delivery/antaran/index", [DeliveryController::class, 'deliveryAntaran'])->name("delivery-antaran.index");
+    Route::post("delivery/antaran/create", [DeliveryController::class, 'createDeliveryAntaran'])->name("delivery-antaran.create");
+    Route::put("delivery/antaran/show/{id}", [DeliveryController::class, 'updateDeliveryAntaran'])->name("delivery-antaran.show");
 
 });
 

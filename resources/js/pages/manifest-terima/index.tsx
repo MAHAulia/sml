@@ -1,14 +1,14 @@
+import ConfirmationDialog from '@/components/confirm-dialog';
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { type BreadcrumbItem } from '@/types';
 import { BagianTujuan, Kantor, ManifestTerimaData } from '@/types/manifest-terima';
 import { Head, useForm } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ManifestDialog from './dialog';
 import ManifestTerimaFormDialog from './form-dialog';
 import ManifestTerimaTable from './table';
-import ConfirmationDialog from '@/components/confirm-dialog';
 import { manifestTerimaTableColumns } from './table-column';
 
 
@@ -126,7 +126,7 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
             <PageLayout title='Manifest Terima' description="Kelola penerimaan barang">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <ManifestTerimaTable data={datas} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <ManifestTerimaTable data={datas} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
                         <ManifestTerimaFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
                         <ManifestDialog selectedData={selectedDataManifest} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog

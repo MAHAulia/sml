@@ -210,23 +210,29 @@ return new class extends Migration
             ["label" => "Show Delivery Order", "route_name" => "delivery-order.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 7, "type" => "form"],
             //87
             ["label" => "Update Delivery Order", "route_name" => "delivery-order.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 8, "type" => "api"],
+            //88
+            ["label" => "Update Status Antaran", "route_name" => "delivery-antaran.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 5, "type" => "menu"],
+            //89
+            ["label" => "Get Status Antaran", "route_name" => "delivery-antaran.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 6, "type" => "api"],
+            //90
+            ["label" => "Update Data Status Antaran", "route_name" => "delivery-antaran.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 7, "type" => "api"],
 
             // Accounting
-            //88
-            ["label" => "Accounting", "route_name" => "accounting", "icon" => "CreditCard", "is_parent" => true, "parent_id" => null, "order_number" => 7, "type" => "menu"],
-            //89
-            ["label" => "Penawaran Tarif", "route_name" => "tarif.index", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 1, "type" => "menu"],
-            //90
-            ["label" => "Penawaran Tarif", "route_name" => "tarif.create", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 2, "type" => "form"],
             //91
-            ["label" => "Set Tarif", "route_name" => "tarif.show", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 3, "type" => "form"],
+            ["label" => "Accounting", "route_name" => "accounting", "icon" => "CreditCard", "is_parent" => true, "parent_id" => null, "order_number" => 7, "type" => "menu"],
             //92
-            ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 4, "type" => "menu"],
+            ["label" => "Penawaran Tarif", "route_name" => "tarif.index", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 1, "type" => "menu"],
             //93
-            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 5, "type" => "form"],
+            ["label" => "Penawaran Tarif", "route_name" => "tarif.create", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 2, "type" => "form"],
             //94
-            ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 6, "type" => "form"],
+            ["label" => "Set Tarif", "route_name" => "tarif.show", "icon" => "Banknote", "is_parent" => false, "parent_id" => 88, "order_number" => 3, "type" => "form"],
             //95
+            ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 4, "type" => "menu"],
+            //96
+            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 5, "type" => "form"],
+            //97
+            ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 6, "type" => "form"],
+            //98
             ["label" => "Update Invoice", "route_name" => "invoice.update", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 88, "order_number" => 7, "type" => "api"],
         ]);
     }

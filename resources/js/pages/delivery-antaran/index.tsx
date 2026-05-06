@@ -1,15 +1,13 @@
-import ConfirmationDialog from '@/components/confirm-dialog';
-import DeleteConfirmation from '@/components/delete-confirm-dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { SharedData, type BreadcrumbItem } from '@/types';
 import { DeliveryOrderData } from '@/types/delivery-order';
 import { Head, useForm, usePage } from '@inertiajs/react';
+import { QrCode } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import DOFormDialog from './dialog';
-import DeliveryOrderFormDialog from './form-dialog';
-import DeliveryOrderTable from './table';
-import { deliveryOrderTableColumns } from './table-column';
 
 
 interface DeliveryOrderProps {
@@ -17,12 +15,12 @@ interface DeliveryOrderProps {
 }
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Delivery Order',
-        href: '/Delivery Order',
+        title: 'Status Antaran',
+        href: '/Status Antaran',
     },
 ];
 
-export default function DeliveryOrder({ datas }: DeliveryOrderProps) {
+export default function DeliveryOrderAntaran({ datas }: DeliveryOrderProps) {
     const { auth } = usePage<SharedData>().props;
     const role = auth.user.roles[0].name;
     const { delete: destroy, post, processing } = useForm();
@@ -141,37 +139,21 @@ export default function DeliveryOrder({ datas }: DeliveryOrderProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Delivery - Delivery Order" />
+            <Head title="Delivery - Status Antaran" />
 
-            <PageLayout title='Delivery Order' description="Kelola pengiriman barang">
+            <PageLayout title='Status Antaran' description="Perbaharui status antaran barang">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <DeliveryOrderTable data={datas} onAddButtonClicked={handleAdd} columns={deliveryOrderTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutup })} />
-                        <DeliveryOrderFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedItemData} isView={isView} />
-                        <DOFormDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
-                        <ConfirmationDialog
-                            title={confirmation.title}
-                            subtitle={confirmation.subtitle}
-                            message={confirmation.message}
-                            label={confirmation.label}
-                            danger={confirmation.danger}
-                            isOpen={confirmation.isShow}
-                            isLoading={processing}
-                            onOpenChange={(open) =>
-                                setConfirmation((prev) => ({
-                                    ...prev,
-                                    isShow: open,
-                                }))
-                            }
-                            onConfirm={handleConfirmation} />
-                        <DeleteConfirmation
-                            title='Hapus Data'
-                            subtitle='Proses penghapusan data'
-                            message='Apakah Anda yakin akan menghapus data'
-                            isOpen={showConfirm}
-                            isLoading={processing}
-                            onOpenChange={setShowConfirm}
-                            onConfirm={handleDelete} />
+                        <div className='grid grid-cols-2 gap-4'>
+                            <div>
+                                <Label>Nomor Order</Label>
+                                <div className='flex gap-4'>
+                                    <Input name='nomor_order' placeholder='cth. 192730912' />
+                                    <Button><QrCode/></Button>
+                                    <Button>Cari</Button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </PageLayout>
