@@ -18,9 +18,10 @@ interface DeliveryOrderFormDialog {
 }
 
 type DeliveryOrderForm = {
-    to: string;
-    office_to: string;
-    type: string;
+    id: number;
+    code: string;
+    user_id: number;
+    status: string;
     action: 'add' | 'update';
 };
 
@@ -31,38 +32,36 @@ export default function DeliveryOrderFormDialog({ selectedData, isOpen, setIsOpe
     const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
 
     const { data, setData, get, post, put, processing, errors, reset } = useForm<Required<DeliveryOrderForm>>({
-        to: "",
-        office_to: "",
-        type: "",
+        id: 0,
+        code: "",
+        user_id: 0,
+        status: "",
         action: 'add',
     });
 
     const getListItem = (selectedData: DeliveryOrderData) => {
-        // let url = "pickup.manifest_serah";
-        // if (role === "Warehouse") {
-        //     url = "warehouse.manifest_serah";
-        // }
-        // get(route(url, { t: selectedData.type, m: selectedData.code }), {
-        //     preserveState: true,
-        //     preserveScroll: true,
-        //     onSuccess: (page) => {
-        //         const dataSelected = page.props.data_selected as TransactionsData[]
+        get(route("delivery-order.index", { m: selectedData.code }), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                const dataSelected = page.props.data_selected as TransactionsData[]
 
-        //         setSelectedManifestItem(dataSelected)
-        //     },
-        //     onError: (error) => {
-        //         console.log(error);
-        //     },
-        // })
+                setSelectedManifestItem(dataSelected)
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        })
     }
 
     useEffect(() => {
 
         if (selectedData != null) {
-            // setData('to', selectedData.to);
-            // setData('office_to', selectedData.office_to);
-            // setData('type', selectedData.type);
-            // setData('action', 'update');
+            setData('id', selectedData.id)
+            setData('code', selectedData.code);
+            setData('user_id', selectedData.user_id);
+            setData('status', selectedData.status);
+            setData('action', 'update');
             getListItem(selectedData)
         } else {
             resetForm()
@@ -94,9 +93,9 @@ export default function DeliveryOrderFormDialog({ selectedData, isOpen, setIsOpe
     };
 
     const resetForm = () => {
-        reset('to');
-        reset('office_to');
-        reset('type');
+        reset('code');
+        reset('user_id');
+        reset('status');
         reset('action');
     };
 
@@ -161,7 +160,7 @@ export default function DeliveryOrderFormDialog({ selectedData, isOpen, setIsOpe
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className={data.type === "linehaul" ? "sm:max-w-6/12" : "sm:max-w-4/12"}>
+            <DialogContent className="sm:max-w-4/12">
                 <DialogHeader>
                     <DialogTitle>{isView ? 'Delivery Order' : 'Buat Delivery Order Baru'} {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>

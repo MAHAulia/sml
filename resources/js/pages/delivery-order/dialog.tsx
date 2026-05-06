@@ -19,10 +19,10 @@ interface DOFormDialog {
 }
 
 type DeliveryOrderForm = {
-    manifest: string;
-    to: string;
-    office_to: string;
-    type: string;
+    id: number;
+    code: string;
+    user_id: number;
+    status: string;
     selectedItem: number[];
     action: 'add' | 'update';
 };
@@ -32,10 +32,10 @@ export default function DOFormDialog({ selectedData, isOpen, setIsOpen, isView =
     const { auth } = usePage<SharedData>().props;
     const role = auth.user.roles[0].name;
     const { data, setData, post, get, processing, errors, reset } = useForm<Required<DeliveryOrderForm>>({
-        manifest: "",
-        to: "",
-        office_to: "",
-        type: "",
+        id: 0,
+        code: "",
+        user_id: 0,
+        status: "",
         action: 'add',
         selectedItem: [],
     });
@@ -48,30 +48,30 @@ export default function DOFormDialog({ selectedData, isOpen, setIsOpen, isView =
         // if (role === "Warehouse") {
         //     url = "warehouse.manifest_serah";
         // }
-        // get(route(url, { t: selectedData.type, m: selectedData.code }), {
-        //     preserveState: true,
-        //     preserveScroll: true,
-        //     onSuccess: (page) => {
-        //         setItemManifest(page.props.data_manifest as TransactionsData[])
-        //         const dataSelected = page.props.data_selected as TransactionsData[]
-        //         setSelectedManifestItem(dataSelected)
-        //         setData("selectedItem", dataSelected.map(item => item.id));
-        //     },
-        //     onError: (error) => {
-        //         console.log(error);
-        //     },
-        // })
+        get(route("delivery-order.index", {m: selectedData.code }), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                setItemManifest(page.props.data_manifest as TransactionsData[])
+                const dataSelected = page.props.data_selected as TransactionsData[]
+                setSelectedManifestItem(dataSelected)
+                setData("selectedItem", dataSelected.map(item => item.id));
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        })
     }
 
     useEffect(() => {
 
         if (selectedData != null) {
             console.log('selectedData', selectedData)
-            // setData('manifest', selectedData.code)
-            // setData('to', selectedData.to);
-            // setData('office_to', selectedData.office_to);
-            // setData('type', selectedData.type);
-            // setData('action', 'update');
+            setData('id', selectedData.id)
+            setData('code', selectedData.code);
+            setData('user_id', selectedData.user_id);
+            setData('status', selectedData.status);
+            setData('action', 'update');
             getListItem(selectedData);
         } else {
             resetForm()
@@ -94,17 +94,14 @@ export default function DOFormDialog({ selectedData, isOpen, setIsOpen, isView =
     };
 
     const submit: FormEventHandler = (e) => {
+        console.log('submit data', data);
         e.preventDefault();
         // if (data.action == 'add') {
 
         // }
 
         if (data.action == 'update') {
-            let url = "pickup.save_manifest_serah";
-            if (role === "Warehouse") {
-                url = "warehouse.save_manifest_serah";
-            }
-            post(route(url, selectedData?.id), {
+            post(route("delivery-order.create", selectedData?.id), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -119,9 +116,9 @@ export default function DOFormDialog({ selectedData, isOpen, setIsOpen, isView =
     };
 
     const resetForm = () => {
-        reset('to');
-        reset('office_to');
-        reset('type');
+        reset('code');
+        reset('user_id');
+        reset('status');
         reset('action');
     };
 

@@ -97,24 +97,22 @@ export default function DeliveryOrder({ datas }: DeliveryOrderProps) {
 
     }
 
-    const onTutupManifest = (data: DeliveryOrderData) => {
+    const onTutup = (data: DeliveryOrderData) => {
         setSelectedData(data)
         setConfirmation({
-            title: "Tutup Manifest",
-            subtitle: "Proses Tutup Manifest",
-            message: "Apakah Anda yakin ingin menutup manifest, untuk proses berikutnya",
+            title: "Proses Antaran",
+            subtitle: "Lanjutkan Proses Antaran",
+            message: "Apakah Anda yakin ingin smelanjutkan ke proses antaran?",
             action: "approve",
-            label: "Ya, Tutup",
+            label: "Ya, Lanjutkan",
             danger: false,
             isShow: true,
         })
     }
 
     const handleConfirmation = () => {
-        let url = "pickup.save_manifest_serah";
-        if (role === "Warehouse") {
-            url = "warehouse.save_manifest_serah";
-        }
+        let url = "delivery-order.create";
+        
         post(route(url, { a: 'approval', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)
@@ -148,7 +146,7 @@ export default function DeliveryOrder({ datas }: DeliveryOrderProps) {
             <PageLayout title='Delivery Order' description="Kelola pengiriman barang">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <DeliveryOrderTable data={datas} onAddButtonClicked={handleAdd} columns={deliveryOrderTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <DeliveryOrderTable data={datas} onAddButtonClicked={handleAdd} columns={deliveryOrderTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutup })} />
                         <DeliveryOrderFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedItemData} isView={isView} />
                         <DOFormDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog

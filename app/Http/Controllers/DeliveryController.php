@@ -149,14 +149,30 @@ class DeliveryController extends Controller
     public function deliveryOrder(Request $request)
     {
         $user = Auth::user();
-        $role = $user->roles()->first();
         $datas = DeliveryOrder::where("user_id", $user->id)
             ->with("items")
             ->latest()
             ->get();
 
+            $dataDo = [];
+            $dataSelected = [];
+        if ($request->m) {
+            $deliveryOrder = DeliveryOrder::where("code", $request->m)->first();
+            $dataSelected = Transaction::join('delivery_order_details', 'transactions.id', '=', 'delivery_order_details.transaction_id')
+                        ->where('delivery_order_details.delivery_order_id', $deliveryOrder?->id)
+                        ->select('transactions.*')
+                        ->get();
+            $dataDo = Transaction::leftJoin('delivery_order_details', 'transactions.id', '=', 'delivery_order_details.transaction_id')
+                        ->whereNull('delivery_order_details.transaction_id')
+                        ->select('transactions.*')
+                        ->get();
+                        // dd($dataDo, $dataSelected);
+        }
+
         return Inertia::render('delivery-order/index', [
             "datas" => $datas,
+            "data_manifest" => $dataDo,
+            "data_selected" => $dataSelected,
         ]);
     }
 
@@ -227,7 +243,7 @@ class DeliveryController extends Controller
             ->first();
 
         if ($isExist) {
-            if (!$request->do) {
+            if (!$request->code) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
                     'title' => 'Delivery Order Sebelumnya Sudah Dibuat',

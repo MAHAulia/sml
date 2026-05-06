@@ -19,10 +19,10 @@ type ColumnProps = {
   onView: (data: DeliveryOrderData) => void;
   onEdit: (data: DeliveryOrderData) => void;
   onDelete: (data: DeliveryOrderData) => void;
-  onTutupManifest: (data: DeliveryOrderData) => void;
+  onTutup: (data: DeliveryOrderData) => void;
 };
 
-export const deliveryOrderTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<DeliveryOrderData>[] => [
+export const deliveryOrderTableColumns = ({ onView, onEdit, onDelete, onTutup }: ColumnProps): ColumnDef<DeliveryOrderData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -51,9 +51,9 @@ export const deliveryOrderTableColumns = ({ onView, onEdit, onDelete, onTutupMan
               <PlusCircle /> Tambah Item Delivery
             </DropdownMenuItem>}
             {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
-              onClick={() => onTutupManifest(data)}
+              onClick={() => onTutup(data)}
             >
-              <BoxIcon /> Tutup Manifest
+              <BoxIcon /> Proses Antaran
             </DropdownMenuItem>}
             {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />}
             {data.status !== "created" ? null : <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
