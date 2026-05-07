@@ -213,9 +213,9 @@ return new class extends Migration
             //88
             ["label" => "Update Status Antaran", "route_name" => "delivery-antaran.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 5, "type" => "menu"],
             //89
-            ["label" => "Get Status Antaran", "route_name" => "delivery-antaran.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 6, "type" => "api"],
+            ["label" => "Get Status Antaran", "route_name" => "delivery-antaran.search", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 6, "type" => "api"],
             //90
-            ["label" => "Update Data Status Antaran", "route_name" => "delivery-antaran.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 7, "type" => "api"],
+            ["label" => "Update Data Status Antaran", "route_name" => "delivery-antaran.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 79, "order_number" => 7, "type" => "api"],
 
             // Accounting
             //91

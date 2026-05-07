@@ -5,9 +5,12 @@ import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { SharedData, type BreadcrumbItem } from '@/types';
 import { DeliveryOrderData } from '@/types/delivery-order';
+import { TransactionsData } from '@/types/marketing';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { QrCode } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import DeliveryAntaranStatusDialog from './dialog';
+import { set } from 'date-fns';
 
 
 interface DeliveryOrderProps {
@@ -23,136 +26,217 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function DeliveryOrderAntaran({ datas }: DeliveryOrderProps) {
     const { auth } = usePage<SharedData>().props;
     const role = auth.user.roles[0].name;
-    const { delete: destroy, post, processing } = useForm();
-
-    const [selectedData, setSelectedData] = useState<DeliveryOrderData | null>(null)
-    const [selectedItemData, setSelectedItemData] = useState<DeliveryOrderData | null>(null)
-    const [deleteMenu, setDeleteMenu] = useState<DeliveryOrderData>()
+    const { data, setData, get, post, processing } = useForm();
+    const [deliveryData, setDeliveryData] = useState<TransactionsData | null>(null);
     const [isOpen, setIsOpen] = useState(false)
-    const [tambahData, setTambahData] = useState(false)
-    const [showConfirm, setShowConfirm] = useState(false)
-    const [isView, setisView] = useState(false)
-    const [confirmation, setConfirmation] = useState({
-        title: "",
-        subtitle: "",
-        message: "",
-        action: "",
-        label: "",
-        danger: false,
-        isShow: false,
-    })
 
     const params = new URLSearchParams(window.location.search);
-    const filter = params.get('f');
+    const filter = params.get('code');
 
-    const handleView = (data: DeliveryOrderData) => {
-        setIsOpen(true)
-        setSelectedItemData(data)
-        setisView(true)
-    }
-
-    const handleEdit = (data: DeliveryOrderData) => {
-        setTambahData(true)
-        setSelectedData(data)
-        setisView(false)
-    }
-
-    const confirmDelete = (data: DeliveryOrderData) => {
-        setDeleteMenu(data)
-        setShowConfirm(true)
-        setisView(false)
-        setSelectedData(data)
-    }
-
-    const handleDelete = () => {
-        const url = "delivery-order.create";
-        post(route(url, { a: 'delete', m: selectedData?.code }), {
-            onSuccess: () => {
-                setShowConfirm(false)
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(route('delivery-antaran.search'), {
+            onSuccess: (response) => {
+                setDeliveryData(response.props.data as TransactionsData);
             },
-            onError: (error) => {
-                console.log(error);
-            },
+            onError: (errors) => {
+                console.log(errors);
+            }
         });
     }
-
-    const handleAdd = () => {
-        setIsOpen(true)
-        setSelectedData(null)
-        setisView(false)
-        // Call API Create Manifest
-        // post(route('pickup.save_manifest_serah'), {
-        //     onSuccess: () => {
-        //         // Open Dialog For add item to manifest
-        //         setIsOpen(true)
-        //         setSelectedData(null)
-        //         setisView(false)
-        //     },
-        //     onError: (error) => {
-        //         console.log(error);
-        //     },
-        // });
-
-    }
-
-    const onTutup = (data: DeliveryOrderData) => {
-        setSelectedData(data)
-        setConfirmation({
-            title: "Proses Antaran",
-            subtitle: "Lanjutkan Proses Antaran",
-            message: "Apakah Anda yakin ingin smelanjutkan ke proses antaran?",
-            action: "approve",
-            label: "Ya, Lanjutkan",
-            danger: false,
-            isShow: true,
-        })
-    }
-
-    const handleConfirmation = () => {
-        const url = "delivery-order.create";
-        
-        post(route(url, { a: 'approval', m: selectedData?.code }), {
-            onSuccess: () => {
-                setShowConfirm(false)
-                setConfirmation({
-                    title: "",
-                    subtitle: "",
-                    message: "",
-                    action: "",
-                    label: "",
-                    danger: false,
-                    isShow: false,
-                })
-            },
-            onError: (error) => {
-                console.log(error);
-            },
-        });
-    }
-
-    useEffect(() => {
-        if (filter) {
-            handleAdd()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Delivery - Status Antaran" />
 
             <PageLayout title='Status Antaran' description="Perbaharui status antaran barang">
+                <DeliveryAntaranStatusDialog
+                    selectedData={deliveryData}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    isView={false} />
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
                         <div className='grid grid-cols-2 gap-4'>
-                            <div>
+                            <form onSubmit={handleSubmit} className='space-y-4'>
                                 <Label>Nomor Order</Label>
                                 <div className='flex gap-4'>
-                                    <Input name='nomor_order' placeholder='cth. 192730912' />
-                                    <Button><QrCode/></Button>
-                                    <Button>Cari</Button>
+                                    <Input name='nomor_order' placeholder='cth. 192730912' required onChange={(e) => setData('code', e.target.value)} />
+                                    <Button type="button"><QrCode /></Button>
+                                    <Button type="submit" id='cariButton'>Cari</Button>
                                 </div>
-                            </div>
+                            </form>
+                        </div>
+                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
+
+                            {/* Main Content */}
+                            {deliveryData && (
+                                <div className="lg:col-span-2 rounded-2xl shadow-md border border-gray-200 p-6 space-y-6 mt-4">
+
+                                    {/* Header */}
+                                    <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+                                        <div>
+                                            <h2 className="text-2xl font-bold">
+                                                {deliveryData.order_number}
+                                            </h2>
+
+                                            <p className="text-sm">
+                                                Created at{" "}
+                                                {new Date(deliveryData.created_at).toLocaleString()}
+                                            </p>
+                                        </div>
+
+                                        {deliveryData.delivery_status == "null" && (
+                                            <Button
+                                                size="sm"
+                                                onClick={() => {
+                                                    setIsOpen(true)
+                                                    setDeliveryData(deliveryData)
+                                                }}
+                                            >
+                                                Ubah Status Antaran
+                                            </Button>
+                                        )}
+                                    </div>
+
+                                    {/* Shipment Status */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="rounded-xl p-4">
+                                            <p className="text-sm">Delivery Status</p>
+
+                                            <p className="font-semibold">
+                                                {deliveryData.delivery_status == 'null'
+                                                    ? "-"
+                                                    : deliveryData.delivery_status}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Sender & Receiver */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                                        {/* Sender */}
+                                        <div className="border border-gray-200 rounded-xl p-4">
+                                            <h3 className="text-lg font-semibold mb-3">
+                                                Sender
+                                            </h3>
+
+                                            <div className="space-y-2 text-sm">
+                                                <p>
+                                                    <span className="font-medium">Name:</span>{" "}
+                                                    {deliveryData.senderName}
+                                                </p>
+
+                                                <p>
+                                                    <span className="font-medium">Phone:</span>{" "}
+                                                    {deliveryData.senderPhone}
+                                                </p>
+
+                                                <p>
+                                                    <span className="font-medium">Address:</span><br />
+                                                    {deliveryData.senderAddress}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Receiver */}
+                                        <div className="border border-gray-200 rounded-xl p-4">
+                                            <h3 className="text-lg font-semibold mb-3">
+                                                Receiver
+                                            </h3>
+
+                                            <div className="space-y-2 text-sm">
+                                                <p>
+                                                    <span className="font-medium">Name:</span>{" "}
+                                                    {deliveryData.receiverName}
+                                                </p>
+
+                                                <p>
+                                                    <span className="font-medium">Phone:</span>{" "}
+                                                    {deliveryData.receiverPhone}
+                                                </p>
+
+                                                <p>
+                                                    <span className="font-medium">Address:</span><br />
+                                                    {deliveryData.receiverAddress}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Package Detail */}
+                                    <div>
+                                        <h3 className="text-lg font-semibold mb-4">
+                                            Package Detail
+                                        </h3>
+
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            <div className="rounded-xl p-4">
+                                                <p className="text-sm">Weight</p>
+
+                                                <p className="font-bold">
+                                                    {deliveryData.weight} Kg
+                                                </p>
+                                            </div>
+
+                                            <div className="rounded-xl p-4">
+                                                <p className="text-sm">Total Item</p>
+
+                                                <p className="font-bold">
+                                                    {deliveryData.total_item}
+                                                </p>
+                                            </div>
+
+                                            <div className="rounded-xl p-4">
+                                                <p className="text-sm">Dimension</p>
+
+                                                <p className="font-bold">
+                                                    {deliveryData.p} × {deliveryData.l} × {deliveryData.t}
+                                                </p>
+                                            </div>
+
+                                            <div className="rounded-xl p-4">
+                                                <p className="text-sm">Item</p>
+
+                                                <p className="font-bold">
+                                                    {deliveryData.isiKiriman}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Notes */}
+                                    <div className="border border-gray-200 rounded-xl p-4">
+                                        <h3 className="font-semibold mb-2">
+                                            Catatan
+                                        </h3>
+
+                                        <p className="text-sm">
+                                            {deliveryData.catatan || "-"}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Image */}
+                            {deliveryData?.bukti_url && (
+                                <div className="lg:col-span-1 mt-4">
+                                    <div className="rounded-2xl shadow-md border border-gray-200 p-4">
+                                        <h3 className="text-lg font-semibold mb-4">
+                                            Bukti Pengantaran
+                                        </h3>
+
+                                        <div className="border border-gray-200 rounded-2xl overflow-hidden">
+                                            <img
+                                                src={deliveryData.bukti_url}
+                                                alt="Bukti Pengantaran"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
                     </div>
                 </div>

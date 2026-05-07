@@ -58,9 +58,16 @@ export interface Biayas {
     catatan: string | null;
     status: string;
     pickup_status: string;
+    shipment_status: string;
+    delivery_status: string;
     created_at: string;
     updated_at: string;
     biaya: Biayas;
     customer: CustomerData;
     code: string;
+    reason: string | null;
+    bukti: string | null;
+    bukti_url: string | null;
+    latitude: string | null;
+    longitude: string | null;
 }

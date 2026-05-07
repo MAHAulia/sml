@@ -13,6 +13,7 @@ use App\Models\Role;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class DeliveryController extends Controller
@@ -154,19 +155,19 @@ class DeliveryController extends Controller
             ->latest()
             ->get();
 
-            $dataDo = [];
-            $dataSelected = [];
+        $dataDo = [];
+        $dataSelected = [];
         if ($request->m) {
             $deliveryOrder = DeliveryOrder::where("code", $request->m)->first();
             $dataSelected = Transaction::join('delivery_order_details', 'transactions.id', '=', 'delivery_order_details.transaction_id')
-                        ->where('delivery_order_details.delivery_order_id', $deliveryOrder?->id)
-                        ->select('transactions.*')
-                        ->get();
+                ->where('delivery_order_details.delivery_order_id', $deliveryOrder?->id)
+                ->select('transactions.*')
+                ->get();
             $dataDo = Transaction::leftJoin('delivery_order_details', 'transactions.id', '=', 'delivery_order_details.transaction_id')
-                        ->whereNull('delivery_order_details.transaction_id')
-                        ->select('transactions.*')
-                        ->get();
-                        // dd($dataDo, $dataSelected);
+                ->whereNull('delivery_order_details.transaction_id')
+                ->select('transactions.*')
+                ->get();
+            // dd($dataDo, $dataSelected);
         }
 
         return Inertia::render('delivery-order/index', [
@@ -206,7 +207,6 @@ class DeliveryController extends Controller
                 'title' => 'Data delivery order berhasil dihapus',
                 'message' => 'Data delivery order berhasil dihapus',
             ]);
-
         }
 
         if ($request->a == 'approval') {
@@ -235,7 +235,6 @@ class DeliveryController extends Controller
                 'title' => 'Data delivery order berhasil disimpan',
                 'message' => 'Data delivery order berhasil disimpan, silahkan lanjutkan proses berikutnya',
             ]);
-
         }
 
         $isExist = DeliveryOrder::where("user_id", $user->id)
@@ -250,8 +249,8 @@ class DeliveryController extends Controller
                     'message' => 'Delivery order untuk tujuan ini sudah dibuat sebelumnya.',
                 ]);
             } else {
-                if (count($request->selectedItem) == 0 ) {
-                        DeliveryOrderDetail::where("delivery_order_id", $isExist->id)->delete();
+                if (count($request->selectedItem) == 0) {
+                    DeliveryOrderDetail::where("delivery_order_id", $isExist->id)->delete();
                 } else {
                     foreach ($request->selectedItem as $key => $value) {
                         DeliveryOrderDetail::updateOrCreate(
@@ -264,7 +263,7 @@ class DeliveryController extends Controller
                         );
                     }
                 }
-                
+
                 return redirect()->back()->with('flash', [
                     'type' => 'success',
                     'title' => 'Data delivery order berhasil disimpan',
@@ -286,7 +285,76 @@ class DeliveryController extends Controller
         ]);
     }
 
-    public function deliveryAntaran() {
-        return Inertia::render('delivery-antaran/index');
+    public function deliveryAntaran(Request $request)
+    {
+        if ($request->code) {
+            $data = Transaction::leftJoin('delivery_order_details', 'transactions.id', '=', 'delivery_order_details.transaction_id')
+                ->where('transactions.order_number', $request->code)
+                ->select('transactions.*')
+                ->first();
+
+            // add image url
+            if ($data && $data->bukti) {
+                $data->bukti_url = asset('storage/' . $data->bukti);
+            } else {
+                $data->bukti_url = null;
+            }
+        }
+        return Inertia::render('delivery-antaran/index', [
+            "data" => $data ?? [],
+        ]);
+    }
+
+    public function updateDeliveryAntaran(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string',
+            'reason' => 'nullable|string',
+            'bukti' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $transaction = Transaction::where("id", $id)->first();
+
+        if (!$transaction) {
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'title' => 'Data Transaksi Tidak Ditemukan',
+                'message' => 'Data transaksi tidak ditemukan.',
+            ]);
+        }
+
+        $transaction->delivery_status = $request->status;
+        $transaction->reason = $request->reason;
+        $transaction->latitude = $request->latitude;
+        $transaction->longitude = $request->longitude;
+
+        // Upload bukti image
+        if ($request->hasFile('bukti')) {
+
+            // delete old file if exists
+            if ($transaction->bukti) {
+                Storage::disk('public')->delete($transaction->bukti);
+            }
+
+            $file = $request->file('bukti');
+
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $path = $file->storeAs(
+                'delivery-bukti',
+                $filename,
+                'public'
+            );
+
+            $transaction->bukti = $path;
+        }
+
+        $transaction->save();
+
+        return redirect()->back()->with('flash', [
+            'type' => 'success',
+            'title' => 'Status antaran berhasil diupdate',
+            'message' => 'Status antaran berhasil diupdate.',
+        ]);
     }
 }

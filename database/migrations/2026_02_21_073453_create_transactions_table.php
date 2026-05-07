@@ -37,7 +37,11 @@ return new class extends Migration
             $table->enum("status", ["pending", "on_review", "price_set", "on_nego","on_review_nego", "accepted", "rejected"])->default("pending");
             $table->enum("pickup_status", ["null","request", "on_pickup", "success_pickup", "failed_pickup"])->default("null");
             $table->enum("outgoing_status", ["null","hold", "bagging", "manifested"])->default("null");
-            $table->enum("delivery_status", ["null","request", "on_pickup", "success_pickup", "failed_pickup"])->default("null");
+            $table->enum("delivery_status", ["null","sending", "success", "failed", "retour"])->default("null");
+            $table->string("reason")->nullable();
+            $table->string("bukti")->nullable();
+            $table->string("latitude")->nullable();
+            $table->string("longitude")->nullable();
             $table->timestamps();
         });
     }
