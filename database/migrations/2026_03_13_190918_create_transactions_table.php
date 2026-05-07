@@ -34,10 +34,10 @@ return new class extends Migration
             $table->double("weight");
             $table->string("isiKiriman");
             $table->string("catatan")->nullable();
-            $table->enum("status", ["pending", "on_review", "price_set", "on_nego","on_review_nego", "accepted", "rejected"])->default("pending");
-            $table->enum("pickup_status", ["null","request", "on_pickup", "success_pickup", "failed_pickup"])->default("null");
-            $table->enum("outgoing_status", ["null","hold", "bagging", "manifested"])->default("null");
-            $table->enum("delivery_status", ["null","sending", "success", "failed", "retour"])->default("null");
+            $table->enum("status", ["pending", "on_review", "price_set", "on_nego", "on_review_nego", "accepted", "rejected"])->default("pending");
+            $table->enum("pickup_status", ["null", "request", "on_pickup", "success_pickup", "failed_pickup"])->default("null");
+            $table->enum("outgoing_status", ["null", "hold", "bagging", "manifested"])->default("null");
+            $table->enum("delivery_status", ["null", "sending", "success", "failed", "retour"])->default("null");
             $table->string("reason")->nullable();
             $table->string("bukti")->nullable();
             $table->string("latitude")->nullable();
@@ -51,9 +51,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->dropForeign(['bag_id']); // penting!
-        });
         Schema::dropIfExists('transactions');
     }
 };
