@@ -6,6 +6,7 @@ use App\Http\Controllers\PickupOfferingController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\Form\FormController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
 use App\Http\Controllers\ManifestController;
@@ -84,6 +85,8 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::get("delivery/antaran/status", [DeliveryController::class, 'deliveryAntaran'])->name("delivery-antaran.index");
     Route::post("delivery/antaran/status", [DeliveryController::class, 'deliveryAntaran'])->name("delivery-antaran.search");
     Route::post("delivery/antaran/show/{id}", [DeliveryController::class, 'updateDeliveryAntaran'])->name("delivery-antaran.update");
+
+    Route::resource('invoice', InvoiceController::class);
 
 });
 
