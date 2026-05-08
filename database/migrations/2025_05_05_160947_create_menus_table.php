@@ -229,7 +229,7 @@ return new class extends Migration
             //95
             ["label" => "Invoice", "route_name" => "invoice.index", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 91, "order_number" => 4, "type" => "menu"],
             //96
-            ["label" => "Create Invoice", "route_name" => "invoice.create", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 91, "order_number" => 5, "type" => "form"],
+            ["label" => "Create Invoice", "route_name" => "invoice.store", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 91, "order_number" => 5, "type" => "form"],
             //97
             ["label" => "Show Invoice", "route_name" => "invoice.show", "icon" => "CreditCard", "is_parent" => false, "parent_id" => 91, "order_number" => 6, "type" => "form"],
             //98

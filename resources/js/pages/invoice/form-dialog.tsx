@@ -5,81 +5,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SharedData } from "@/types";
-import { BagianTujuan, Kantor } from "@/types/manifest-terima";
-import { TransactionsData } from "@/types/marketing";
+import { SharedData, UserData } from "@/types";
+import { InvoiceData } from "@/types/invoice";
 import { useForm, usePage } from "@inertiajs/react";
 import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { InvoiceData } from "@/types/invoice";
+import { FormEventHandler, useEffect } from 'react';
 
 
-interface ManifestTerimaFormDialog {
+interface InvoiceFormDialog {
     selectedData: InvoiceData | null;
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
 }
 
-type ManifestTerimaForm = {
-    to: string;
-    office_to: string;
-    type: string;
-    selectedItem: number[];
+type InvoiceForm = {
+    id: number | null;
+    customerId: string | null;
     action: 'add' | 'update';
 };
 
 
-export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: ManifestTerimaFormDialog) {
-    const { auth } = usePage<SharedData>().props;
+export default function InvoiceFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: InvoiceFormDialog) {
+    const { auth, customers } = usePage<SharedData>().props;
     const role = auth.user.roles[0].name;
-    const page = usePage();
-    const kantors = page.props.kantors as Kantor[];
-    const tujuans = page.props.tujuans as BagianTujuan[];
-    const [itemManifest, setItemManifest] = useState<TransactionsData[]>([])
-    const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
+    const custmrs = customers as UserData[];
 
-    const { data, setData, get, post, put, processing, errors, reset } = useForm<Required<ManifestTerimaForm>>({
-        to: "",
-        office_to: "",
-        type: "",
+    console.log('customers', customers)
+    const { data, setData, post, processing, errors, reset } = useForm<Required<InvoiceForm>>({
+        id: null,
+        customerId: null,
         action: 'add',
-        selectedItem: [],
     });
 
-    const getListItem = (selectedData: InvoiceData) => {
-        // if (selectedData.type === 'local') {
-        //     console.log("Get data for local")\
-        // let url = "warehouse.manifest_terima";
-        // if (role === "Delivery") {
-        //     url = "delivery.manifest_terima";
-        // }
-        // get(route(url, { t: selectedData.type, m: selectedData.code, v: "T" }), {
-        //     preserveState: true,
-        //     preserveScroll: true,
-        //     onSuccess: (page) => {
-        //         setItemManifest(page.props.data_manifest as TransactionsData[])
-        //         const dataSelected = page.props.data_selected as TransactionsData[]
-        //         setSelectedManifestItem(dataSelected)
-        //         setData("selectedItem", dataSelected.map(item => item.id));
-        //     },
-        //     onError: (error) => {
-        //         console.log(error);
-        //     },
-        // })
-        // } else {
-        //     console.log("Get for not local")
-        // }
-    }
 
     useEffect(() => {
 
         if (selectedData != null) {
-            // setData('to', selectedData.to);
-            // setData('office_to', selectedData.office_to);
-            // setData('type', selectedData.type);
-            // setData('action', 'update');
-            // getListItem(selectedData)
+            setData('customerId', selectedData.customer_id?.toString());
         } else {
             resetForm()
         }
@@ -88,10 +51,8 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        let url = "warehouse.save_manifest_terima";
-        if (role === "Delivery") {
-            url = "delivery.save_manifest_terima";
-        }
+        const url = "invoice.store";
+
         if (data.action == 'add') {
             post(route(url), {
                 onSuccess: () => {
@@ -122,9 +83,8 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     };
 
     const resetForm = () => {
-        reset('to');
-        reset('office_to');
-        reset('type');
+        reset('id');
+        reset('customerId');
         reset('action');
     };
 
@@ -189,98 +149,43 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className={data.type === "linehaul" ? "sm:max-w-6/12" : "sm:max-w-4/12"}>
+            <DialogContent className="sm:max-w-4/12">
                 <DialogHeader>
-                    <DialogTitle>{isView ? 'Manifest Terima' : 'Buat Manifest Baru'} {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
+                    <DialogTitle>{isView ? 'Invoice' : 'Buat Invoice Baru'} {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
-                        {isView ? 'Data Manifest Terima' : 'Pembuatan Manifest Terima baru'}
+                        {isView ? 'Data Invoice' : 'Pembuatan Invoice baru'}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div>
                         <form className="flex flex-col gap-6" onSubmit={submit}>
 
-                            <div className={data.type === "linehaul" ? "grid grid-cols-3 gap-2" : "grid grid-cols-2 gap-2"}>
+                            <div className="grid grid-cols-1 gap-2">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="senderPhone">Jenis</Label>
+                                    <Label htmlFor="customer">Customer</Label>
                                     <Select
-                                        value={data.type}
-                                        onValueChange={(value) => setData('type', value)}
+                                        value={data.customerId?.toString()}
+                                        onValueChange={(value) => setData('customerId', value)}
                                         required
                                         disabled={isView}
                                     >
                                         <SelectTrigger id="type" tabIndex={4} className="w-full">
-                                            <SelectValue placeholder="Lokal / Antar Cabang / Antar Kota" />
+                                            <SelectValue placeholder="Customer" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectLabel>Jenis Manifest</SelectLabel>
-                                                <SelectItem value="local">Lokal</SelectItem>
-                                                <SelectItem value="linehaul">Antar Cabang / Antar Kota</SelectItem>
+                                                <SelectLabel>Pilih Customer</SelectLabel>
+                                                {custmrs.map((item) => <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>)}
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
-                                    <InputError message={errors.type} />
-                                </div>
-
-                                {data.type === "linehaul" && <div className="grid gap-2">
-                                    <Label htmlFor="officeTo">Kantor Tujuan</Label>
-                                    <Select
-                                        value={data.office_to}
-                                        onValueChange={(value) => setData('office_to', value)}
-                                        required
-                                        disabled={isView}
-                                    >
-                                        <SelectTrigger id="officeTo" tabIndex={4} className="w-full">
-                                            <SelectValue placeholder="Kantor Tujuan" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>Kantor Tujuan</SelectLabel>
-                                                {kantors?.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : true).map((kantor) => (
-                                                    <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError message={errors.office_to} />
-                                </div>}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="to">Bagian Tujuan</Label>
-                                    <Select
-                                        value={data.to}
-                                        onValueChange={(value) => setData('to', value)}
-                                        required
-                                        disabled={isView}
-                                    >
-                                        <SelectTrigger id="to" tabIndex={4} className="w-full">
-                                            <SelectValue placeholder="Bagian Tujuan" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>Bagian Tujuan</SelectLabel>
-                                                {tujuans?.filter((tujuan) => data.type !== "local" ? tujuan.name === "Warehouse" : true).map((tujuan) => (
-                                                    <SelectItem key={tujuan.id} value={tujuan.name}>
-                                                        {tujuan.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError message={errors.office_to} />
+                                    <InputError message={errors.customerId} />
                                 </div>
                             </div>
 
-                            {isView && <div>
-                                <h1>Data Manifest</h1>
-                                <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto h-1/3 w-full">
-                                    {itemManifest?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code}</div>)}
-                                </div>
-                            </div>}
-
                             {!isView && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Simpan
+                                Buat Invoice
                             </Button>}
                             {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={15} disabled={processing} onClick={() => resetForm()}>
                                 Batal

@@ -297,7 +297,9 @@ class DeliveryController extends Controller
             if ($data && $data->bukti) {
                 $data->bukti_url = asset('storage/' . $data->bukti);
             } else {
-                $data->bukti_url = null;
+                if ($data) {
+                    $data->bukti_url = null;
+                }
             }
         }
         return Inertia::render('delivery-antaran/index', [

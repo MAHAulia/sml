@@ -3,13 +3,13 @@ import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { type BreadcrumbItem } from '@/types';
+import { InvoiceData } from '@/types/invoice';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import ManifestDialog from './dialog';
 import ManifestTerimaFormDialog from './form-dialog';
 import ManifestTerimaTable from './table';
 import { manifestTerimaTableColumns } from './table-column';
-import { InvoiceData } from '@/types/invoice';
 
 
 interface InvoiceProps {
@@ -73,9 +73,9 @@ export default function Invoice({ datas }: InvoiceProps) {
     }
 
     const handleAdd = () => {
-        // setIsOpen(true)
-        // setSelectedData(null)
-        // setisView(false)
+        setIsOpen(true)
+        setSelectedData(null)
+        setisView(false)
         // Call API Create Manifest
         // post(route('pickup.save_manifest_serah'), {
         //     onSuccess: () => {
@@ -124,7 +124,7 @@ export default function Invoice({ datas }: InvoiceProps) {
             <PageLayout title='Invoice' description="Kelola data invoice Anda">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <ManifestTerimaTable data={datas ?? []} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <ManifestTerimaTable data={datas ?? []} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
                         <ManifestTerimaFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
                         <ManifestDialog selectedData={selectedDataManifest ?? null} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog

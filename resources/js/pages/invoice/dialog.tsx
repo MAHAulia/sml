@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SharedData } from "@/types";
+import { InvoiceData } from "@/types/invoice";
 import { BagianTujuan, Kantor } from "@/types/manifest-terima";
 import { TransactionsData } from "@/types/marketing";
 import { useForm, usePage } from "@inertiajs/react";
 import { ArrowRight, LoaderCircle, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import { InvoiceData } from "@/types/invoice";
 
 
 interface InvoiceDialog {
@@ -228,9 +228,9 @@ export default function InvoiceDialog({ selectedData, isOpen, setIsOpen, isView 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-9/12">
                 <DialogHeader>
-                    <DialogTitle>Terima Data Manifest {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
+                    <DialogTitle>Invoice {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
-                        Kelola penambahan detail data manifest Terima. Pastikan data yang dimasukkan sudah benar sebelum menyimpan.
+                        Kelola data invoice di sini
                     </DialogDescription>
                 </DialogHeader>
                 <div className="gap-4 py-4">
