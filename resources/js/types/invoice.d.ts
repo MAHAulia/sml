@@ -12,6 +12,7 @@ export interface InvoiceData {
     paid_at: string;
     details: InvoiceDetailData[];
     mitra: CustomerData;
+    aging: number;
     created_at: string;
 }
 

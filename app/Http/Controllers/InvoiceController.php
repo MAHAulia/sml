@@ -84,6 +84,7 @@ class InvoiceController extends Controller
 
             if ($isExist) {
                 InvoiceDetail::where("invoice_id", $isExist->id)->delete();
+                $total = 0;
                 foreach ($request->selectedItem as $key => $value) {
                     InvoiceDetail::updateOrCreate(
                         [
@@ -97,6 +98,19 @@ class InvoiceController extends Controller
                         ]
                     );
                 }
+
+                $total = Transaction::whereIn('id', $request->selectedItem)
+                    ->whereHas('biaya')
+                    ->with('biaya')
+                    ->get()
+                    ->sum(function ($item) {
+                        return $item->biaya->deal_price ?? 0;
+                    });
+
+                $isExist->update([
+                    'nominal' => $total
+                ]);
+
                 return redirect()->back()->with('flash', [
                     'type' => 'success',
                     'title' => 'Data invoice berhasil disimpan',

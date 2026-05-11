@@ -102,6 +102,27 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onVerifyn
     }
   },
   {
+    accessorKey: "aging",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Usia Invoice
+          <ArrowUpDown className="ml-auto h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const data = row.original
+      return <div className="text-center">
+        {data.aging} bulan
+      </div>
+    }
+  },
+  {
     accessorKey: "no_invoice",
     header: ({ column }) => {
       return (
@@ -153,8 +174,10 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onVerifyn
     },
     cell: ({ row }) => {
       const data = row.original
+      const nominal = data.nominal
+      const tax = (11/100) * nominal
       return <div className="text-right">
-        Rp. {data.nominal}
+        Rp. {Number(nominal + tax).toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
       </div>
     }
   },
