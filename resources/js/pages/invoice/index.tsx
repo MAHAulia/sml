@@ -94,7 +94,7 @@ export default function Invoice({ datas }: InvoiceProps) {
 
     }
 
-    const onTutupManifest = (data: InvoiceData) => {
+    const onVerifynSend = (data: InvoiceData) => {
         // setSelectedDataInvoice(data)
         // setTambahData(true)
         // setisView(false)
@@ -127,7 +127,7 @@ export default function Invoice({ datas }: InvoiceProps) {
             <PageLayout title='Invoice' description="Kelola data invoice Anda">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <InvoiceTable data={datas ?? []} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <InvoiceTable data={datas ?? []} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onVerifynSend })} />
                         <InvoiceFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedDataInvoice} isView={isView} />
                         <InvoiceDialog selectedData={selectedData ?? null} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BoxIcon, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, SearchIcon, Send, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { InvoiceData } from "@/types/invoice"
@@ -19,10 +19,10 @@ type ColumnProps = {
   onView: (data: InvoiceData) => void;
   onEdit: (data: InvoiceData) => void;
   onDelete: (data: InvoiceData) => void;
-  onTutupManifest: (data: InvoiceData) => void;
+  onVerifynSend: (data: InvoiceData) => void;
 };
 
-export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<InvoiceData>[] => [
+export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onVerifynSend }: ColumnProps): ColumnDef<InvoiceData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -48,6 +48,11 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete }: ColumnP
               onClick={() => onEdit(data)}
             > 
               <BoxIcon /> Tambah Item Invoice
+            </DropdownMenuItem>}
+            {(data.status == "pending") && <DropdownMenuItem
+              onClick={() => onVerifynSend(data)}
+            > 
+              <Send /> Periksa dan Kirim Invoice
             </DropdownMenuItem>}
             {data.status == "pending" && <DropdownMenuSeparator />}
             {data.status == "pending" && <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
