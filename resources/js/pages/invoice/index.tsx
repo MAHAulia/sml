@@ -6,9 +6,9 @@ import { type BreadcrumbItem } from '@/types';
 import { InvoiceData } from '@/types/invoice';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import ManifestDialog from './dialog';
-import ManifestTerimaFormDialog from './form-dialog';
-import ManifestTerimaTable from './table';
+import InvoiceDialog from './dialog';
+import InvoiceFormDialog from './form-dialog';
+import InvoiceTable from './table';
 import { manifestTerimaTableColumns } from './table-column';
 
 
@@ -26,7 +26,7 @@ export default function Invoice({ datas }: InvoiceProps) {
     const { delete: destroy, post, processing } = useForm();
 
     const [selectedData, setSelectedData] = useState<InvoiceData | null>(null)
-    const [selectedDataManifest, setSelectedDataManifest] = useState<InvoiceData | null>(null)
+    const [selectedDataInvoice, setSelectedDataInvoice] = useState<InvoiceData | null>(null)
     const [deleteMenu, setDeleteMenu] = useState<InvoiceData>()
     const [isOpen, setIsOpen] = useState(false)
     const [tambahData, setTambahData] = useState(false)
@@ -52,24 +52,27 @@ export default function Invoice({ datas }: InvoiceProps) {
     }
 
     const handleEdit = (data: InvoiceData) => {
-        // setTambahData(true)
-        // setSelectedData(data)
-        // setisView(false)
+        setTambahData(true)
+        setSelectedData(data)
+        setisView(false)
     }
 
     const confirmDelete = (data: InvoiceData) => {
-
+        setDeleteMenu(data)
+        setShowConfirm(true)
+        setisView(false)
+        setSelectedData(data)
     }
 
     const handleDelete = () => {
-        // post(route('pickup.save_manifest_serah', { a: 'delete', m: selectedData?.code }), {
-        //     onSuccess: () => {
-        //         setShowConfirm(false)
-        //     },
-        //     onError: (error) => {
-        //         console.log(error);
-        //     },
-        // });
+        post(route('invoice.store', { action: 'delete', m: selectedData?.no_invoice }), {
+            onSuccess: () => {
+                setShowConfirm(false)
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        });
     }
 
     const handleAdd = () => {
@@ -92,9 +95,9 @@ export default function Invoice({ datas }: InvoiceProps) {
     }
 
     const onTutupManifest = (data: InvoiceData) => {
-        setSelectedDataManifest(data)
-        setTambahData(true)
-        setisView(false)
+        // setSelectedDataInvoice(data)
+        // setTambahData(true)
+        // setisView(false)
     }
 
     const handleConfirmation = () => {
@@ -124,9 +127,9 @@ export default function Invoice({ datas }: InvoiceProps) {
             <PageLayout title='Invoice' description="Kelola data invoice Anda">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <ManifestTerimaTable data={datas ?? []} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
-                        <ManifestTerimaFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
-                        <ManifestDialog selectedData={selectedDataManifest ?? null} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
+                        <InvoiceTable data={datas ?? []} onAddButtonClicked={handleAdd} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <InvoiceFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedDataInvoice} isView={isView} />
+                        <InvoiceDialog selectedData={selectedData ?? null} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog
                             title={confirmation.title}
                             subtitle={confirmation.subtitle}

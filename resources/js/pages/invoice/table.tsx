@@ -31,7 +31,7 @@ interface DataTableProps<TData, TValue> {
   onAddButtonClicked?: () => void
 }
 
-export default function ManifestTerimaTable<TData, TValue>({
+export default function InvoiceTable<TData, TValue>({
   columns,
   data,
   onAddButtonClicked

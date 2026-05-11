@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, SearchIcon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { InvoiceData } from "@/types/invoice"
@@ -22,7 +22,7 @@ type ColumnProps = {
   onTutupManifest: (data: InvoiceData) => void;
 };
 
-export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<InvoiceData>[] => [
+export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<InvoiceData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -44,11 +44,13 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupMa
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
-            {/* {(data.items.length != 0 && (data.status == 'send' || data.status == 'created')) && <DropdownMenuItem
-              onClick={() => onTutupManifest(data)}
+            {(data.status == "pending") && <DropdownMenuItem
+              onClick={() => onEdit(data)}
             > 
-              <BoxIcon /> Terima Manifest
-            </DropdownMenuItem>} */}
+              <BoxIcon /> Tambah Item Invoice
+            </DropdownMenuItem>}
+            {data.status == "pending" && <DropdownMenuSeparator />}
+            {data.status == "pending" && <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
       )

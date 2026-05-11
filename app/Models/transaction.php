@@ -33,7 +33,7 @@ class Transaction extends Model
     // protected function casts(): array
     // {
     //     return [
-            
+
     //     ];
     // }
 
@@ -47,7 +47,13 @@ class Transaction extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function manifestDetail() {
+    public function manifestDetail()
+    {
         return $this->hasOne(ManifestDetail::class, "item_id");
+    }
+
+    public function invoiceDetails()
+    {
+        return $this->hasMany(InvoiceDetail::class, 'transaction_id');
     }
 }
