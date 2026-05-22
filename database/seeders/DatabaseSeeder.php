@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('users')->truncate();
 
-        $this->call([ UsersTableSeeder::class, RoleMenuSeeder::class, RoleUserSeeder::class, TransactionSeeder::class ]);
+        $this->call([ UsersTableSeeder::class, RoleMenuSeeder::class, RoleUserSeeder::class ]);
         // $this->call([ RoleMenuSeeder::class, RoleUserSeeder::class ]);
 
         if (DB::getDriverName() == 'mysql') {

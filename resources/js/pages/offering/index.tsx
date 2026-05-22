@@ -1,14 +1,14 @@
-import { Head, useForm } from '@inertiajs/react';
-import { type BreadcrumbItem } from '@/types';
+import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
-import { offeringTableColumn } from './table-column';
-import { useEffect, useState } from 'react';
-import DeleteConfirmation from '@/components/delete-confirm-dialog';
-import { Offerings } from '@/types/marketing';
+import { type BreadcrumbItem } from '@/types';
 import { CustomerData } from '@/types/customer';
-import OfferingTable from './table';
+import { Offerings } from '@/types/marketing';
+import { Head, useForm } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import OfferingFormDialog from './form-dialog';
+import OfferingTable from './table';
+import { offeringTableColumn } from './table-column';
 import TarifDialog from './tarif-dialog';
 
 
@@ -63,7 +63,7 @@ export default function Marketing({ datas }: OfferingProps) {
     }
 
     const handleDelete = () => {
-        destroy(route('menu.destroy', deleteMenu?.id));
+        destroy(route('offering.destroy', deleteMenu?.id));
     }
 
     const handleAdd = () => {

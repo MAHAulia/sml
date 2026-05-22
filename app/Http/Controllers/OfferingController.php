@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OfferingSuccessFullyCreated;
 use App\Models\Biaya;
 use App\Models\Customer;
 use App\Models\Offering;
@@ -52,7 +53,7 @@ class OfferingController extends Controller
 
         $user = Auth::user();
 
-        Offering::create([
+        $offering = Offering::create([
             "user_id" => $user->id,
             "customer_id" => $request->customerId,
             "senderName" => $request->senderName,
@@ -69,6 +70,8 @@ class OfferingController extends Controller
             "isiKiriman" => $request->isiKiriman,
             "catatan" => $request->catatan,
         ]);
+
+        event(new OfferingSuccessFullyCreated($offering, $user));
 
         return redirect()->back()->with('flash', [
             'type' => 'success',
@@ -140,7 +143,32 @@ class OfferingController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = Auth::user();
+
+        $offering = Offering::where('id', $id)
+            ->where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$offering) {
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'title' => 'Data Penawaran Tidak Ditemukan',
+                'message' => 'Data penawaran yang akan Anda ubah tidak dapat ditemukan',
+            ]);
+        }
+
+        // hapus relasi dulu
+        $offering->trackAndTraces()->delete();
+
+        // lalu hapus offering
+        $offering->delete();
+
+        return redirect()->back()->with('flash', [
+            'type' => 'success',
+            'title' => 'Penawaran berhasil dihapus',
+            'message' => 'Penawaran berhasil dihapus',
+        ]);
     }
 
     public function offeringRequest() {

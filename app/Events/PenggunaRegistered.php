@@ -22,8 +22,9 @@ class PenggunaRegistered
      */
 
     public $user, $raw_password;
-    
-    public function __construct(User $user, string $raw_password) {
+
+    public function __construct(User $user, string $raw_password)
+    {
         $this->user = $user;
         $this->raw_password = $raw_password;
     }

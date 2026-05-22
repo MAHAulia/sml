@@ -9,7 +9,7 @@ class Offering extends Model
 {
 
     use HasFactory;
-    
+
     protected $fillable = [
         "user_id",
         "customer_id",
@@ -45,5 +45,10 @@ class Offering extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function trackAndTraces()
+    {
+        return $this->hasMany(TrackAndTrace::class, 'offering_id');
     }
 }
