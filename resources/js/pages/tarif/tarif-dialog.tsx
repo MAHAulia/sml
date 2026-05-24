@@ -1,21 +1,16 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { router, useForm, usePage } from "@inertiajs/react";
-import ErrorBoundary from '@/components/error-boundary';
 import InputError from '@/components/input-error';
+import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import * as Icons from 'lucide-react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 import { TextArea } from "@/components/ui/textarea";
 import { CustomerData } from "@/types/customer";
 import { Offerings } from "@/types/marketing";
-import { Badge } from "@/components/ui/badge";
+import { useForm, usePage } from "@inertiajs/react";
+import { LoaderCircle } from 'lucide-react';
+import { FormEventHandler, useEffect, useState } from 'react';
 
 
 interface OfferingFormDialog {
@@ -108,9 +103,9 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        if (data.action == 'add') {
+        // if (data.action == 'add') {
 
-        }
+        // }
 
         if (data.action == 'update') {
             put(route('tarif.create', selectedOffer?.id), {
@@ -156,7 +151,7 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
                 variant = "secondary"
                 break;
             case 'on_review':
-                variant = "destructive"
+                variant = "default"
                 break;
             case 'price_set':
                 variant = "outline"
@@ -485,7 +480,7 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
                                                     autoComplete="offeringPrice"
                                                     value={formatCurrency(data.offeringPrice)}
                                                     onChange={(e) => {
-                                                        let value = handleChange(e)
+                                                        const value = handleChange(e)
                                                         setData('dealPrice', value)
                                                     }}
                                                     placeholder="contoh. 20.000"

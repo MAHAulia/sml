@@ -1,21 +1,16 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { router, useForm, usePage } from "@inertiajs/react";
-import ErrorBoundary from '@/components/error-boundary';
 import InputError from '@/components/input-error';
+import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import * as Icons from 'lucide-react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 import { TextArea } from "@/components/ui/textarea";
 import { CustomerData } from "@/types/customer";
 import { Offerings } from "@/types/marketing";
-import { Badge } from "@/components/ui/badge";
+import { useForm, usePage } from "@inertiajs/react";
+import { LoaderCircle } from 'lucide-react';
+import { FormEventHandler, useEffect, useState } from 'react';
 
 
 interface OfferingFormDialog {
@@ -93,10 +88,10 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        console.log(data.action);
-        if (data.action == 'add') {
+        // console.log(data.action);
+        // if (data.action == 'add') {
             
-        }
+        // }
 
         if (data.action == 'update') {
             put(route('offering-price.store', selectedOffer?.id), {
@@ -439,7 +434,7 @@ export default function OfferingFormDialog({ selectedOffer, isOpen, setIsOpen, i
 
                                 {(!isView && (selectedOffer?.status == "pending" || selectedOffer?.status == "on_nego")) && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                    {selectedOffer?.status == "pending" ? "Minta tarif ke team Financing" : selectedOffer?.status == "on_nego" ? "Teruskann ke team financing" : ""}
+                                    {selectedOffer?.status == "pending" ? "Minta tarif ke team Financing..." : selectedOffer?.status == "on_nego" ? "Teruskann ke team financing" : ""}
                                 </Button>}
                                 {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={15} disabled={processing} onClick={() => resetForm()}>
                                     Batal

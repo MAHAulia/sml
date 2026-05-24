@@ -1,21 +1,21 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { router, useForm, usePage } from "@inertiajs/react";
 import ErrorBoundary from '@/components/error-boundary';
 import InputError from '@/components/input-error';
+import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { TextArea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { CustomerData } from "@/types/customer";
+import { Offerings } from "@/types/marketing";
+import { router, useForm, usePage } from "@inertiajs/react";
 import * as Icons from 'lucide-react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { TextArea } from "@/components/ui/textarea";
-import { CustomerData } from "@/types/customer";
-import { Offerings } from "@/types/marketing";
-import { Badge } from "@/components/ui/badge";
 
 
 interface OfferingFormDialog {

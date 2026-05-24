@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\OfferingSuccessFullyCreated;
+use App\Events\RequestPriceReview;
+use App\Events\TarifSet;
 use App\Models\Biaya;
 use App\Models\Customer;
 use App\Models\Offering;
@@ -17,12 +19,12 @@ class OfferingController extends Controller
      */
     public function index()
     {
-        
+
         $datas = Offering::where("user_id", Auth::id())->with("biaya", "customer")->latest()->get();
-        
+
         return Inertia::render('offering/index', [
             "datas" => $datas,
-            "customers" => Customer::all(["id", "name", "phone","email", "address"])
+            "customers" => Customer::all(["id", "name", "phone", "email", "address"])
         ]);
     }
 
@@ -103,9 +105,9 @@ class OfferingController extends Controller
     {
         $user = Auth::user();
         $offering = Offering::where('id', $id)
-                                ->where("user_id", $user->id)
-                                ->where("status", "pending")
-                                ->first();
+            ->where("user_id", $user->id)
+            ->where("status", "pending")
+            ->first();
         if (!$offering) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
@@ -171,20 +173,21 @@ class OfferingController extends Controller
         ]);
     }
 
-    public function offeringRequest() {
+    public function offeringRequest()
+    {
         $datas = Offering::with("biaya", "customer")->latest()->get();
-        
+
         return Inertia::render('offering-request/index', [
             "datas" => $datas,
-            "customers" => Customer::all(["id", "name", "phone","email", "address"])
+            "customers" => Customer::all(["id", "name", "phone", "email", "address"])
         ]);
     }
-    
+
     public function offeringRequestUpdate(Request $request, $id)
     {
         $user = Auth::user();
         $offering = Offering::where('id', $id)
-                                ->where("status", "pending");
+            ->where("status", "pending");
 
         if ($user->hasRole('Marketing')) {
             $offering->where("user_id", $user->id);
@@ -203,6 +206,8 @@ class OfferingController extends Controller
         $offering->status = "on_review";
         $offering->save();
 
+        event(new RequestPriceReview($offering, $user));
+
         return redirect()->back()->with('flash', [
             'type' => 'success',
             'title' => 'Penawaran sedang dalam proses review dan penentuan harga',
@@ -210,28 +215,28 @@ class OfferingController extends Controller
         ]);
     }
 
-    public function tarif() {
+    public function tarif()
+    {
         $datas = Offering::with("biaya", "customer")->latest()->get();
 
         return Inertia::render('tarif/index', [
             "datas" => $datas,
-            "customers" => Customer::all(["id", "name", "phone","email", "address"])
+            "customers" => Customer::all(["id", "name", "phone", "email", "address"])
         ]);
     }
 
-    public function storeTarif(Request $request, string $id) {
-
-    
+    public function storeTarif(Request $request, string $id)
+    {
         if ($request->state) {
             $offering = Offering::where('id', $id)
-                                ->whereIn("status", ["on_review_nego", "rejected"])
-                                ->with('biaya')
-                                ->first();
+                ->whereIn("status", ["on_review_nego", "rejected"])
+                ->with('biaya')
+                ->first();
         } else {
             $offering = Offering::where('id', $id)
-                                ->whereIn("status", ["on_review", "price_set", "on_nego", "rejected"])
-                                ->with('biaya')
-                                ->first();
+                ->whereIn("status", ["on_review", "price_set", "on_nego", "rejected"])
+                ->with('biaya')
+                ->first();
         }
         
         if (!$offering) {
@@ -242,12 +247,11 @@ class OfferingController extends Controller
             ]);
         }
 
-        
         $user = Auth::user();
         $status = $request->status ?? "pending"; // ["pending", "on_nego", "accepted", "rejected"]
 
         if ($request->state) {
-            $status = $request->state == "approve" ? "accepted": "rejected";
+            $status = $request->state == "approve" ? "accepted" : "rejected";
         }
 
         $data = [
@@ -272,22 +276,28 @@ class OfferingController extends Controller
             unset($data["offering_price"]);
             unset($data["nego_price"]);
         }
-        
+
         if ($request->state) {
             $offering->biaya()->update([
                 "status" => $status
             ]);
         } else {
-            $biaya = $offering->biaya()->updateOrCreate(
+            $offering->biaya()->updateOrCreate(
                 ['offering_id' => $offering->id], // condition
                 $data
             );
         }
-        
+
 
         $offering->update([
             "status" => $status == "pending" ? "price_set" : $status
         ]);
+
+        if ($request->status == "request") {
+            event(new RequestPriceReview($offering, $user, $request->status));
+        } else {
+            event(new TarifSet($offering, $user, $status));
+        }
 
         return redirect()->back()->with('flash', [
             'type' => 'success',

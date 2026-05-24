@@ -21,22 +21,22 @@ class AddDataToTrackingInfo
     /**
      * Handle the event.
      */
-    public function handle(OfferingSuccessFullyCreated $event): void
+    public function handle(object $event): void
     {
-        $offering = $event->offering;
-        $user = $event->user;
-        $title = $event->title;
-        $message = $event->message;
+        // $offering = $event->offering;
+        // $user = $event->user;
+        // $title = $event->title;
+        // $message = $event->message;
 
-        $transaction = Transaction::where('offering_id', $offering->id)->first();
+        // $transaction = Transaction::where('offering_id', $offering->id)->first();
 
-        $trackAndTrace = new TrackAndTrace();
-        $trackAndTrace->offering_id = $event->offering->id;
-        $trackAndTrace->transaction_id = $transaction ? $transaction->id : null;
-        $trackAndTrace->tracking_number = $transaction ? $transaction->order_number : null;
-        $trackAndTrace->status = $title;;
-        $trackAndTrace->location = $user->office;
-        $trackAndTrace->description = $message;
-        $trackAndTrace->save();
+        // $trackAndTrace = new TrackAndTrace();
+        // $trackAndTrace->offering_id = $event->offering->id;
+        // $trackAndTrace->transaction_id = $transaction ? $transaction->id : null;
+        // $trackAndTrace->tracking_number = $transaction ? $transaction->order_number : null;
+        // $trackAndTrace->status = $title;;
+        // $trackAndTrace->location = $user->office;
+        // $trackAndTrace->description = $message;
+        // $trackAndTrace->save();
     }
 }

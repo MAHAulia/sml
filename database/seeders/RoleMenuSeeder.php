@@ -143,7 +143,7 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "47", "role_id" => "2"],
             ["menu_id" => "48", "role_id" => "2"],
             ["menu_id" => "49", "role_id" => "2"],
-            ["menu_id" => "90", "role_id" => "2"],
+            ["menu_id" => "93", "role_id" => "2"],
 
             // Menu Customer Service for costumer services
             ["menu_id" => "50", "role_id" => "3"],
@@ -154,7 +154,7 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "55", "role_id" => "3"],
             ["menu_id" => "56", "role_id" => "3"],
             ["menu_id" => "57", "role_id" => "3"],
-            ["menu_id" => "90", "role_id" => "3"],
+            ["menu_id" => "93", "role_id" => "3"],
 
             // Menu Pickup for costumer services
             ["menu_id" => "58", "role_id" => "4"],
