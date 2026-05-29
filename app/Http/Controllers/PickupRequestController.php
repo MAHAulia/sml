@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PickuperAssigned;
 use App\Models\Customer;
 use App\Models\Offering;
 use App\Models\User;
@@ -50,6 +51,9 @@ class PickupRequestController extends Controller
         $offering->pickuper_id = $request->pickuperId;
         $offering->pickup_status = "on_pickup";
         $offering->save();
+
+        // Notify to Pickuper
+        event(new PickuperAssigned($offering));
 
         return redirect()->back()->with('flash', [
             'type' => 'success',
