@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PickupSuccess;
 use App\Models\Customer;
 use App\Models\Kantor;
 use App\Models\Manifest;
@@ -64,11 +65,13 @@ class PickupController extends Controller
             $data->order_number = $orderNumber;
             unset($data->created_at);
             unset($data->updated_at);
-            Transaction::insert($data->toArray());
-
-            // Send Email To Customer
+            $transaction = Transaction::insert($data->toArray());
 
             DB::commit();
+
+            // TODO: Belom Beres
+            event(new PickupSuccess($transaction));
+
             return redirect()->back()->with('flash', [
                 'type' => 'success',
                 'title' => 'Status pickup berhasil diperbaharui',
