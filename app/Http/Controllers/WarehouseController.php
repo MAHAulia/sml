@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ManifestReceived;
 use App\Models\Bag;
 use App\Models\BagDetail;
 use App\Models\Kantor;
@@ -121,11 +122,25 @@ class WarehouseController extends Controller
                     // Update bag
                     $bag = Bag::where("id", $value->item_id)->first();
                     if ($bag) {
-                        $bag->status = "received";
-                        $bag->save();
 
-                        BagDetail::where("bag_id", $bag->id)
-                            ->update(["status" => "received"]);
+                        try {
+                            DB::beginTransaction();
+                            $bag->status = "received";
+                            $bag->save();
+
+                            BagDetail::where("bag_id", $bag->id)
+                                ->update(["status" => "received"]);
+
+                            event(new ManifestReceived($manifest));
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            DB::rollback();
+                            return redirect()->back()->with('flash', [
+                                'type' => 'error',
+                                'title' => 'Gagal tutup manifest',
+                                'message' => 'Manifest gagal ditutup ' . $th->getMessage(),
+                            ]);
+                        }
                     }
                 }
             }

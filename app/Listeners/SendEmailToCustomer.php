@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ManifestCreated;
+use App\Events\ManifestReceived;
 use App\Events\PickupSuccess;
 use App\Models\Customer;
 use App\Models\Notification;
@@ -26,7 +27,7 @@ class SendEmailToCustomer
     /**
      * Handle the event.
      */
-    public function handle(PickupSuccess | ManifestCreated $event): void
+    public function handle(PickupSuccess | ManifestCreated | ManifestReceived $event): void
     {
         if ($event instanceof PickupSuccess) {
             $transaction = $event->transaction;
@@ -58,6 +59,18 @@ class SendEmailToCustomer
             }
 
             
+        } elseif ($event instanceof ManifestReceived) {
+            $manifest = $event->manifest;
+            $items = $manifest->items;
+            // Send Email To Customer
+            foreach ($items as $item) {
+                if ($manifest->type == 'local') {
+                    $transaction = Transaction::find($item->item_id)->with('offering')->first();
+                    $customer = Customer::find($transaction->customer_id);
+                    // Send email to customer
+                    $customer->notify(new SendEmail($transaction->offering, "Manifest Received", "Your manifest with ID ". $manifest->code . " has been received with status 'received' with ". $manifest->to ." Order number: ". $transaction->order_number));
+                }
+            }
         }
     }
 }
