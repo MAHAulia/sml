@@ -78,7 +78,6 @@ class PickupController extends Controller
                 'message' => 'Status pickup berhasil diperbaharui, silahkan hubungi customer service untuk mempercepat proses validasi.',
             ]);
         } catch (\Throwable $th) {
-            dd($th->getMessage());  
             DB::rollBack();
             return redirect()->back()->with('flash', [
                 'type' => 'error',
