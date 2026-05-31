@@ -253,6 +253,7 @@ class WarehouseController extends Controller
         }
 
         if ($request->a == 'approval') {
+            
             $bag = Bag::where("code", $request->m)->first();
             if (!$bag) {
                 return redirect()->back()->with('flash', [
@@ -275,6 +276,8 @@ class WarehouseController extends Controller
 
             BagDetail::where("bag_id", $bag->id)
                 ->update(["status" => "bagged"]);
+
+                // TODO: Add event notification here
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
