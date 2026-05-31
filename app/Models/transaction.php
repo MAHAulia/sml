@@ -56,4 +56,9 @@ class Transaction extends Model
     {
         return $this->hasMany(InvoiceDetail::class, 'transaction_id');
     }
+
+    public function offering()
+    {
+        return $this->belongsTo(Offering::class);
+    }
 }

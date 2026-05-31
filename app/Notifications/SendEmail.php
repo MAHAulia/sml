@@ -15,7 +15,7 @@ class SendEmail extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Offering $offering, public string $title, public string $message)
+    public function __construct(public Offering | null $offering, public string $title, public string $message)
     {
         //
     }

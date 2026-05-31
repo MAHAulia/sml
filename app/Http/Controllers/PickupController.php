@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ManifestCreated;
 use App\Events\PickupSuccess;
 use App\Models\Customer;
 use App\Models\Kantor;
@@ -153,7 +154,7 @@ class PickupController extends Controller
         }
 
         if ($request->a == 'approval') {
-            $manifest = Manifest::where("code", $request->m)->first();
+            $manifest = Manifest::where("code", $request->m)->with('items')->first();
             if (!$manifest) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
@@ -172,6 +173,8 @@ class PickupController extends Controller
 
             $manifest->status = "send";
             $manifest->save();
+
+            event(new ManifestCreated($manifest));
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
