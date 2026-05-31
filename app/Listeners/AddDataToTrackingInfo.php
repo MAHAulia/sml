@@ -22,8 +22,9 @@ class AddDataToTrackingInfo
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(PickupSuccess $event): void
     {
+
         if ($event instanceof PickupSuccess) {
             $transaction = $event->transaction;
 

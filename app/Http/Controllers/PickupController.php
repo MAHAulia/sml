@@ -65,12 +65,12 @@ class PickupController extends Controller
             $data->order_number = $orderNumber;
             unset($data->created_at);
             unset($data->updated_at);
-            $transaction = Transaction::insert($data->toArray());
+            $transaction = Transaction::create($data->toArray());
+            event(new PickupSuccess($transaction));
 
             DB::commit();
 
             // TODO: Belom Beres
-            event(new PickupSuccess($transaction));
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
@@ -78,6 +78,8 @@ class PickupController extends Controller
                 'message' => 'Status pickup berhasil diperbaharui, silahkan hubungi customer service untuk mempercepat proses validasi.',
             ]);
         } catch (\Throwable $th) {
+            dd($th->getMessage());  
+            DB::rollBack();
             return redirect()->back()->with('flash', [
                 'type' => 'error',
                 'title' => 'Update status pickup gagal',
