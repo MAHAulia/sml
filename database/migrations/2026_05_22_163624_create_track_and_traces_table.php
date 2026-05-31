@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('offering_id')->constrained('offerings')->noActionOnDelete();
             $table->foreignId('transaction_id')->constrained('transactions')->nullable()->noActionOnDelete();
-            $table->string('tracking_number')->nullable()->unique();
+            $table->string('tracking_number')->nullable();
             $table->string('status');
             $table->string('location')->nullable();
             $table->string('description')->nullable();

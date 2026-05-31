@@ -26,21 +26,22 @@ class SendNotificationToWarehouse
     {
         if ($event instanceof ManifestCreated) {
             $manifest = $event->manifest;
-            $items = $manifest->items;
-            // Send email to warehouse
-            $warehouseUser = User::whereHas("roles", function ($query) {
-                $query->where("name", "warehouse");
-            })
-            ->where('office', $manifest->office_to)
-            ->get();
-            foreach ($warehouseUser as $warehouseUser) {
-                $warehouseUser->notify(new SendEmail(null, "Manifest Created", "A new manifest has been created with ID ". $manifest->code));  
-                    
-                $notification = new Notification();
-                $notification->user_id = $warehouseUser->id;
-                $notification->title = 'Manifest Created';
-                $notification->message = "A new manifest has been created with ID ". $manifest->code;
-                $notification->save();
+            
+            if ($manifest->to == "Warehouse") {
+                $warehouseUser = User::whereHas("roles", function ($query) {
+                    $query->where("name", "warehouse");
+                })
+                ->where('office', $manifest->office_to)
+                ->get();
+                foreach ($warehouseUser as $warehouseUser) {
+                    $warehouseUser->notify(new SendEmail(null, "Manifest Created", "A new manifest has been created with ID ". $manifest->code));  
+                        
+                    $notification = new Notification();
+                    $notification->user_id = $warehouseUser->id;
+                    $notification->title = 'Manifest Created';
+                    $notification->message = "A new manifest has been created with ID ". $manifest->code;
+                    $notification->save();
+                }
             }
         }
     }

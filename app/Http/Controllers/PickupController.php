@@ -154,33 +154,47 @@ class PickupController extends Controller
         }
 
         if ($request->a == 'approval') {
-            $manifest = Manifest::where("code", $request->m)->with('items')->first();
-            if (!$manifest) {
+            try {
+                $manifest = Manifest::where("code", $request->m)->with('items')->first();
+                if (!$manifest) {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Tidak Ditemukan',
+                        'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                    ]);
+                }
+
+                if ($manifest->status != "created") {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Sudah Memiliki Status',
+                        'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                    ]);
+                }
+
+                DB::beginTransaction();
+
+
+                $manifest->status = "send";
+                $manifest->save();
+
+                event(new ManifestCreated($manifest));
+
+                DB::commit();
+
+                return redirect()->back()->with('flash', [
+                    'type' => 'success',
+                    'title' => 'Data manifest berhasil disimpan',
+                    'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                ]);
+
+            } catch (\Throwable $th) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
-                    'title' => 'Manifest Tidak Ditemukan',
-                    'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                    'title' => 'Manifest gagal ditutup',
+                    'message' => $th->getMessage(),
                 ]);
             }
-
-            if ($manifest->status != "created") {
-                return redirect()->back()->with('flash', [
-                    'type' => 'error',
-                    'title' => 'Manifest Sudah Memiliki Status',
-                    'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
-                ]);
-            }
-
-            $manifest->status = "send";
-            $manifest->save();
-
-            event(new ManifestCreated($manifest));
-
-            return redirect()->back()->with('flash', [
-                'type' => 'success',
-                'title' => 'Data manifest berhasil disimpan',
-                'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
-            ]);
 
         }
 

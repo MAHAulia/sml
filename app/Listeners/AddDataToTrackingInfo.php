@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ManifestCreated;
 use App\Events\OfferingSuccessFullyCreated;
 use App\Events\PickupSuccess;
 use App\Models\TrackAndTrace;
@@ -22,7 +23,7 @@ class AddDataToTrackingInfo
     /**
      * Handle the event.
      */
-    public function handle(PickupSuccess $event): void
+    public function handle(PickupSuccess | ManifestCreated $event): void
     {
 
         if ($event instanceof PickupSuccess) {
@@ -37,7 +38,27 @@ class AddDataToTrackingInfo
             $trackAndTrace->description = 'Pickup has been successfully completed.';
             $trackAndTrace->save();
         }
-        
+
+        if ($event instanceof ManifestCreated) {
+            $manifest = $event->manifest;
+            $items = $manifest->items;
+
+            foreach($items as $item) {
+                if ($manifest->type == "local") {
+                    $transaction = Transaction::where('id', $item->item_id)->with('offering')->first();
+                    $trackAndTrace = new TrackAndTrace();
+                    $trackAndTrace->offering_id = $transaction->offering->id;
+                    $trackAndTrace->transaction_id = $transaction->id;
+                    $trackAndTrace->tracking_number = $transaction->order_number;
+                    $trackAndTrace->status = 'Manifest Created';
+                    $trackAndTrace->location = $manifest->status == "send" ? $manifest->office_from : $manifest->office_to;
+                    $trackAndTrace->description = 'Manifest has been successfully created.';
+                    $trackAndTrace->save();
+                }
+            }
+
+        }
+
         // $offering = $event->offering;
         // $user = $event->user;
         // $title = $event->title;
