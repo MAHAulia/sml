@@ -7,6 +7,7 @@ use App\Events\ManifestCreated;
 use App\Events\ManifestReceived;
 use App\Events\OfferingSuccessFullyCreated;
 use App\Events\PickupSuccess;
+use App\Models\Bag;
 use App\Models\TrackAndTrace;
 use App\Models\Transaction;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -56,6 +57,21 @@ class AddDataToTrackingInfo
                     $trackAndTrace->location = $manifest->status == "send" ? $manifest->office_from : $manifest->office_to;
                     $trackAndTrace->description = 'Manifest has been successfully created.';
                     $trackAndTrace->save();
+                }
+
+                if ($manifest->type == "linehaul") {
+                    $bag = Bag::where('id', $item->item_id)->with('items')->first();
+                    foreach ($bag->items as $bagItem) {
+                        $transaction = Transaction::where('id', $bagItem->transaction_id)->with('offering')->first();
+                        $trackAndTrace = new TrackAndTrace();
+                        $trackAndTrace->offering_id = $transaction->offering->id;
+                        $trackAndTrace->transaction_id = $transaction->id;
+                        $trackAndTrace->tracking_number = $transaction->order_number;
+                        $trackAndTrace->status = 'Manifest Created';
+                        $trackAndTrace->location = $manifest->status == "send" ? $manifest->office_from : $manifest->office_to;
+                        $trackAndTrace->description = 'Manifest has been successfully created.';
+                        $trackAndTrace->save();
+                    }
                 }
             }
         }

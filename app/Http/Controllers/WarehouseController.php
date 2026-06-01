@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\ItemBagged;
+use App\Events\ManifestCreated;
 use App\Events\ManifestReceived;
 use App\Models\Bag;
 use App\Models\BagDetail;
@@ -463,38 +464,51 @@ class WarehouseController extends Controller
         }
 
         if ($request->a == 'approval') {
-            $manifest = Manifest::where("code", $request->m)->with("items")->first();
-            if (!$manifest) {
+            // try {
+                $manifest = Manifest::where("code", $request->m)->with("items")->first();
+                if (!$manifest) {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Tidak Ditemukan',
+                        'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                    ]);
+                }
+
+                if ($manifest->status != "created") {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Sudah Memiliki Status',
+                        'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                    ]);
+                }
+
+                foreach ($manifest->items as $value) {
+                    BagDetail::where("bag_id", $value->item_id)
+                        ->update(["status" => "manifested"]);
+                    Bag::where("id", $value->item_id)
+                        ->update(["status" => "manifested"]);
+                }
+
+                DB::beginTransaction();
+                $manifest->status = "send";
+                $manifest->save();
+
+                event(new ManifestCreated($manifest));
+                DB::commit();
+
                 return redirect()->back()->with('flash', [
-                    'type' => 'error',
-                    'title' => 'Manifest Tidak Ditemukan',
-                    'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                    'type' => 'success',
+                    'title' => 'Data manifest berhasil disimpan',
+                    'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
                 ]);
-            }
-
-            if ($manifest->status != "created") {
-                return redirect()->back()->with('flash', [
-                    'type' => 'error',
-                    'title' => 'Manifest Sudah Memiliki Status',
-                    'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
-                ]);
-            }
-
-            foreach ($manifest->items as $value) {
-                BagDetail::where("bag_id", $value->item_id)
-                    ->update(["status" => "manifested"]);
-                Bag::where("id", $value->item_id)
-                    ->update(["status" => "manifested"]);
-            }
-
-            $manifest->status = "send";
-            $manifest->save();
-
-            return redirect()->back()->with('flash', [
-                'type' => 'success',
-                'title' => 'Data manifest berhasil disimpan',
-                'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
-            ]);
+            // } catch (\Throwable $th) {
+            //     DB::rollBack();
+            //     return redirect()->back()->with('flash', [
+            //         'type' => 'error',
+            //         'title' => 'Manifest gagal ditutup',
+            //         'message' => $th->getMessage(),
+            //     ]);
+            // }
         }
 
         $role = $user->roles()->first();

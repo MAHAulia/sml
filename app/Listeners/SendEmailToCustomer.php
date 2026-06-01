@@ -6,6 +6,7 @@ use App\Events\ItemBagged;
 use App\Events\ManifestCreated;
 use App\Events\ManifestReceived;
 use App\Events\PickupSuccess;
+use App\Models\Bag;
 use App\Models\Customer;
 use App\Models\Notification;
 use App\Models\Offering;
@@ -48,12 +49,14 @@ class SendEmailToCustomer
                     $customer = Customer::find($transaction->customer_id);
                     // Send email to customer
                     $customer->notify(new SendEmail($transaction->offering, "Manifest Created", "A new manifest has been created with ID ". $manifest->code . ", for your order number ". $transaction->order_number));
-                } elseif ($manifest->type == 'local') {
-                    // $offering = Offering::find($item->item_id);
-                    // $transaction = Transaction::where("offering_id", $offering->id)->first();
-                    // $customer = Customer::find($offering->customer_id);
-                    // // Send email to customer
-                    // $customer->notify(new SendEmail($offering, "Manifest Created", "A new manifest has been created with ID ". $manifest->code . ", for your order number ". $transaction->order_number));
+                } elseif ($manifest->type == 'linehaul') {
+                    $bag = Bag::where('id', $item->item_id)->with('items')->first();
+                    foreach ($bag->items as $bagItem) {
+                        $transaction = Transaction::find($bagItem->transaction_id)->with('offering')->first();
+                        $customer = Customer::find($transaction->customer_id);
+                        // Send email to customer
+                        $customer->notify(new SendEmail($transaction->offering, "Manifest Created", "A new manifest has been created with ID ". $manifest->code . ", for your order number ". $transaction->order_number . " to ". $manifest->to . " from ". $manifest->from));
+                    }
                 } else {
 
                 }
@@ -70,6 +73,13 @@ class SendEmailToCustomer
                     $customer = Customer::find($transaction->customer_id);
                     // Send email to customer
                     $customer->notify(new SendEmail($transaction->offering, "Manifest Received", "Your manifest with ID ". $manifest->code . " has been received with status 'received' with ". $manifest->to ." Order number: ". $transaction->order_number));
+                } elseif ($manifest->type == 'linehaul') {
+                    $transaction = Transaction::find($item->transaction_id)->with('offering')->first();
+                    $customer = Customer::find($transaction->customer_id);
+                    // Send email to customer
+                    $customer->notify(new SendEmail($transaction->offering, "Manifest Received", "Your manifest with ID ". $manifest->code . " has been received with status 'received' with ". $manifest->to ." Order number: ". $transaction->order_number . " on ". $manifest->office_to));
+                } else {
+
                 }
             }
         } elseif ($event instanceof ItemBagged) {

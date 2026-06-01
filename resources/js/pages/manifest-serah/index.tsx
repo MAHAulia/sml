@@ -1,3 +1,4 @@
+import ConfirmationDialog from '@/components/confirm-dialog';
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
@@ -9,8 +10,6 @@ import ManifestDialog from './dialog';
 import ManifestSerahFormDialog from './form-dialog';
 import ManifestSerahTable from './table';
 import { manifestSerahTableColumns } from './table-column';
-import AlertDialog from '@/components/alert-dialog';
-import ConfirmationDialog from '@/components/confirm-dialog';
 
 
 interface ManifestSerahProps {

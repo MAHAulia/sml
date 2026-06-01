@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, SearchIcon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { ManifestTerimaData } from "@/types/manifest-terima"
@@ -56,6 +56,7 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupMa
   },
   {
     id: "no",
+    accessorKey: "code",
     header: ({ column }) => {
       return (
         <Button
@@ -68,10 +69,6 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupMa
         </Button>
       )
     },
-    cell: ({ row }) => {
-      const index = row.index + 1;
-      return <div className="text-center">{index}</div>
-    }
   },
   {
     accessorKey: "status",

@@ -64,6 +64,7 @@ export const bagingTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }
   },
   {
     id: "no",
+    accessorKey: "code",
     header: ({ column }) => {
       return (
         <Button
@@ -75,10 +76,6 @@ export const bagingTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
-    },
-    cell: ({ row }) => {
-      const index = row.index + 1;
-      return <div className="text-center">{index}</div>
     }
   },
   {

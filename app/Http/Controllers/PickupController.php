@@ -189,6 +189,7 @@ class PickupController extends Controller
                 ]);
 
             } catch (\Throwable $th) {
+                DB::rollBack();
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
                     'title' => 'Manifest gagal ditutup',
