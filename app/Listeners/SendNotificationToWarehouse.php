@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ItemBagged;
 use App\Events\ManifestCreated;
 use App\Models\Notification;
 use App\Models\User;
@@ -22,7 +23,7 @@ class SendNotificationToWarehouse
     /**
      * Handle the event.
      */
-    public function handle(ManifestCreated $event): void
+    public function handle(ManifestCreated | ItemBagged $event): void
     {
         if ($event instanceof ManifestCreated) {
             $manifest = $event->manifest;
@@ -43,6 +44,19 @@ class SendNotificationToWarehouse
                     $notification->save();
                 }
             }
+        }
+
+        if ($event instanceof ItemBagged) {
+            $bag = $event->bag;
+            $warehouseUser = User::where("id", $bag->user_id)->first();
+
+            $warehouseUser->notify(new SendEmail(null, "Item Bagged", "An item has been bagged with Code ". $bag->code));  
+                
+            $notification = new Notification();
+            $notification->user_id = $warehouseUser->id;
+            $notification->title = 'Item Bagged';
+            $notification->message = "An item has been bagged with Code ". $bag->code;
+            $notification->save();
         }
     }
 }

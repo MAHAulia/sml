@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ItemBagged;
 use App\Events\ManifestReceived;
 use App\Models\Bag;
 use App\Models\BagDetail;
@@ -254,7 +255,7 @@ class WarehouseController extends Controller
 
         if ($request->a == 'approval') {
             
-            $bag = Bag::where("code", $request->m)->first();
+            $bag = Bag::where("code", $request->m)->with('items')->first();
             if (!$bag) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
@@ -271,19 +272,32 @@ class WarehouseController extends Controller
                 ]);
             }
 
-            $bag->status = "bagged";
-            $bag->save();
+            try {
+                DB::beginTransaction();
+                $bag->status = "bagged";
+                $bag->save();
 
-            BagDetail::where("bag_id", $bag->id)
-                ->update(["status" => "bagged"]);
+                BagDetail::where("bag_id", $bag->id)
+                    ->update(["status" => "bagged"]);
 
                 // TODO: Add event notification here
+                event(new ItemBagged($bag));
 
-            return redirect()->back()->with('flash', [
-                'type' => 'success',
-                'title' => 'Data kantong berhasil disimpan',
-                'message' => 'Data kantong berhasil disimpan, silahkan lanjutkan proses berikutnya',
-            ]);
+                DB::commit();
+                return redirect()->back()->with('flash', [
+                    'type' => 'success',
+                    'title' => 'Data kantong berhasil disimpan',
+                    'message' => 'Data kantong berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                ]);
+            } catch (\Throwable $th) {
+                DB::rollback();
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Gagal tutup kantong',
+                    'message' => 'Kantong gagal ditutup ' . $th->getMessage(),
+                ]);
+            }
+            
         }
 
         $isExist = Bag::where("user_id", $user->id)

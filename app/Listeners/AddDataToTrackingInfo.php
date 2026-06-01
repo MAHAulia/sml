@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ItemBagged;
 use App\Events\ManifestCreated;
 use App\Events\ManifestReceived;
 use App\Events\OfferingSuccessFullyCreated;
@@ -24,7 +25,7 @@ class AddDataToTrackingInfo
     /**
      * Handle the event.
      */
-    public function handle(PickupSuccess | ManifestCreated | ManifestReceived $event): void
+    public function handle(PickupSuccess | ManifestCreated | ManifestReceived | ItemBagged $event): void
     {
 
         if ($event instanceof PickupSuccess) {
@@ -44,7 +45,7 @@ class AddDataToTrackingInfo
             $manifest = $event->manifest;
             $items = $manifest->items;
 
-            foreach($items as $item) {
+            foreach ($items as $item) {
                 if ($manifest->type == "local") {
                     $transaction = Transaction::where('id', $item->item_id)->with('offering')->first();
                     $trackAndTrace = new TrackAndTrace();
@@ -57,14 +58,13 @@ class AddDataToTrackingInfo
                     $trackAndTrace->save();
                 }
             }
-
         }
 
         if ($event instanceof ManifestReceived) {
             $manifest = $event->manifest;
             $items = $manifest->items;
 
-            foreach($items as $item) {
+            foreach ($items as $item) {
                 if ($manifest->type == "local") {
                     $transaction = Transaction::where('id', $item->item_id)->with('offering')->first();
                     $trackAndTrace = new TrackAndTrace();
@@ -73,12 +73,28 @@ class AddDataToTrackingInfo
                     $trackAndTrace->tracking_number = $transaction->order_number;
                     $trackAndTrace->status = 'Manifest Received';
                     $trackAndTrace->location = $manifest->status == "send" ? $manifest->office_from : $manifest->office_to;
-                    $trackAndTrace->description = 'Manifest has been successfully received on '. $manifest->to .'.';
+                    $trackAndTrace->description = 'Manifest has been successfully received on ' . $manifest->to . '.';
                     $trackAndTrace->save();
                 }
             }
         }
 
+        if ($event instanceof ItemBagged) {
+            $bag = $event->bag;
+            $items = $bag->items;
+
+            foreach ($items as $item) {
+                $transaction = Transaction::where('id', $item->transaction_id)->with('offering')->first();
+                $trackAndTrace = new TrackAndTrace();
+                $trackAndTrace->offering_id = $transaction->offering->id;
+                $trackAndTrace->transaction_id = $transaction->id;
+                $trackAndTrace->tracking_number = $transaction->order_number;
+                $trackAndTrace->status = 'Item Bagged';
+                $trackAndTrace->location = $bag->status == "bagged" ? $bag->office : $bag->office_to;
+                $trackAndTrace->description = 'Item has been successfully bagged.';
+                $trackAndTrace->save();
+            }
+        }
         // $offering = $event->offering;
         // $user = $event->user;
         // $title = $event->title;
