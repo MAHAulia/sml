@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ManifestReceived;
 use App\Models\Bag;
 use App\Models\BagDetail;
 use App\Models\DeliveryOrder;
@@ -13,6 +14,7 @@ use App\Models\Role;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -92,56 +94,71 @@ class DeliveryController extends Controller
 
         if ($request->a == 'approval') {
 
-            $manifest = Manifest::where("code", $request->m)->first();
-            if (!$manifest) {
-                return redirect()->back()->with('flash', [
-                    'type' => 'error',
-                    'title' => 'Manifest Tidak Ditemukan',
-                    'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
-                ]);
-            }
+            try {
+                DB::beginTransaction();
 
-            if ($manifest->status != "send") {
-                return redirect()->back()->with('flash', [
-                    'type' => 'error',
-                    'title' => 'Manifest Sudah Memiliki Status',
-                    'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
-                ]);
-            }
+                $manifest = Manifest::where("code", $request->m)->first();
+                if (!$manifest) {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Tidak Ditemukan',
+                        'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                    ]);
+                }
 
-            ManifestDetail::whereNotIn("item_id", $request->selectedItem)
-                ->where("manifest_id", $manifest->id)
-                ->update(["status" => "created"]);
+                if ($manifest->status != "send") {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Sudah Memiliki Status',
+                        'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                    ]);
+                }
 
-            ManifestDetail::whereIn("item_id", $request->selectedItem)
-                ->where("manifest_id", $manifest->id)
-                ->update(["status" => "received"]);
+                ManifestDetail::whereNotIn("item_id", $request->selectedItem)
+                    ->where("manifest_id", $manifest->id)
+                    ->update(["status" => "created"]);
 
-            if (count($request->items) == 0) {
-                $manifest->status = "received";
-                $manifest->save();
-            }
+                ManifestDetail::whereIn("item_id", $request->selectedItem)
+                    ->where("manifest_id", $manifest->id)
+                    ->update(["status" => "received"]);
 
-            if ($manifest->type == 'linehaul') {
-                $manifestDetail = ManifestDetail::where("manifest_id", $manifest->id)->get();
-                foreach ($manifestDetail as $value) {
-                    // Update bag
-                    $bag = Bag::where("id", $value->item_id)->first();
-                    if ($bag) {
-                        $bag->status = "received";
-                        $bag->save();
+                if (count($request->items) == 0) {
+                    $manifest->status = "received";
+                    $manifest->save();
 
-                        BagDetail::where("bag_id", $bag->id)
-                            ->update(["status" => "received"]);
+                    event(new ManifestReceived($manifest));
+                }
+
+                if ($manifest->type == 'linehaul') {
+                    $manifestDetail = ManifestDetail::where("manifest_id", $manifest->id)->get();
+                    foreach ($manifestDetail as $value) {
+                        // Update bag
+                        $bag = Bag::where("id", $value->item_id)->first();
+                        if ($bag) {
+                            $bag->status = "received";
+                            $bag->save();
+
+                            BagDetail::where("bag_id", $bag->id)
+                                ->update(["status" => "received"]);
+                        }
                     }
                 }
-            }
 
-            return redirect()->back()->with('flash', [
-                'type' => 'success',
-                'title' => 'Data manifest berhasil disimpan',
-                'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
-            ]);
+                DB::commit();
+                return redirect()->back()->with('flash', [
+                    'type' => 'success',
+                    'title' => 'Data manifest berhasil disimpan',
+                    'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                ]);
+            } catch (\Throwable $th) {
+                //throw $th;
+                DB::rollback();
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Manifest gagal disimpan',
+                    'message' => 'Gagal menyimpan data manifest karena ' . $th->getMessage(),
+                ]);
+            }
         }
 
         return redirect()->route("warehouse.manifest_terima");
