@@ -91,12 +91,27 @@ class SendNotificationToPickuper
             $items = $manifest->items;
 
             foreach ($items as $item) {
-                $transaction = Transaction::where("id", $item->item_id)->with('offering')->first();
-                $notification = new Notification();
-                $notification->user_id = $transaction->pickuper_id;
-                $notification->title = "Manifest Received";
-                $notification->message = "A manifest has been received for the offering from " . $transaction->offering->senderName . ".";
-                $notification->save();
+                if ($manifest->type == "local") {
+                    $transaction = Transaction::where("id", $item->item_id)->with('offering')->first();
+                    $notification = new Notification();
+                    $notification->user_id = $transaction->pickuper_id;
+                    $notification->title = "Manifest Received";
+                    $notification->message = "A manifest has been received for the offering from " . $transaction->offering->senderName . ".";
+                    $notification->save();
+                } elseif ($manifest->type == "linehaul") {
+                    $bags = Bag::where("id", $item->item_id)->with('items')->first();
+
+                    foreach ($bags->items as $bagItem) {
+                        $transaction = Transaction::where("id", $bagItem->transaction_id)->with('offering')->first();
+                        $notification = new Notification();
+                        $notification->user_id = $transaction->pickuper_id;
+                        $notification->title = "Manifest Received";
+                        $notification->message = "A manifest has been received for the offering from " . $transaction->offering->senderName . ".";
+                        $notification->save();
+                    }
+                    
+                }
+                
             }
             
         }

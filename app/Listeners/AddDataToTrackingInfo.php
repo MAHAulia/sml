@@ -92,6 +92,20 @@ class AddDataToTrackingInfo
                     $trackAndTrace->description = 'Manifest has been successfully received on ' . $manifest->to . '.';
                     $trackAndTrace->save();
                 }
+                if ($manifest->type == "linehaul") {
+                    $bag = Bag::where('id', $item->item_id)->with('items')->first();
+                    foreach ($bag->items as $bagItem) {
+                        $transaction = Transaction::where('id', $bagItem->transaction_id)->with('offering')->first();
+                        $trackAndTrace = new TrackAndTrace();
+                        $trackAndTrace->offering_id = $transaction->offering->id;
+                        $trackAndTrace->transaction_id = $transaction->id;
+                        $trackAndTrace->tracking_number = $transaction->order_number;
+                        $trackAndTrace->status = 'Manifest Received';
+                        $trackAndTrace->location = $manifest->status == "send" ? $manifest->office_from : $manifest->office_to;
+                        $trackAndTrace->description = 'Manifest has been successfully received on ' . $manifest->to . '.';
+                        $trackAndTrace->save();
+                    }
+                }
             }
         }
 

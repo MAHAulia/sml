@@ -87,71 +87,71 @@ class WarehouseController extends Controller
     {
 
         if ($request->a == 'approval') {
+            try {
+                DB::beginTransaction();
+                $manifest = Manifest::where("code", $request->m)->first();
+                if (!$manifest) {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Tidak Ditemukan',
+                        'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                    ]);
+                }
 
-            $manifest = Manifest::where("code", $request->m)->first();
-            if (!$manifest) {
-                return redirect()->back()->with('flash', [
-                    'type' => 'error',
-                    'title' => 'Manifest Tidak Ditemukan',
-                    'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
-                ]);
-            }
+                if ($manifest->status != "send") {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Sudah Memiliki Status',
+                        'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                    ]);
+                }
 
-            if ($manifest->status != "send") {
-                return redirect()->back()->with('flash', [
-                    'type' => 'error',
-                    'title' => 'Manifest Sudah Memiliki Status',
-                    'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
-                ]);
-            }
+                ManifestDetail::whereNotIn("item_id", $request->selectedItem)
+                    ->where("manifest_id", $manifest->id)
+                    ->update(["status" => "created"]);
 
-            ManifestDetail::whereNotIn("item_id", $request->selectedItem)
-                ->where("manifest_id", $manifest->id)
-                ->update(["status" => "created"]);
+                ManifestDetail::whereIn("item_id", $request->selectedItem)
+                    ->where("manifest_id", $manifest->id)
+                    ->update(["status" => "received"]);
 
-            ManifestDetail::whereIn("item_id", $request->selectedItem)
-                ->where("manifest_id", $manifest->id)
-                ->update(["status" => "received"]);
+                if (count($request->items) == 0) {
+                    $manifest->status = "received";
+                    $manifest->save();
 
-            if (count($request->items) == 0) {
-                $manifest->status = "received";
-                $manifest->save();
-            }
+                    event(new ManifestReceived($manifest));
+                }
 
-            if ($manifest->type == 'linehaul') {
-                $manifestDetail = ManifestDetail::where("manifest_id", $manifest->id)->get();
-                foreach ($manifestDetail as $value) {
-                    // Update bag
-                    $bag = Bag::where("id", $value->item_id)->first();
-                    if ($bag) {
+                if ($manifest->type == 'linehaul') {
+                    $manifestDetail = ManifestDetail::where("manifest_id", $manifest->id)->get();
+                    foreach ($manifestDetail as $value) {
+                        // Update bag
+                        $bag = Bag::where("id", $value->item_id)->first();
+                        if ($bag) {
 
-                        try {
-                            DB::beginTransaction();
+
                             $bag->status = "received";
                             $bag->save();
 
                             BagDetail::where("bag_id", $bag->id)
                                 ->update(["status" => "received"]);
 
-                            event(new ManifestReceived($manifest));
-                            DB::commit();
-                        } catch (\Throwable $th) {
-                            DB::rollback();
-                            return redirect()->back()->with('flash', [
-                                'type' => 'error',
-                                'title' => 'Gagal tutup manifest',
-                                'message' => 'Manifest gagal ditutup ' . $th->getMessage(),
-                            ]);
                         }
                     }
                 }
+                DB::commit();
+                return redirect()->back()->with('flash', [
+                    'type' => 'success',
+                    'title' => 'Data manifest berhasil disimpan',
+                    'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                ]);
+            } catch (\Throwable $th) {
+                DB::rollback();
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Gagal tutup manifest',
+                    'message' => 'Manifest gagal ditutup ' . $th->getMessage(),
+                ]);
             }
-
-            return redirect()->back()->with('flash', [
-                'type' => 'success',
-                'title' => 'Data manifest berhasil disimpan',
-                'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
-            ]);
         }
 
         return redirect()->route("warehouse.manifest_terima");
@@ -255,7 +255,7 @@ class WarehouseController extends Controller
         }
 
         if ($request->a == 'approval') {
-            
+
             $bag = Bag::where("code", $request->m)->with('items')->first();
             if (!$bag) {
                 return redirect()->back()->with('flash', [
@@ -298,7 +298,6 @@ class WarehouseController extends Controller
                     'message' => 'Kantong gagal ditutup ' . $th->getMessage(),
                 ]);
             }
-            
         }
 
         $isExist = Bag::where("user_id", $user->id)
@@ -380,7 +379,6 @@ class WarehouseController extends Controller
                     ->whereNotIn('transactions.id', $selectedTransaction)
                     ->distinct()
                     ->get();
-
             } else {
                 $dataManifest = Transaction::leftJoin('manifest_details', 'transactions.id', '=', 'manifest_details.item_id')
                     ->whereNull('manifest_details.item_id')
@@ -399,23 +397,23 @@ class WarehouseController extends Controller
 
             // Data yang SUDAH masuk manifest tertentu
             $dataSelected = Bag::select('bags.*')
-            ->join('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
-            ->where('manifest_details.manifest_id', $manifest?->id)
-            // ->where('bags.user_id', $user->id)
-            ->where('bags.office', $user->office)
-            ->get();
-            
+                ->join('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
+                ->where('manifest_details.manifest_id', $manifest?->id)
+                // ->where('bags.user_id', $user->id)
+                ->where('bags.office', $user->office)
+                ->get();
+
             $selectedBag = $dataSelected->pluck("id")->toArray();
-            
+
             // Data yang BELUM masuk manifest manapun
             $dataManifest = Bag::select('bags.*')
-            // ->leftJoin('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
-            // ->whereNull('manifest_details.item_id')
-            ->whereNotIn('bags.id', $selectedBag)
-            // ->where('bags.user_id', $user->id)
-            ->where('bags.office', $user->office)
-            ->where('bags.status', 'bagged')
-            ->get();
+                // ->leftJoin('manifest_details', 'bags.id', '=', 'manifest_details.item_id')
+                // ->whereNull('manifest_details.item_id')
+                ->whereNotIn('bags.id', $selectedBag)
+                // ->where('bags.user_id', $user->id)
+                ->where('bags.office', $user->office)
+                ->where('bags.status', 'bagged')
+                ->get();
             // dd($manifest, $dataSelected, $selectedBag, $dataManifest, $user->office);
 
         } else {
@@ -464,7 +462,7 @@ class WarehouseController extends Controller
         }
 
         if ($request->a == 'approval') {
-            // try {
+            try {
                 $manifest = Manifest::where("code", $request->m)->with("items")->first();
                 if (!$manifest) {
                     return redirect()->back()->with('flash', [
@@ -501,14 +499,14 @@ class WarehouseController extends Controller
                     'title' => 'Data manifest berhasil disimpan',
                     'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
                 ]);
-            // } catch (\Throwable $th) {
-            //     DB::rollBack();
-            //     return redirect()->back()->with('flash', [
-            //         'type' => 'error',
-            //         'title' => 'Manifest gagal ditutup',
-            //         'message' => $th->getMessage(),
-            //     ]);
-            // }
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Manifest gagal ditutup',
+                    'message' => $th->getMessage(),
+                ]);
+            }
         }
 
         $role = $user->roles()->first();
