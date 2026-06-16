@@ -19,7 +19,7 @@ class InvoiceController extends Controller
         $customers = Customer::all();
         $data_invoices = [];
         $invoice_selecteds = [];
-        if ($request->m) {
+        if ($request->m && $request->ajax()) {
             $user = Auth::user();
 
             $invoice = Invoice::where('no_invoice', $request->m)->first();
