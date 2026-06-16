@@ -59,8 +59,8 @@ export const offeringTableColumn = ({ onView, onEdit, onDelete, onSetTarif }: Co
             >
               <Edit3 /> Request Pickup
             </DropdownMenuItem>} */}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>
+            {data.status == "created" && <DropdownMenuSeparator />}
+            {data.status == "created" && <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
       )

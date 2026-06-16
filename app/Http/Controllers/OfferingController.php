@@ -71,7 +71,7 @@ class OfferingController extends Controller
             "weight" => $request->berat,
             "isiKiriman" => $request->isiKiriman,
             "catatan" => $request->catatan,
-            "office"=> $user->office,
+            "office" => $user->office,
         ]);
 
         event(new OfferingSuccessFullyCreated($offering, $user));
@@ -207,7 +207,7 @@ class OfferingController extends Controller
         $offering->status = "on_review";
         $offering->save();
 
-        event(new RequestPriceReview($offering, $user));
+        event(new RequestPriceReview($offering, $user, $offering->status));
 
         return redirect()->back()->with('flash', [
             'type' => 'success',
@@ -239,7 +239,7 @@ class OfferingController extends Controller
                 ->with('biaya')
                 ->first();
         }
-        
+
         if (!$offering) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
