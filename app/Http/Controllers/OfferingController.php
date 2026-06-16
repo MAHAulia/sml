@@ -71,6 +71,7 @@ class OfferingController extends Controller
             "weight" => $request->berat,
             "isiKiriman" => $request->isiKiriman,
             "catatan" => $request->catatan,
+            "office"=> $user->office,
         ]);
 
         event(new OfferingSuccessFullyCreated($offering, $user));

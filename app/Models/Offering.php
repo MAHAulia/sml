@@ -29,7 +29,8 @@ class Offering extends Model
         "isiKiriman",
         "catatan",
         "status",
-        "pickup_status"
+        "pickup_status",
+        "office"
     ];
 
     protected function casts(): array
