@@ -32,6 +32,7 @@ class InvoiceController extends Controller
                 ->whereHas('invoiceDetails', function ($q) use ($invoice) {
                     $q->where('invoice_id', $invoice->id);
                 })
+                ->where('customer_id', $invoice->customer_id)
                 ->get();
 
 
@@ -45,6 +46,7 @@ class InvoiceController extends Controller
             $data_invoices = Transaction::with('biaya')
                 ->where('office', $user->office)
                 ->whereDoesntHave('invoiceDetails')
+                ->where('customer_id', $invoice->customer_id)
                 ->get();
 
             // dd($invoice_selecteds, $selectedData, $data_invoices);

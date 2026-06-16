@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ManifestCreated;
 use App\Events\PickupSuccess;
+use App\Models\Biaya;
 use App\Models\Customer;
 use App\Models\Kantor;
 use App\Models\Manifest;
@@ -67,6 +68,11 @@ class PickupController extends Controller
             unset($data->created_at);
             unset($data->updated_at);
             $transaction = Transaction::create($data->toArray());
+
+            Biaya::where('offering_id', $offering->id)->update([
+                "transaction_id" => $transaction->id
+            ]);
+
             event(new PickupSuccess($transaction));
 
             DB::commit();

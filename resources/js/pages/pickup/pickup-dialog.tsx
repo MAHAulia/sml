@@ -241,9 +241,9 @@ export default function PickupDialog({ selectedOffer, isOpen, setIsOpen, isView 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent className="sm:max-w-9/12">
                     <DialogHeader>
-                        <DialogTitle>Set Pickuper &nbsp; {isView && <Badge variant={getVariant(selectedOffer?.pickup_status)}>{getLabel(selectedOffer?.pickup_status)}</Badge>}</DialogTitle>
+                        <DialogTitle>Update Status Pickup &nbsp; {isView && <Badge variant={getVariant(selectedOffer?.pickup_status)}>{getLabel(selectedOffer?.pickup_status)}</Badge>}</DialogTitle>
                         <DialogDescription>
-                            Kelola taif untuk penawaran layanan pengiriman dokumen
+                            Kelola status pickup kiriman
                         </DialogDescription>
                     </DialogHeader>
                     

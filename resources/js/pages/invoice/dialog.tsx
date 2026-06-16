@@ -253,7 +253,7 @@ export default function InvoiceDialog({ selectedData, isOpen, setIsOpen, isView 
                                 <div className="border-2 rounded-xl p-4 mt-3 overflow-y-auto  h-4/5 w-full">
                                     {selectedInvoiceItem?.map((item) => <div key={`selected-${item.id}`} onClick={() => handleRemoveItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">
                                         <div className="flex flex-col items-end w-full mx-4">
-                                            <div className="font-bold text-lg">{item.order_number} </div>
+                                            <div className="font-bold text-lg"><Badge variant={item.delivery_status == 'null' ? 'destructive' : item.delivery_status == "success" ? 'success' : 'secondary'}>{item.delivery_status == 'null' ? 'Belum Terantar' : item.delivery_status}</Badge> - {item.order_number} </div>
                                             <div>Rp {Number(item.biaya?.deal_price ?? 0).toLocaleString()}</div>
                                         </div>
                                         <X />

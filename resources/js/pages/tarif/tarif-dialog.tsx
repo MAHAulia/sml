@@ -504,7 +504,7 @@ export default function TarifDialog({ selectedOffer, isOpen, setIsOpen, isView =
                                                         const value = handleChange(e)
                                                         if (selectedOffer?.status == "on_review_nego") {
                                                             if (value == 0) {
-
+                                                                console.log(value)
                                                             }
                                                         } else {
                                                             setData('status', "pending")

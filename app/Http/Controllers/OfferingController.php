@@ -8,6 +8,7 @@ use App\Events\TarifSet;
 use App\Models\Biaya;
 use App\Models\Customer;
 use App\Models\Offering;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
