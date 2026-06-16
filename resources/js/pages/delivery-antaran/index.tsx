@@ -10,7 +10,6 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { QrCode } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import DeliveryAntaranStatusDialog from './dialog';
-import { set } from 'date-fns';
 
 
 interface DeliveryOrderProps {
@@ -32,6 +31,7 @@ export default function DeliveryOrderAntaran({ datas }: DeliveryOrderProps) {
 
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('code');
+    
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,6 +44,13 @@ export default function DeliveryOrderAntaran({ datas }: DeliveryOrderProps) {
             }
         });
     }
+
+    useEffect(() => {
+        if (filter) {
+            console.log(filter)
+            setData('code', filter)
+        }
+    },[])
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -61,7 +68,7 @@ export default function DeliveryOrderAntaran({ datas }: DeliveryOrderProps) {
                             <form onSubmit={handleSubmit} className='space-y-4'>
                                 <Label>Nomor Order</Label>
                                 <div className='flex gap-4'>
-                                    <Input name='nomor_order' placeholder='cth. 192730912' required onChange={(e) => setData('code', e.target.value)} />
+                                    <Input name='nomor_order' placeholder='cth. 192730912' value={data.code?.toString()} required onChange={(e) => setData('code', e.target.value)} />
                                     <Button type="button"><QrCode /></Button>
                                     <Button type="submit" id='cariButton'>Cari</Button>
                                 </div>

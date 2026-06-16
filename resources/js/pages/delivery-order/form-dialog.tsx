@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { SharedData } from "@/types";
 import { DeliveryOrderData } from "@/types/delivery-order";
 import { TransactionsData } from "@/types/marketing";
-import { useForm, usePage } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
@@ -173,7 +173,7 @@ export default function DeliveryOrderFormDialog({ selectedData, isOpen, setIsOpe
                             {isView && <div>
                                 <h1>Data Delivery Order</h1>
                                 <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto h-1/3 w-full">
-                                    {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code}</div>)}
+                                    {selectedManifestItem?.map((item) => <Link href={route('delivery-antaran.index', {code: item.order_number ?? item.code})}><div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code}</div></Link>)}
                                 </div>
                             </div>}
 

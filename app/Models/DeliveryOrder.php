@@ -9,4 +9,8 @@ class DeliveryOrder extends Model
     public function items() {
         return $this->hasMany(DeliveryOrderDetail::class, "delivery_order_id", "id");
     }
+
+    public function deliveryPerson() {
+        return $this->belongsTo(User:: class, "user_id", "id");
+    }
 }

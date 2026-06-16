@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\DeliveryOrderStart;
 use App\Events\ManifestReceived;
+use App\Events\TransactionDeliveryStatusUpdated;
 use App\Models\Bag;
 use App\Models\BagDetail;
 use App\Models\DeliveryOrder;
@@ -372,6 +373,8 @@ class DeliveryController extends Controller
         }
 
         $transaction->save();
+
+        event(new TransactionDeliveryStatusUpdated($transaction));
 
         return redirect()->back()->with('flash', [
             'type' => 'success',

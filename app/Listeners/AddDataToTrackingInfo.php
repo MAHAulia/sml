@@ -8,7 +8,9 @@ use App\Events\ManifestCreated;
 use App\Events\ManifestReceived;
 use App\Events\OfferingSuccessFullyCreated;
 use App\Events\PickupSuccess;
+use App\Events\TransactionDeliveryStatusUpdated;
 use App\Models\Bag;
+use App\Models\DeliveryOrderDetail;
 use App\Models\TrackAndTrace;
 use App\Models\Transaction;
 use App\Models\User;
@@ -28,7 +30,7 @@ class AddDataToTrackingInfo
     /**
      * Handle the event.
      */
-    public function handle(PickupSuccess | ManifestCreated | ManifestReceived | ItemBagged | DeliveryOrderStart $event): void
+    public function handle(PickupSuccess | ManifestCreated | ManifestReceived | ItemBagged | DeliveryOrderStart | TransactionDeliveryStatusUpdated $event): void
     {
 
         if ($event instanceof PickupSuccess) {
@@ -144,6 +146,20 @@ class AddDataToTrackingInfo
                 $trackAndTrace->description = 'Item has been added to delivery order.';
                 $trackAndTrace->save();
             }
+        }
+
+        if ($event instanceof TransactionDeliveryStatusUpdated) {
+            $transaction = Transaction::where('id', $event->transaction->id)->with('offering')->first();
+            $do = DeliveryOrderDetail::where("transaction_id", $transaction->id)->with('deliveryOrder.deliveryPerson')->first();
+            
+            $trackAndTrace = new TrackAndTrace();
+            $trackAndTrace->offering_id = $transaction->offering->id;
+            $trackAndTrace->transaction_id = $transaction->id;
+            $trackAndTrace->tracking_number = $transaction->order_number;
+            $trackAndTrace->status = $transaction->delivery_status;
+            $trackAndTrace->location = $do->deliveryOrder->deliveryPerson->office;
+            $trackAndTrace->description = 'Item with code ' . $transaction->order_number . ' status is ' . $transaction->delivery_status;
+            $trackAndTrace->save();
         }
         // $offering = $event->offering;
         // $user = $event->user;
