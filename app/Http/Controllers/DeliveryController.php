@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeliveryOrderStart;
 use App\Events\ManifestReceived;
 use App\Models\Bag;
 use App\Models\BagDetail;
@@ -227,7 +228,7 @@ class DeliveryController extends Controller
         }
 
         if ($request->a == 'approval') {
-            $do = DeliveryOrder::where("code", $request->m)->first();
+            $do = DeliveryOrder::where("code", $request->m)->with('items')->first();
             if (!$do) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
@@ -246,6 +247,8 @@ class DeliveryController extends Controller
 
             $do->status = "open";
             $do->save();
+
+            event(new DeliveryOrderStart($do));
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',

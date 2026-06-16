@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\DeliveryOrderStart;
 use App\Events\ItemBagged;
 use App\Events\ManifestCreated;
 use App\Events\ManifestReceived;
@@ -10,6 +11,7 @@ use App\Events\PickupSuccess;
 use App\Models\Bag;
 use App\Models\TrackAndTrace;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -26,7 +28,7 @@ class AddDataToTrackingInfo
     /**
      * Handle the event.
      */
-    public function handle(PickupSuccess | ManifestCreated | ManifestReceived | ItemBagged $event): void
+    public function handle(PickupSuccess | ManifestCreated | ManifestReceived | ItemBagged | DeliveryOrderStart $event): void
     {
 
         if ($event instanceof PickupSuccess) {
@@ -122,6 +124,24 @@ class AddDataToTrackingInfo
                 $trackAndTrace->status = 'Item Bagged';
                 $trackAndTrace->location = $bag->status == "bagged" ? $bag->office : $bag->office_to;
                 $trackAndTrace->description = 'Item has been successfully bagged.';
+                $trackAndTrace->save();
+            }
+        }
+
+        if ($event instanceof DeliveryOrderStart) {
+            $do = $event->do;
+            $items = $do->items;
+            $userDO = User::where("id", $do->user_id)->first();
+
+            foreach ($items as $item) {
+                $transaction = Transaction::where('id', $item->transaction_id)->with('offering')->first();
+                $trackAndTrace = new TrackAndTrace();
+                $trackAndTrace->offering_id = $transaction->offering->id;
+                $trackAndTrace->transaction_id = $transaction->id;
+                $trackAndTrace->tracking_number = $transaction->order_number;
+                $trackAndTrace->status = 'Item on delivery order';
+                $trackAndTrace->location = $userDO->offiece;
+                $trackAndTrace->description = 'Item has been added to delivery order.';
                 $trackAndTrace->save();
             }
         }

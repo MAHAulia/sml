@@ -209,7 +209,7 @@ export default function DOFormDialog({ selectedData, isOpen, setIsOpen, isView =
 
                         <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Simpan Data Manifest
+                            Simpan Data Delivery Order
                         </Button>
                     </form>
 

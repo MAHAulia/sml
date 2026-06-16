@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\DeliveryOrderStart;
 use App\Events\ItemBagged;
 use App\Events\ManifestCreated;
 use App\Events\ManifestReceived;
@@ -29,7 +30,7 @@ class SendEmailToCustomer
     /**
      * Handle the event.
      */
-    public function handle(PickupSuccess | ManifestCreated | ManifestReceived | ItemBagged $event): void
+    public function handle(PickupSuccess | ManifestCreated | ManifestReceived | ItemBagged | DeliveryOrderStart $event): void
     {
         if ($event instanceof PickupSuccess) {
             $transaction = $event->transaction;
@@ -88,6 +89,15 @@ class SendEmailToCustomer
                 $customer = Customer::find($transaction->customer_id);
                 // Send email to customer
                 $customer->notify(new SendEmail($transaction->offering, "Item Bagged", "An item has been bagged with Code " . $bag->code . " for your order number " . $transaction->order_number));
+            }
+        } elseif ($event instanceof DeliveryOrderStart) {
+            $do = $event->do;
+            $items = $do->items;
+            foreach ($items as $item) {
+                $transaction = Transaction::find($item->transaction_id)->with('offering')->first();
+                $customer = Customer::find($transaction->customer_id);
+                // Send email to customer
+                $customer->notify(new SendEmail($transaction->offering, "Item Bagged", "An item with Code " . $do->code . " for your order number " . $transaction->order_number . " is on delivery order"));
             }
         }
     }
