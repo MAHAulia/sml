@@ -33,6 +33,7 @@ class RoleUserSeeder extends Seeder
             ["user_id" => "9", "role_id" => "8"], // Human Resources
             ["user_id" => "10", "role_id" => "5"], // Delivery
             ["user_id" => "11", "role_id" => "6"], // Warehouse
+            ["user_id" => "12", "role_id" => "10"], // Driver
         ]);
     }
 }

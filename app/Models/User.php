@@ -23,6 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'whatsapp',
         'password',
         'email_verified_at',
+        'mobil_id',
+        'office'
     ];
 
     /**

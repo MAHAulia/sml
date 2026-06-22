@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RoleData, UserData } from "@/types";
+import { MobilData, OfficeData, RoleData, UserData } from "@/types";
 import { useForm } from "@inertiajs/react";
 import { LoaderCircle } from "lucide-react";
 import { FormEventHandler, useEffect } from "react";
@@ -14,17 +14,23 @@ type PenggunaForm = {
     email: string;
     role: string;
     action?: string;
+    nopolId?: string;
+    office: string;
 }
 
 interface PenggunaProps {
     roles: RoleData[];
+    mobils: MobilData[];
+    offices: OfficeData[];
     user?: UserData;
 }
-export default function UserForm({ roles, user }: PenggunaProps) {
+export default function UserForm({ roles, user, mobils, offices }: PenggunaProps) {
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<PenggunaForm>>({
         name: '',
         email: '',
         role: '',
+        nopolId: '',
+        office: '',
         action: 'add'
     });
 
@@ -68,6 +74,8 @@ export default function UserForm({ roles, user }: PenggunaProps) {
         reset('email');
         reset('role');
         reset('action');
+        reset('nopolId');
+        reset('office');
     }
     return (
         <div>
@@ -103,7 +111,6 @@ export default function UserForm({ roles, user }: PenggunaProps) {
                         />
                         <InputError message={errors.email} />
                     </div>
-
                     <div className="grid gap-2">
                         <Label htmlFor="role">Role Pengguna</Label>
                         <Select value={data.role} onValueChange={(value) => setData("role", value)} defaultValue={data.role} required>
@@ -119,6 +126,36 @@ export default function UserForm({ roles, user }: PenggunaProps) {
                         </Select>
                         <InputError message={errors.role} />
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="office">Kantor</Label>
+                        <Select value={data.office} onValueChange={(value) => setData("office", value)} defaultValue={data.office} required>
+                            <SelectTrigger id="office" tabIndex={4} className="w-full">
+                                <SelectValue placeholder="Pilih peran Pengguna" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>office Pengguna</SelectLabel>
+                                    {offices.map(office => <SelectItem key={office.id} value={office.code.toString()}>{office.name}</SelectItem>)}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <InputError message={errors.office} />
+                    </div>
+                    {data.role == '10' && <div className="grid gap-2">
+                        <Label htmlFor="nopol">Nomor Polisi</Label>
+                        <Select value={data.nopolId} onValueChange={(value) => setData("nopolId", value)} defaultValue={data.nopolId} required>
+                            <SelectTrigger id="nopol" tabIndex={5} className="w-full">
+                                <SelectValue placeholder="Pilih Mobil" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Nomor Polisi Mobil</SelectLabel>
+                                    {mobils.map(mobil => <SelectItem key={mobil.id} value={mobil.id.toString()} disabled={mobil.sopir != null}>{mobil.nopol} - {mobil.merek} {mobil.sopir != null ? '[ASSIGNED]' : '' }</SelectItem>)}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <InputError message={errors.nopolId} />
+                    </div>}
 
                     <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}

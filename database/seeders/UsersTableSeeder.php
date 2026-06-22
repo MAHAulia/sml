@@ -114,6 +114,15 @@ class UsersTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]); // 11
+        DB::table('users')->insert([
+            'name' => 'Driver',
+            'email' => 'driver@email.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('thepasswordissecret'),
+            'office' => "BDG",
+            'created_at' => now(),
+            'updated_at' => now()
+        ]); // 12
 
     }
 }

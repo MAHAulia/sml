@@ -26,3 +26,15 @@ Recap
 8. Buat notifikasi ke email customer untuk setiap perubahan proses yang terjadi di kiriman -> done
 9. Persiapkan notifikasi melalui WhatsApp -> Masih perlu assesmen kebutuhan lebih mendalam
 10. Proses penunjukan pickuper oleh team Customer Service tambahkan proses notifikasi (berupa email atau wa) -> sudah email, WA belom
+
+yang belom
+2. Perlu ada user "Angkutan" karena perlu adanya track n trace detail termasuk proses angkutanya
+3. Untuk setiap proses manifest, buat fungsi cetak, dan ditandatangani oleh penerima (sesuai bagian yang menerima)
+4. Pastikan ada Flow dari Warehouse kantor asal ke Angkutan, dan dari Angkutan kantor Asal ke Angkutan mode selanjutnya sesuai proses
+5. Buat API untuk integrasi track n trace di landingpage
+7. Waktu proses manifest dari pickuper ke warehouse 
+   - Tampilkan berat barang saat proses manifest terima
+   - Sehingga bagian penerima dapat melakukan proses timbang ulang, dan menyesuaikan berat jika ternyata ada ketidaksesuaian berat
+   - Ketika berat berbeda, pastikan penerima barang bisa melampirkan gambar sebagai eviden bahwa setelah ditimbang ulang barang beratnya beda
+   - Jika terdapat perbedaan berat, maka proses invoicing akan dikenakan biaya tambahan
+9. Persiapkan notifikasi melalui WhatsApp -> Masih perlu assesmen kebutuhan lebih mendalam

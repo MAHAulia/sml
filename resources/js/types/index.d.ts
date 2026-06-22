@@ -75,6 +75,22 @@ export interface RoleData {
     description: string?;
 }
 
+export interface MobilData {
+    id: number;
+    nopol: string;
+    merek: string;
+    sopir: UserData;
+    description: string?;
+}
+
+export interface OfficeData {
+    id: number;
+    code: string;
+    name: string;
+    address: string;
+    phone: string;
+}
+
 export interface FormData {
     id: number;
     name: string;
@@ -229,7 +245,6 @@ type ShareDialogState = {
     formulir?: FormulirData;
 };
 
-
 type TopUpData = {
     amount: string;
     description: string;
@@ -237,9 +252,8 @@ type TopUpData = {
     status: string;
     expired_at: string;
     payment_info: QrPayment;
-}
-
+};
 
 interface StatusBadgeProps {
-  status: string
+    status: string;
 }

@@ -1,18 +1,20 @@
-import { Head, useForm } from '@inertiajs/react';
-import { RoleData, UserData, type BreadcrumbItem } from '@/types';
+import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
-import { userTableColumn } from './user-table-column';
-import UserTable from './user-table';
-import UserForm from './user-form';
+import { MobilData, OfficeData, RoleData, UserData, type BreadcrumbItem } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import UserForm from './user-form';
 import UserInfoDialog from './user-info-dialog';
-import DeleteConfirmation from '@/components/delete-confirm-dialog';
+import UserTable from './user-table';
+import { userTableColumn } from './user-table-column';
 
 
 interface UserProps {
     users: UserData[],
     roles: RoleData[],
+    mobils: MobilData[],
+    offices: OfficeData[],
 }
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function User({ users, roles }: UserProps) {
+export default function User({ users, roles, mobils, offices }: UserProps) {
     const {delete: destroy, put, processing } = useForm();
 
     const [user, setUser] = useState<UserData>()
@@ -58,7 +60,7 @@ export default function User({ users, roles }: UserProps) {
             <PageLayout title='Pengguna' description="Kelola data pengguna Anda">
                 <div className="space-y-6 flex flex-col lg:flex-row">
                     <div className="lg:flex-1/4 md:flex-1/3 mr-2">
-                        <UserForm roles={roles} user={user} />
+                        <UserForm roles={roles} user={user} mobils={mobils} offices={offices} />
                     </div>
                     <div className="lg:flex-3/4 md:flex-2/3 ml-2">
                         <UserTable data={users} columns={userTableColumn({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onResendVerify: handleResendVerify })} />

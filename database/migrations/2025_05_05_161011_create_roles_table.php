@@ -29,6 +29,7 @@ return new class extends Migration
             ["name" => "Accounting"], // 7
             ["name" => "Human Resources"], // 8
             ["name" => "IT Administrator"], // 9
+            ["name" => "Driver"], // 10
         ]);
     }
 

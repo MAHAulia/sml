@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Users;
 use App\Events\PenggunaRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\Kantor;
+use App\Models\Mobil;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\User;
@@ -30,9 +32,13 @@ class UserController extends Controller
             ->leftJoin("roles", "roles.id", "role_users.role_id")
             ->where("users.id", "!=", 1)->get();
         $roles = Role::select("id", "name", "description")->where("id", "!=", 1)->get();
+        $mobils = Mobil::with('sopir')->get();
+        $offices = Kantor::all();
         return Inertia::render('users/user', [
             "users" => $data,
             "roles" => $roles,
+            "mobils" => $mobils,
+            "offices" => $offices
             // 'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             // 'status' => $request->session()->get('status'),
         ]);
@@ -56,6 +62,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             "role" => "required|exists:roles,id",
+            'office' => 'required|string|max:255',
         ], [
             "name.required" => "Nama wajib diisi.",
             "email.required" => "Email wajib diisi.",
@@ -64,6 +71,7 @@ class UserController extends Controller
             "email.lowercase" => "Email harus dalam huruf kecil semua.",
             "role.required" => "Peran wajib dipilih.",
             "role.exists" => "Peran yang dipilih tidak valid.",
+            "office.required" => "Kantor harus diisi"
         ]);
 
         try {
@@ -79,6 +87,8 @@ class UserController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => bcrypt($password), // Optional if needed
+                'mobil_id' => $request->nopolId,
+                'office' => $validated["office"],
             ];
 
             if (config('app.env') != 'production') {
