@@ -11,6 +11,7 @@ use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
 use App\Http\Controllers\ManifestController;
 use App\Http\Controllers\ManifestSerahController;
+use App\Http\Controllers\MobilController;
 use App\Http\Controllers\OfferingController;
 use App\Http\Controllers\PickupController;
 use App\Http\Controllers\PickupRequestController;
@@ -38,6 +39,8 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
 
     Route::resource("pengguna", UserController::class)->except(["create", "show", "edit"]);
     Route::put('pengguna/verify-resend/{id}', [UserController::class, 'resendVerify'])->name('pengguna.verify-resend');
+
+    Route::resource("mobil", MobilController::class)->except(["create", "show", "edit"]);
 
     Route::resource("menu", MenuController::class);
 

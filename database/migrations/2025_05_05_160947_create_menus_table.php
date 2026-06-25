@@ -254,6 +254,24 @@ return new class extends Migration
             ["label" => "Buat Surat Jalan", "route_name" => "driver.create_surat_jalan", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 99, "order_number" => 3, "type" => "form"],
             //106
             ["label" => "Simpan Surat Jalan", "route_name" => "driver.save_surat_jalan", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 99, "order_number" => 4, "type" => "api"],
+            
+            // Super Admin/Hr
+            // 11
+            ["label" => "Mobil", "route_name" => "mobil.index", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "menu"],
+            // 12
+            ["label" => "Tambah Mobil", "route_name" => "mobil.create", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            // 13
+            ["label" => "Simpan Mobil", "route_name" => "mobil.store", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            // 14
+            ["label" => "Lihat Mobil", "route_name" => "mobil.show", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            // 15
+            ["label" => "Ubah Mobil", "route_name" => "mobil.edit", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            // 16
+            ["label" => "Simpan Perubahan Mobil", "route_name" => "mobil.update", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            // 17
+            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            // 18
+            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
         ]);
     }
 
