@@ -83,6 +83,15 @@ export interface MobilData {
     description: string?;
 }
 
+export interface KantorData {
+    id: number;
+    code: string;
+    name: string;
+    address: string;
+    phone: string?;
+    email: string?;
+}
+
 export interface OfficeData {
     id: number;
     code: string;

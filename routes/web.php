@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\KantorController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Langganan\LanggananController;
 use App\Http\Controllers\ManifestController;
@@ -41,6 +42,8 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::put('pengguna/verify-resend/{id}', [UserController::class, 'resendVerify'])->name('pengguna.verify-resend');
 
     Route::resource("mobil", MobilController::class)->except(["create", "show", "edit"]);
+
+    Route::resource("kantor", KantorController::class)->except(["create", "show", "edit"]);
 
     Route::resource("menu", MenuController::class);
 

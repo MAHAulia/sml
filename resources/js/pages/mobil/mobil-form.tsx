@@ -112,7 +112,7 @@ export default function MobilForm({ mobil }: MobilProps) {
                             autoComplete="description"
                             value={data.description}
                             onChange={(e) => setData('description', e.target.value)}
-                            placeholder="Email"
+                            placeholder="Contoh: mobil angkutan"
                         />
                         <InputError message={errors.description} />
                     </div>

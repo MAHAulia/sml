@@ -10,6 +10,7 @@ class Kantor extends Model
         "code",
         "name",
         "address",
-        "phone"
+        "phone",
+        "email"
     ];
 }
