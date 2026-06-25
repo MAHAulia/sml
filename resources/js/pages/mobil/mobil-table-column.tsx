@@ -1,8 +1,5 @@
 "use client"
 
-import { RoleData } from "@/types"
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Edit3, Menu, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -12,16 +9,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { MobilData } from "@/types"
+import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown, Edit3, MoreHorizontal, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
-import { Link } from "@inertiajs/react"
 
 type ColumnProps = {
-  onView: (data: RoleData) => void;
-  onEdit: (data: RoleData) => void;
-  onDelete: (data: RoleData) => void;
+  onView: (data: MobilData) => void;
+  onEdit: (data: MobilData) => void;
+  onDelete: (data: MobilData) => void;
 };
 
-export const mobilTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<RoleData>[] => [
+export const mobilTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): ColumnDef<MobilData>[] => [
   // {
   //   id: "select",
   //   header: ({ table }) => (
@@ -64,7 +63,7 @@ export const mobilTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
     }
   },
   {
-    accessorKey: "name",
+    accessorKey: "nopol",
     header: ({ column }) => {
       return (
         <Button
@@ -72,7 +71,22 @@ export const mobilTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name
+          Nomor Polisi
+          <ArrowUpDown className="ml-auto h-4 w-4" />
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "merek",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Merek
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
@@ -92,32 +106,6 @@ export const mobilTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
         </Button>
       )
     },
-  },
-  {
-    accessorKey: "created_at",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Tanggal Dibuat
-          <ArrowUpDown className="ml-auto h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      const createdAt = row.getValue("created_at") as string
-      const date = new Date(createdAt);
-      const formatedDate = new Intl.DateTimeFormat('id-ID', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      }).format(date);
-
-      return <div className="">{formatedDate}</div>
-    }
   },
   {
     id: "actions",
@@ -145,15 +133,6 @@ export const mobilTableColumn = ({ onView, onEdit, onDelete }: ColumnProps): Col
             >
               <Edit3 /> Ubah
             </DropdownMenuItem>
-            <Link href={route('role.mappingmenutorole', { id: data.id })} prefetch>
-              <DropdownMenuItem
-              >
-
-                <Menu />Mapping
-
-              </DropdownMenuItem>
-            </Link>
-            <DropdownMenuSeparator />
             <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

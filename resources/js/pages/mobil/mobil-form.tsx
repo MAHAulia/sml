@@ -9,7 +9,8 @@ import { LoaderCircle } from "lucide-react";
 import { FormEventHandler, useEffect } from "react";
 
 type MobilForm = {
-    name: string;
+    nopol: string;
+    merek: string;
     description: string;
     action?: string;
 }
@@ -17,26 +18,28 @@ type MobilForm = {
 interface MobilProps {
     mobil?: MobilData;
 }
-export default function MobilForm({ role }: MobilProps) {
+export default function MobilForm({ mobil }: MobilProps) {
     const { data, setData, post, put, processing, errors, reset } = useForm<Required<MobilForm>>({
-        name: '',
+        nopol: '',
+        merek: '',
         description: '',
         action: 'add'
     });
 
     useEffect(() => {
-        if (role != null) {
-            setData("name", role.name)
-            setData("description", role.description ?? "")
+        if (mobil != null) {
+            setData("nopol", mobil.nopol)
+            setData("merek", mobil.merek)
+            setData("description", mobil.description ?? "")
             setData("action", "update")
         }
-    }, [role])
+    }, [mobil])
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log(data.action)
         if (data.action == "add") {
-            post(route('role.store'), {
+            post(route('mobil.store'), {
                 onSuccess: () => {
                     resetForm()
                 },
@@ -47,7 +50,7 @@ export default function MobilForm({ role }: MobilProps) {
         }
 
         if (data.action == "update") {
-            put(route('role.update', role?.id), {
+            put(route('mobil.update', mobil?.id), {
                 onSuccess: () => {
                     resetForm()
                 },
@@ -59,7 +62,8 @@ export default function MobilForm({ role }: MobilProps) {
     };
 
     const resetForm = () => {
-        reset('name');
+        reset('nopol');
+        reset('merek');
         reset('description');
         reset('action');
     }
@@ -68,7 +72,7 @@ export default function MobilForm({ role }: MobilProps) {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Role / Peran</Label>
+                        <Label htmlFor="name">Nomor Polisi</Label>
                         <Input
                             id="name"
                             type="text"
@@ -76,12 +80,28 @@ export default function MobilForm({ role }: MobilProps) {
                             autoFocus
                             tabIndex={1}
                             autoComplete="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            placeholder="Tukan Ketik"
+                            value={data.nopol}
+                            onChange={(e) => setData('nopol', e.target.value)}
+                            placeholder="Contoh: AB 123 DEF"
                         />
-                        <InputError message={errors.name} />
+                        <InputError message={errors.nopol} />
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="merek">Merek</Label>
+                        <Input
+                            id="merek"
+                            type="text"
+                            required
+                            autoFocus
+                            tabIndex={1}
+                            autoComplete="merek"
+                            value={data.merek}
+                            onChange={(e) => setData('merek', e.target.value)}
+                            placeholder="contoh: Suzuki"
+                        />
+                        <InputError message={errors.merek} />
+                    </div>
+
 
                     <div className="grid gap-2">
                         <Label htmlFor="description">Deskripsi</Label>
