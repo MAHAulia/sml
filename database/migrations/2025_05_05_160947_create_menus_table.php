@@ -255,23 +255,23 @@ return new class extends Migration
             //106
             ["label" => "Simpan Surat Jalan", "route_name" => "driver.save_surat_jalan", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 99, "order_number" => 4, "type" => "api"],
             
-            // Super Admin/Hr
-            // 11
-            ["label" => "Mobil", "route_name" => "mobil.index", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "menu"],
-            // 12
-            ["label" => "Tambah Mobil", "route_name" => "mobil.create", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
-            // 13
-            ["label" => "Simpan Mobil", "route_name" => "mobil.store", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
-            // 14
-            ["label" => "Lihat Mobil", "route_name" => "mobil.show", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
-            // 15
-            ["label" => "Ubah Mobil", "route_name" => "mobil.edit", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
-            // 16
-            ["label" => "Simpan Perubahan Mobil", "route_name" => "mobil.update", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
-            // 17
-            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
-            // 18
-            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Van", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            // Super Admin/
+            // 107
+            ["label" => "Mobil", "route_name" => "mobil.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "menu"],
+            // 108
+            ["label" => "Tambah Mobil", "route_name" => "mobil.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            // 109
+            ["label" => "Simpan Mobil", "route_name" => "mobil.store", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            // 110
+            ["label" => "Lihat Mobil", "route_name" => "mobil.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            // 111
+            ["label" => "Ubah Mobil", "route_name" => "mobil.edit", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            // 112
+            ["label" => "Simpan Perubahan Mobil", "route_name" => "mobil.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            // 113
+            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            // 114
+            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
         ]);
     }
 
