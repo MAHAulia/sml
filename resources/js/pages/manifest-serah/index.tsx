@@ -46,6 +46,15 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
         isShow: false,
     })
 
+    const [selectedItem, setSelectedItem] = useState<TransactionsData | null>(null);
+    const [openPreview, setOpenPreview] = useState(false);
+
+    const handleSelectItem = (item: TransactionsData) => {
+        setSelectedItem(item);
+        setOpenPreview(true);
+    };
+ 
+
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('f');
 
@@ -184,6 +193,68 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
                             isLoading={processing}
                             onOpenChange={setShowConfirm}
                             onConfirm={handleDelete} />
+                        <Dialog open={openPreview} onOpenChange={setOpenPreview}>
+    <DialogContent>
+        <DialogHeader>
+            <DialogTitle>Preview Item</DialogTitle>
+        </DialogHeader>
+
+        {selectedItem && (
+            <div className="space-y-4">
+                <div>
+                    <Label>Pengirim</Label>
+                    <Input
+                        value={selectedItem.senderName}
+                        onChange={(e) =>
+                            setSelectedItem({
+                                ...selectedItem,
+                                senderName: e.target.value,
+                            })
+                        }
+                    />
+                </div>
+
+                <div>
+                    <Label>Penerima</Label>
+                    <Input
+                        value={selectedItem.receiverName}
+                        onChange={(e) =>
+                            setSelectedItem({
+                                ...selectedItem,
+                                receiverName: e.target.value,
+                            })
+                        }
+                    />
+                </div>
+
+                <div>
+                    <Label>Isi Kiriman</Label>
+                    <Textarea
+                        value={selectedItem.isiKiriman}
+                        onChange={(e) =>
+                            setSelectedItem({
+                                ...selectedItem,
+                                isiKiriman: e.target.value,
+                            })
+                        }
+                    />
+                </div>
+
+                <Button
+                    onClick={() => {
+                        if (!selectedItem) return;
+
+                        moveItem(selectedItem);
+                        setOpenPreview(false);
+                        setSelectedItem(null);
+                    }}
+                >
+                    Simpan & Tambahkan
+                </Button>
+            </div>
+        )}
+    </DialogContent>
+</Dialog>
                     </div>
                 </div>
             </PageLayout>

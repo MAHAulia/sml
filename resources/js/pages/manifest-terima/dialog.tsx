@@ -53,26 +53,26 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     const getListItem = (selectedData: ManifestTerimaData) => {
         // if (selectedData.type === 'local') {
         //     console.log("Get data for local")
-            let url = "warehouse.manifest_terima";
-            if (role === "Delivery") {
-                url = "delivery.manifest_terima";
-            }
-            
-            get(route(url, { t: selectedData.type, m: selectedData.code }), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: (page) => {
-                    const data = page.props.data_manifest as TransactionsData[]
-                    setItemManifest(data)
-                    setData("items", data.map(item => item.id));
-                    const dataSelected = page.props.data_selected as TransactionsData[]
-                    setSelectedManifestItem(dataSelected)
-                    setData("selectedItem", dataSelected.map(item => item.id));
-                },
-                onError: (error) => {
-                    console.log(error);
-                },
-            })
+        let url = "warehouse.manifest_terima";
+        if (role === "Delivery") {
+            url = "delivery.manifest_terima";
+        }
+
+        get(route(url, { t: selectedData.type, m: selectedData.code }), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                const data = page.props.data_manifest as TransactionsData[]
+                setItemManifest(data)
+                setData("items", data.map(item => item.id));
+                const dataSelected = page.props.data_selected as TransactionsData[]
+                setSelectedManifestItem(dataSelected)
+                setData("selectedItem", dataSelected.map(item => item.id));
+            },
+            onError: (error) => {
+                console.log(error);
+            },
+        })
         // } else {
         //     console.log("Get for not local")
         // }
@@ -95,6 +95,10 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     }, [selectedData]);
 
     const handleSelectItem = (item: TransactionsData) => {
+        moveItem(item);
+    };
+
+    const moveItem = (item: TransactionsData) => {
         // add to selected
         setSelectedManifestItem((prev) => [...prev, item]);
 
@@ -144,16 +148,16 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
         }
         if (data.action == 'update') {
             post(route(url, { a: 'approval', m: selectedData?.code }), {
-            onSuccess: () => {
-                resetForm();
-                if (setIsOpen) {
-                    setIsOpen(false);
-                }
-            },
-            onError: (error) => {
-                console.log(error);
-            },
-        });
+                onSuccess: () => {
+                    resetForm();
+                    if (setIsOpen) {
+                        setIsOpen(false);
+                    }
+                },
+                onError: (error) => {
+                    console.log(error);
+                },
+            });
         }
     };
 
