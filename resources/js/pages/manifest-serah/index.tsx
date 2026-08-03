@@ -139,6 +139,11 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
         });
     }
 
+
+    const onPrint = (data: ManifestSerahData) => {
+        const url = route('print_manifest_serah', { code: data.code });
+        window.open(url, '_blank');
+    }
     useEffect(() => {
         if (filter) {
             handleAdd()
@@ -153,7 +158,7 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
             <PageLayout title='Manifest Serah' description="Kelola penyerahan barang">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <ManifestSerahTable data={datas} onAddButtonClicked={handleAdd} columns={manifestSerahTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <ManifestSerahTable data={datas} onAddButtonClicked={handleAdd} columns={manifestSerahTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest: onTutupManifest, onPrint: onPrint })} />
                         <ManifestSerahFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedItemData} isView={isView} />
                         <ManifestDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog

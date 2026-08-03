@@ -16,6 +16,7 @@ use App\Http\Controllers\MobilController;
 use App\Http\Controllers\OfferingController;
 use App\Http\Controllers\PickupController;
 use App\Http\Controllers\PickupRequestController;
+use App\Http\Controllers\PrintController;
 use App\Http\Controllers\Settings\MenuController;
 use App\Http\Controllers\Settings\RoleController;
 use App\Http\Controllers\SocialLogin\GoogleController;
@@ -93,6 +94,8 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::post("delivery/antaran/show/{id}", [DeliveryController::class, 'updateDeliveryAntaran'])->name("delivery-antaran.update");
 
     Route::resource('invoice', InvoiceController::class);
+
+    Route::get("manifest/serah/print/{code}", [PrintController::class, 'printManifestSerah'])->name("print_manifest_serah");
 
 });
 

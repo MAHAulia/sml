@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'routeaccess' => AccessMiddleware::class
+            'routeaccess' => AccessMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

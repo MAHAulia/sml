@@ -257,4 +257,6 @@ class PickupController extends Controller
 
         return redirect()->route("pickup.manifest_serah");
     }
+
+    
 }

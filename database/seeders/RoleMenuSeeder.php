@@ -108,6 +108,7 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "81", "role_id" => "1"],
             ["menu_id" => "82", "role_id" => "1"],
             ["menu_id" => "83", "role_id" => "1"],
+            ["menu_id" => "115", "role_id" => "1"],
 
             // menu setting pengguna for it admin
             ["menu_id" => "2", "role_id" => "9"],
@@ -165,6 +166,7 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "63", "role_id" => "4"],
             ["menu_id" => "64", "role_id" => "4"],
             ["menu_id" => "65", "role_id" => "4"],
+            ["menu_id" => "115", "role_id" => "4"],
 
             // Menu Warehouse
             ["menu_id" => "66", "role_id" => "6"],
@@ -180,6 +182,7 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "76", "role_id" => "6"],
             ["menu_id" => "77", "role_id" => "6"],
             ["menu_id" => "78", "role_id" => "6"],
+            ["menu_id" => "115", "role_id" => "6"],
 
             // Menu Delivery
             ["menu_id" => "79", "role_id" => "5"],
@@ -210,6 +213,7 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "100", "role_id" => "6"],
             ["menu_id" => "101", "role_id" => "6"],
             ["menu_id" => "102", "role_id" => "6"],
+            ["menu_id" => "115", "role_id" => "6"],
 
             // Menu Driver
             ["menu_id" => "103", "role_id" => "10"],

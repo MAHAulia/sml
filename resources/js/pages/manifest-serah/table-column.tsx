@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, Printer, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { ManifestSerahData } from "@/types/manifest-serah"
@@ -20,9 +20,10 @@ type ColumnProps = {
   onEdit: (data: ManifestSerahData) => void;
   onDelete: (data: ManifestSerahData) => void;
   onTutupManifest: (data: ManifestSerahData) => void;
+  onPrint: (data: ManifestSerahData) => void;
 };
 
-export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<ManifestSerahData>[] => [
+export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupManifest, onPrint }: ColumnProps): ColumnDef<ManifestSerahData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -42,7 +43,7 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
             <DropdownMenuItem
               onClick={() => onView(data)}
             >
-              <SearchIcon /> Lihat
+              <SearchIcon /> Lihat {data.status }
             </DropdownMenuItem>
             
             {(data.status === "created") && <DropdownMenuItem
@@ -54,6 +55,11 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
               onClick={() => onTutupManifest(data)}
             >
               <BoxIcon /> Tutup Manifest
+            </DropdownMenuItem>}
+            {(data.items.length != 0 && data.status == 'send') && <DropdownMenuItem
+              onClick={() => onPrint(data)}
+            >
+              <Printer /> Cetak
             </DropdownMenuItem>}
             {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />}
             {data.status !== "created" ? null : <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
