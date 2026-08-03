@@ -43,7 +43,7 @@ export const manifestSerahTableColumns = ({ onView, onEdit, onDelete, onTutupMan
             <DropdownMenuItem
               onClick={() => onView(data)}
             >
-              <SearchIcon /> Lihat {data.status }
+              <SearchIcon /> Lihat
             </DropdownMenuItem>
             
             {(data.status === "created") && <DropdownMenuItem
