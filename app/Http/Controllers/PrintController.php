@@ -28,4 +28,25 @@ class PrintController extends Controller
             return response()->json(['error' => 'Manifest not found or an error occurred.'], 404);
         }
     }
+    
+    public function printManifestTerima(String $code)
+    {
+        try {
+            $manifest = Manifest::with([
+                'creator',
+                'receiver',
+                'items',
+            ])
+                ->where('code', $code)
+                ->firstOrFail();
+
+            return Pdf::loadView('print.manifest-terima', [
+                'manifest' => $manifest
+            ])
+                ->setPaper('a4', 'portrait')
+                ->stream("manifest-terima-{$code}.pdf");
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Manifest not found or an error occurred.'], 404);
+        }
+    }
 }

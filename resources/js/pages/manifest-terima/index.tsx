@@ -3,6 +3,7 @@ import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { type BreadcrumbItem } from '@/types';
+import { ManifestSerahData } from '@/types/manifest-serah';
 import { BagianTujuan, Kantor, ManifestTerimaData } from '@/types/manifest-terima';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
@@ -119,6 +120,11 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
         });
     }
 
+    const onPrint = (data: ManifestSerahData) => {
+        const url = route('print_manifest_terima', { code: data.code });
+        window.open(url, '_blank');
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pickup - Manifest Terima" />
@@ -126,7 +132,7 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
             <PageLayout title='Manifest Terima' description="Kelola penerimaan barang">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <ManifestTerimaTable data={datas} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <ManifestTerimaTable data={datas} columns={manifestTerimaTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest, onPrint })} />
                         <ManifestTerimaFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedData} isView={isView} />
                         <ManifestDialog selectedData={selectedDataManifest} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog

@@ -15,6 +15,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class WarehouseController extends Controller
@@ -134,7 +135,6 @@ class WarehouseController extends Controller
 
                             BagDetail::where("bag_id", $bag->id)
                                 ->update(["status" => "received"]);
-
                         }
                     }
                 }
@@ -152,6 +152,47 @@ class WarehouseController extends Controller
                     'message' => 'Manifest gagal ditutup ' . $th->getMessage(),
                 ]);
             }
+        }
+
+        if ($request->a == 'review') {
+            $transaction = Transaction::where("id", $request->id)->first();
+            if (!$transaction) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Data item tidak ditemukan',
+                    'message' => 'Data item yang akan diproses tidak ditemukan.',
+                ]);
+            }
+
+            $transaction->real_p = $request->p;
+            $transaction->real_l = $request->l;
+            $transaction->real_t = $request->t;
+            $transaction->real_total_item = $request->weight;
+            $transaction->real_weight = $request->weight;
+
+            // Upload bukti image
+            if ($request->hasFile('foto')) {
+
+                // delete old file if exists
+                if ($transaction->foto) {
+                    Storage::disk('public')->delete($transaction->foto);
+                }
+
+                $file = $request->file('foto');
+
+                $filename = time() . '_' . $file->getClientOriginalName();
+
+                $path = $file->storeAs(
+                    'manifest-terima-foto',
+                    $filename,
+                    'public'
+                );
+
+                $transaction->foto = $path;
+            }
+
+            $transaction->save();
+            return;
         }
 
         return redirect()->route("warehouse.manifest_terima");

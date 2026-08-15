@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BoxIcon, MoreHorizontal, SearchIcon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, Printer, SearchIcon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { ManifestTerimaData } from "@/types/manifest-terima"
@@ -20,9 +20,10 @@ type ColumnProps = {
   onEdit: (data: ManifestTerimaData) => void;
   onDelete: (data: ManifestTerimaData) => void;
   onTutupManifest: (data: ManifestTerimaData) => void;
+  onPrint: (data: ManifestTerimaData) => void;
 };
 
-export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<ManifestTerimaData>[] => [
+export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupManifest, onPrint }: ColumnProps): ColumnDef<ManifestTerimaData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -44,6 +45,11 @@ export const manifestTerimaTableColumns = ({ onView, onEdit, onDelete, onTutupMa
             >
               <SearchIcon /> Lihat
             </DropdownMenuItem>
+            {(data.items.length != 0 && data.status == 'received') && <DropdownMenuItem
+              onClick={() => onPrint(data)}
+            >
+              <Printer /> Cetak
+            </DropdownMenuItem>}
             {(data.items.length != 0 && (data.status == 'send' || data.status == 'created')) && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
             > 

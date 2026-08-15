@@ -1,4 +1,4 @@
-import { CustomerData } from "./customer";
+import { CustomerData } from './customer';
 
 export interface Offerings {
     id: number;
@@ -31,13 +31,13 @@ export interface Biayas {
     base_price: number;
     offering_price: number;
     deal_price: number | null;
-    nego_price: number | null
+    nego_price: number | null;
     status: 'pending' | 'on_nego' | 'accepted' | 'rejected';
     created_at: string;
     updated_at: string;
 }
 
- export interface TransactionsData {
+export interface TransactionsData {
     id: number;
     order_number: string;
     user_id: number;
@@ -54,6 +54,11 @@ export interface Biayas {
     l: number;
     t: number;
     weight: number;
+    real_total: number;
+    real_p: number;
+    real_l: number;
+    real_t: number;
+    real_weight: number;
     isiKiriman: string;
     catatan: string | null;
     status: string;
