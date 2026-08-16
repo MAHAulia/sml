@@ -183,6 +183,7 @@ class RoleMenuSeeder extends Seeder
             ["menu_id" => "77", "role_id" => "6"],
             ["menu_id" => "78", "role_id" => "6"],
             ["menu_id" => "115", "role_id" => "6"],
+            ["menu_id" => "116", "role_id" => "6"],
 
             // Menu Delivery
             ["menu_id" => "79", "role_id" => "5"],

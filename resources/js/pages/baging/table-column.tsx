@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, Printer, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { BagingData } from "@/types/baging"
@@ -20,9 +20,10 @@ type ColumnProps = {
   onEdit: (data: BagingData) => void;
   onDelete: (data: BagingData) => void;
   onTutupManifest: (data: BagingData) => void;
+  onPrint: (data: BagingData) => void;
 };
 
-export const bagingTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }: ColumnProps): ColumnDef<BagingData>[] => [
+export const bagingTableColumns = ({ onView, onEdit, onDelete, onTutupManifest, onPrint }: ColumnProps): ColumnDef<BagingData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -49,6 +50,11 @@ export const bagingTableColumns = ({ onView, onEdit, onDelete, onTutupManifest }
               onClick={() => onEdit(data)}
             >
               <PlusCircle /> Tambah Item Kantong
+            </DropdownMenuItem>}
+            {(data.items.length != 0 && data.status == 'bagged') && <DropdownMenuItem
+              onClick={() => onPrint(data)}
+            >
+              <Printer /> Cetak
             </DropdownMenuItem>}
             {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}

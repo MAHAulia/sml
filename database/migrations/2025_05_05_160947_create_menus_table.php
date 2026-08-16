@@ -273,7 +273,9 @@ return new class extends Migration
             // 114
             ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
             // 115
-            ["label" => "Cetak manifest Serah", "route_name" => "print_manifest", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
+            ["label" => "Cetak manifest", "route_name" => "print_manifest", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
+            // 116
+            ["label" => "Cetak kantong", "route_name" => "print_bag", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
         ]);
     }
 

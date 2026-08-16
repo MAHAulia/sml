@@ -9,4 +9,9 @@ class Bag extends Model
     public function items() {
         return $this->hasMany(BagDetail::class);
     }
+
+    public function creator() {
+        return $this->belongsTo(User::class, "user_id", "id");
+    }
+
 }

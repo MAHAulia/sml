@@ -96,6 +96,7 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::resource('invoice', InvoiceController::class);
 
     Route::get("manifest/print/{code}", [PrintController::class, 'printManifest'])->name("print_manifest");
+    Route::get("bag/print/{code}", [PrintController::class, 'printBag'])->name("print_bag");
 
 });
 

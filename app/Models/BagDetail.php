@@ -11,4 +11,8 @@ class BagDetail extends Model
         'bag_id',
         'transaction_id',
     ];
+
+    public function item() {
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
 }

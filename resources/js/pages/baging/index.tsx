@@ -1,16 +1,16 @@
+import ConfirmationDialog from '@/components/confirm-dialog';
 import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { type BreadcrumbItem } from '@/types';
-import { BagianTujuan, Kantor, ManifestSerahData } from '@/types/manifest-serah';
+import { BagingData } from '@/types/baging';
+import { BagianTujuan, Kantor } from '@/types/manifest-serah';
 import { Head, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import ConfirmationDialog from '@/components/confirm-dialog';
-import BaggingTable from './table';
-import BaggingFormDialog from './form-dialog';
 import BagingFormDialog from './dialog';
+import BaggingFormDialog from './form-dialog';
+import BaggingTable from './table';
 import { bagingTableColumns } from './table-column';
-import { BagingData } from '@/types/baging';
 
 
 interface BaggingProps {
@@ -137,6 +137,11 @@ export default function ManifestSerah({ datas }: BaggingProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const onPrint = (data: BagingData) => {
+        const url = route('print_bag', { code: data.code });
+        window.open(url, '_blank');
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Warehouse - Bagging" />
@@ -144,7 +149,7 @@ export default function ManifestSerah({ datas }: BaggingProps) {
             <PageLayout title='Baging' description="Kelola proses bagging">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <BaggingTable data={datas} onAddButtonClicked={handleAdd} columns={bagingTableColumns({ onView: handleView, onEdit, onDelete: confirmDelete, onTutupManifest })} />
+                        <BaggingTable data={datas} onAddButtonClicked={handleAdd} columns={bagingTableColumns({ onView: handleView, onEdit, onDelete: confirmDelete, onTutupManifest, onPrint })} />
                         <BaggingFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedViewData} isView={isView} />
                         <BagingFormDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog
