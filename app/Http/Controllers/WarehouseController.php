@@ -117,6 +117,7 @@ class WarehouseController extends Controller
 
                 if (count($request->items) == 0) {
                     $manifest->status = "received";
+                    $manifest->receiver_id = Auth::user()->id;
                     $manifest->save();
 
                     event(new ManifestReceived($manifest));

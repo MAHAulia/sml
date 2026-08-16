@@ -121,7 +121,7 @@ export default function ManifestTerima({ datas }: ManifestTerimaProps) {
     }
 
     const onPrint = (data: ManifestSerahData) => {
-        const url = route('print_manifest_terima', { code: data.code });
+        const url = route('print_manifest', { code: data.code });
         window.open(url, '_blank');
     }
 

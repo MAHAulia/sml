@@ -95,9 +95,7 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
 
     Route::resource('invoice', InvoiceController::class);
 
-    Route::get("manifest/serah/print/{code}", [PrintController::class, 'printManifestSerah'])->name("print_manifest_serah");
-    // TODO: cetak manifest terima masih 403
-    Route::get("manifest/terima/print/{code}", [PrintController::class, 'printManifestTerima'])->name("print_manifest_terima");
+    Route::get("manifest/print/{code}", [PrintController::class, 'printManifest'])->name("print_manifest");
 
 });
 

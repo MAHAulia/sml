@@ -150,7 +150,7 @@ export default function ManifestSerah({ datas }: ManifestSerahProps) {
 
 
     const onPrint = (data: ManifestSerahData) => {
-        const url = route('print_manifest_serah', { code: data.code });
+        const url = route('print_manifest', { code: data.code });
         window.open(url, '_blank');
     }
     useEffect(() => {

@@ -8,7 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PrintController extends Controller
 {
-    public function printManifestSerah(String $code)
+    public function printManifest(String $code)
     {
         try {
             $manifest = Manifest::with([
@@ -29,24 +29,4 @@ class PrintController extends Controller
         }
     }
     
-    public function printManifestTerima(String $code)
-    {
-        try {
-            $manifest = Manifest::with([
-                'creator',
-                'receiver',
-                'items',
-            ])
-                ->where('code', $code)
-                ->firstOrFail();
-
-            return Pdf::loadView('print.manifest-terima', [
-                'manifest' => $manifest
-            ])
-                ->setPaper('a4', 'portrait')
-                ->stream("manifest-terima-{$code}.pdf");
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Manifest not found or an error occurred.'], 404);
-        }
-    }
 }
