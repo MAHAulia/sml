@@ -20,7 +20,11 @@
 
 			<br>
 
-			<b>MANIFEST</b>
+			<b>MANIFEST @if ($manifest->type == "linehaul")
+				KANTONG
+			@else
+				KIRIMAN
+			@endif</b>
 
 		</td>
 

@@ -1,6 +1,10 @@
 <div class="section-title">
 
-	DAFTAR BARANG
+	DAFTAR @if ($manifest->type == "linehaul")
+		KANTONG
+	@else
+		BARANG
+	@endif
 
 </div>
 
@@ -12,9 +16,17 @@
 
 			<th width="5%">No</th>
 
-			<th width="20%">Resi/Barcode</th>
+			<th width="20%">
+				@if ($manifest->type == "linehaul")
+					Kode Kantong
+				@else
+					Resi/Barcode
+				@endif
+			</th>
 
-			<th>Nama Barang</th>
+			@if ($manifest->type != "linehaul")
+				<th>Nama Barang</th>
+			@endif
 
 			<th width="10%">Status</th>
 
@@ -36,18 +48,28 @@
 
 				<td>
 
-					{{ $row->item->order_number ?? "-" }}
+					@if ($manifest->type == "linehaul")
+						{{ $row->item->code ?? "-" }}
+					@else
+						{{ $row->item->order_number ?? "-" }}
+					@endif
 
 				</td>
-				<td>
-                    
-					{{ $row->item->isiKiriman ?? "ITEM " . $row->item_id }}
+				@if ($manifest->type != "linehaul")
+					<td>
 
-				</td>
+						{{ $row->item->isiKiriman ?? "ITEM " . $row->item_id }}
+
+					</td>
+				@endif
 
 				<td class="text-center">
 
-					{{ strtoupper($row->status) }}
+					@if ($manifest->type == "linehaul")
+						{{ strtoupper($row->item->status) }}
+					@else
+						{{ strtoupper($row->status) }}
+					@endif
 
 				</td>
 

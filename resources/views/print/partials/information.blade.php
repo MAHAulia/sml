@@ -1,6 +1,10 @@
 <div class="section-title">
 
-	INFORMASI MANIFEST
+	INFORMASI MANIFEST @if ($manifest->type == "linehaul")
+		KANTONG
+	@else
+		BARANG
+	@endif
 
 </div>
 
@@ -68,7 +72,7 @@
 
 	<tr>
 
-		<td><b>Office</b></td>
+		<td><b>Kantor Asal</b></td>
 
 		<td>
 
@@ -76,7 +80,7 @@
 
 		</td>
 
-		<td><b>Office Tujuan</b></td>
+		<td><b>Kantor Tujuan</b></td>
 
 		<td>
 
