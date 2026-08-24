@@ -259,11 +259,11 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
                                     <SelectContent>
                                         <SelectGroup>
                                             <SelectLabel>Bagian Tujuan</SelectLabel>
-                                            {tujuans.map((tujuan) => (
+                                            {/* {tujuans.map((tujuan) => (
                                                 <SelectItem key={tujuan.id} value={tujuan.name}>
                                                     {tujuan.name}
                                                 </SelectItem>
-                                            ))}
+                                            ))} */}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>

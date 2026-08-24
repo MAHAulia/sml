@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, Printer, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { ManifestSerahData } from "@/types/manifest-serah"
@@ -49,9 +49,9 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
             {(data.status === "created") && <DropdownMenuItem
               onClick={() => onEdit(data)}
             >
-              <PlusCircle /> Tambah Item Manifest
+              <PlusCircle /> Tambah Item
             </DropdownMenuItem>}
-            {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
+            {/* {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
             >
               <BoxIcon /> Tutup Manifest
@@ -60,8 +60,8 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
               onClick={() => onPrint(data)}
             >
               <Printer /> Cetak
-            </DropdownMenuItem>}
-            {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />}
+            </DropdownMenuItem>} */}
+            {/* {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />} */}
             {data.status !== "created" ? null : <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -79,6 +79,21 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           No.
+          <ArrowUpDown className="ml-auto h-4 w-4" />
+        </Button>
+      )
+    }
+  },
+   {
+    accessorKey: "code",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nomor Surat Jalan
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
@@ -106,21 +121,6 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
     }
   },
   {
-    accessorKey: "type",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Jenis Manifest
-          <ArrowUpDown className="ml-auto h-4 w-4" />
-        </Button>
-      )
-    },
-  },
-  {
     accessorKey: "office_from",
     header: ({ column }) => {
       return (
@@ -129,7 +129,7 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Office From
+          Kantor Asal
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
@@ -144,7 +144,7 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          From
+          Kantor Tujuan
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
@@ -159,25 +159,10 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Office To
+          Jumlah Manifest
           <ArrowUpDown className="ml-auto h-4 w-4" />
         </Button>
       )
     }
-  },
-  {
-    accessorKey: "to",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          To
-          <ArrowUpDown className="ml-auto h-4 w-4" />
-        </Button>
-      )
-    },
   },
 ]

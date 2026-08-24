@@ -83,7 +83,7 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::post("warehouse/bagging/create", [WarehouseController::class, 'createBagging'])->name("warehouse.create_baging");
 
     Route::get("warehouse/manifest/serah", [WarehouseController::class, 'manifestSerah'])->name("warehouse.manifest_serah");
-    Route::post("warehouse/manifest/serah/create", [WarehouseController::class, 'createFManifestSerah'])->name("warehouse.save_manifest_serah");
+    Route::post("warehouse/manifest/serah/create", [WarehouseController::class, 'createManifestSerah'])->name("warehouse.save_manifest_serah");
 
     Route::resource('delivery', DeliveryController::class);
     Route::get("delivery/manifest/terima", [DeliveryController::class, 'manifestTerima'])->name("delivery.manifest_terima");
@@ -101,6 +101,7 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
 
     // Route::resource('surat-jalan', SuratJalanController::class);
     Route::get("surat-jalan", [SuratJalanController::class, 'index'])->name('warehouse.surat_jalan');
+    Route::post("surat-jalan/warehouse", [SuratJalanController::class, 'createSuratJalan'])->name("warehouse.save_surat_jalan");
 
 });
 

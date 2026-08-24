@@ -25,6 +25,12 @@ export interface Kantor {
     phone?: string;
 }
 
+export interface Mobil {
+    id: number;
+    nopol: string;
+    merek: string;
+    description: string;
+}
 export interface BagianTujuan {
     id: number;
     name: string;
