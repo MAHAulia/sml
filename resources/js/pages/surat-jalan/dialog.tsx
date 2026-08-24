@@ -6,15 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SharedData } from "@/types";
-import { BagianTujuan, Kantor, ManifestSerahData } from "@/types/manifest-serah";
+import { Kantor } from "@/types/manifest-serah";
 import { TransactionsData } from "@/types/marketing";
+import { SuratJalanData } from "@/types/surat-jalan";
 import { useForm, usePage } from "@inertiajs/react";
 import { ArrowRight, LoaderCircle, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
 
 interface SuratJalanDialog {
-    selectedData: ManifestSerahData | null;
+    selectedData: SuratJalanData | null;
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
@@ -35,7 +36,7 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
     const role = auth.user.roles[0].name;
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
-    const tujuans = page.props.tujuans as BagianTujuan[];
+    const mobils = page.props.mobils as Mobil[];
     const { data, setData, post, get, processing, errors, reset } = useForm<Required<SuratJalanForm>>({
         manifest: "",
         to: "",
@@ -48,12 +49,12 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
     const [itemManifest, setItemManifest] = useState<TransactionsData[]>([])
     const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
 
-    const getListItem = (selectedData: ManifestSerahData) => {
+    const getListItem = (selectedData: SuratJalanData) => {
         let url = "pickup.manifest_serah";
         if (role === "Warehouse") {
             url = "warehouse.manifest_serah";
         }
-        get(route(url, { t: selectedData.type, m: selectedData.code }), {
+        get(route(url, { t: null, m: selectedData.code }), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: (page) => {
@@ -71,12 +72,12 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
     useEffect(() => {
 
         if (selectedData != null) {
-            console.log('selectedData', selectedData)
-            setData('manifest', selectedData.code)
-            setData('to', selectedData.to);
-            setData('office_to', selectedData.office_to);
-            setData('type', selectedData.type);
-            setData('action', 'update');
+            // console.log('selectedData', selectedData)
+            // setData('manifest', selectedData.code)
+            // setData('to', selectedData.to);
+            // setData('office_to', selectedData.office_to);
+            // setData('type', selectedData.type);
+            // setData('action', 'update');
             getListItem(selectedData);
         } else {
             resetForm()
@@ -193,9 +194,9 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-9/12">
                 <DialogHeader>
-                    <DialogTitle>Tambah Data Detail Manifest {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
+                    <DialogTitle>Tambah Data Detail Surat Jalan {isView && <Badge variant={getVariant(selectedData?.status)}>{getLabel(selectedData?.status)}</Badge>}</DialogTitle>
                     <DialogDescription>
-                        Kelola penambahan detail data manifest serah. Pastikan data yang dimasukkan sudah benar sebelum menyimpan.
+                        Kelola penambahan detail data surat jalan. Pastikan data yang dimasukkan sudah benar sebelum menyimpan.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="gap-4 py-4">

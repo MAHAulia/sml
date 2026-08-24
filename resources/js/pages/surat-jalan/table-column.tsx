@@ -10,20 +10,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, PlusCircle, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, Printer, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
-import { ManifestSerahData } from "@/types/manifest-serah"
+import { SuratJalanData } from "@/types/surat-jalan"
 
 type ColumnProps = {
-  onView: (data: ManifestSerahData) => void;
-  onEdit: (data: ManifestSerahData) => void;
-  onDelete: (data: ManifestSerahData) => void;
-  onTutupManifest: (data: ManifestSerahData) => void;
-  onPrint: (data: ManifestSerahData) => void;
+  onView: (data: SuratJalanData) => void;
+  onEdit: (data: SuratJalanData) => void;
+  onDelete: (data: SuratJalanData) => void;
+  onTutupManifest: (data: SuratJalanData) => void;
+  onPrint: (data: SuratJalanData) => void;
 };
 
-export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManifest, onPrint }: ColumnProps): ColumnDef<ManifestSerahData>[] => [
+export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManifest, onPrint }: ColumnProps): ColumnDef<SuratJalanData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
@@ -51,7 +51,7 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
             >
               <PlusCircle /> Tambah Item
             </DropdownMenuItem>}
-            {/* {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
+            {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
             >
               <BoxIcon /> Tutup Manifest
@@ -60,7 +60,7 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
               onClick={() => onPrint(data)}
             >
               <Printer /> Cetak
-            </DropdownMenuItem>} */}
+            </DropdownMenuItem>}
             {/* {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />} */}
             {data.status !== "created" ? null : <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}
           </DropdownMenuContent>

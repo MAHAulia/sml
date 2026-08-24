@@ -3,7 +3,8 @@ import DeleteConfirmation from '@/components/delete-confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import PageLayout from '@/layouts/page-layout';
 import { SharedData, type BreadcrumbItem } from '@/types';
-import { BagianTujuan, Kantor, ManifestSerahData } from '@/types/manifest-serah';
+import { Kantor, Mobil } from '@/types/manifest-serah';
+import { SuratJalanData } from '@/types/surat-jalan';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import SuratJalanDialog from './dialog';
@@ -14,9 +15,9 @@ import { suratJalanTableColumns } from './table-column';
 
 
 interface SuratJalanProps {
-    datas: ManifestSerahData[],
+    datas: SuratJalanData[],
     kantors: Kantor[],
-    bagianTujuans: BagianTujuan[],
+    mobils: Mobil[],
 }
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,9 +31,9 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
     const role = auth.user.roles[0].name;
     const { delete: destroy, post, processing } = useForm();
 
-    const [selectedData, setSelectedData] = useState<ManifestSerahData | null>(null)
-    const [selectedItemData, setSelectedItemData] = useState<ManifestSerahData | null>(null)
-    const [deleteMenu, setDeleteMenu] = useState<ManifestSerahData>()
+    const [selectedData, setSelectedData] = useState<SuratJalanData | null>(null)
+    const [selectedItemData, setSelectedItemData] = useState<SuratJalanData | null>(null)
+    const [deleteMenu, setDeleteMenu] = useState<SuratJalanData>()
     const [isOpen, setIsOpen] = useState(false)
     const [tambahData, setTambahData] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
@@ -47,10 +48,10 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
         isShow: false,
     })
 
-    const [selectedItem, setSelectedItem] = useState<ManifestSerahData | null>(null);
+    const [selectedItem, setSelectedItem] = useState<SuratJalanData | null>(null);
     const [openPreview, setOpenPreview] = useState(false);
 
-    const handleSelectItem = (item: ManifestSerahData) => {
+    const handleSelectItem = (item: SuratJalanData) => {
         setSelectedItem(item);
         setOpenPreview(true);
     };
@@ -59,19 +60,19 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('f');
 
-    const handleView = (data: ManifestSerahData) => {
+    const handleView = (data: SuratJalanData) => {
         setIsOpen(true)
         setSelectedItemData(data)
         setisView(true)
     }
 
-    const handleEdit = (data: ManifestSerahData) => {
+    const handleEdit = (data: SuratJalanData) => {
         setTambahData(true)
         setSelectedData(data)
         setisView(false)
     }
 
-    const confirmDelete = (data: ManifestSerahData) => {
+    const confirmDelete = (data: SuratJalanData) => {
         setDeleteMenu(data)
         setShowConfirm(true)
         setisView(false)
@@ -112,7 +113,7 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
 
     }
 
-    const onTutupManifest = (data: ManifestSerahData) => {
+    const onTutupManifest = (data: SuratJalanData) => {
         setSelectedData(data)
         setConfirmation({
             title: "Tutup Manifest",
@@ -150,8 +151,8 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
     }
 
 
-    const onPrint = (data: ManifestSerahData) => {
-        const url = route('print_manifest', { code: data.code });
+    const onPrint = (data: SuratJalanData) => {
+        const url = route('print_surat_jalan', { code: data.code });
         window.open(url, '_blank');
     }
     useEffect(() => {

@@ -15,7 +15,7 @@ class SuratJalanController extends Controller
 {
     public function index()
     {
-        $datas = SuratJalan::get();
+        $datas = SuratJalan::with("items")->get();
         $kantors = Kantor::all();
         $mobils = Mobil::all();
         return Inertia::render('surat-jalan/index', compact('datas', 'kantors', 'mobils'));
