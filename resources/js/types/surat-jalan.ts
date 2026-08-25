@@ -6,6 +6,7 @@ export interface SuratJalanData {
     mobil_id: number;
     nopol: string;
     driver_id: number;
+    to: string;
     items: SuratJalanDetail[];
 }
 

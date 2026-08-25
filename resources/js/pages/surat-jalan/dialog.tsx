@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SharedData } from "@/types";
-import { Kantor } from "@/types/manifest-serah";
-import { TransactionsData } from "@/types/marketing";
+import { Kantor, ManifestSerahData, Mobil } from "@/types/manifest-serah";
 import { SuratJalanData } from "@/types/surat-jalan";
 import { useForm, usePage } from "@inertiajs/react";
 import { ArrowRight, LoaderCircle, X } from 'lucide-react';
@@ -22,10 +21,9 @@ interface SuratJalanDialog {
 }
 
 type SuratJalanForm = {
-    manifest: string;
+    code: string;
+    mobil_id: number | null;
     to: string;
-    office_to: string;
-    type: string;
     selectedItem: number[];
     action: 'add' | 'update';
 };
@@ -38,28 +36,27 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
     const kantors = page.props.kantors as Kantor[];
     const mobils = page.props.mobils as Mobil[];
     const { data, setData, post, get, processing, errors, reset } = useForm<Required<SuratJalanForm>>({
-        manifest: "",
-        to: "",
-        office_to: "",
-        type: "",
+        code: "",
+        mobil_id: null,
         action: 'add',
+        to: '',
         selectedItem: [],
     });
 
-    const [itemManifest, setItemManifest] = useState<TransactionsData[]>([])
-    const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
+    const [itemManifest, setItemManifest] = useState<ManifestSerahData[]>([])
+    const [selectedManifestItem, setSelectedManifestItem] = useState<ManifestSerahData[]>([])
 
     const getListItem = (selectedData: SuratJalanData) => {
-        let url = "pickup.manifest_serah";
-        if (role === "Warehouse") {
-            url = "warehouse.manifest_serah";
-        }
-        get(route(url, { t: null, m: selectedData.code }), {
+        const url = "warehouse.surat_jalan";
+
+        get(route(url, { t: "local", m: selectedData.code }), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: (page) => {
-                setItemManifest(page.props.data_manifest as TransactionsData[])
-                const dataSelected = page.props.data_selected as TransactionsData[]
+                const data = page.props
+                console.log(data.dataSelected, data.dataSuratJalan)
+                setItemManifest(page.props.dataSuratJalan as ManifestSerahData[])
+                const dataSelected = page.props.dataSelected as ManifestSerahData[]
                 setSelectedManifestItem(dataSelected)
                 setData("selectedItem", dataSelected.map(item => item.id));
             },
@@ -72,12 +69,10 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
     useEffect(() => {
 
         if (selectedData != null) {
-            // console.log('selectedData', selectedData)
-            // setData('manifest', selectedData.code)
-            // setData('to', selectedData.to);
-            // setData('office_to', selectedData.office_to);
-            // setData('type', selectedData.type);
-            // setData('action', 'update');
+            setData('code', selectedData.code);
+            setData('mobil_id', selectedData.mobil_id);
+            setData('to', selectedData.to);
+            setData('action', 'update');
             getListItem(selectedData);
         } else {
             resetForm()
@@ -85,7 +80,7 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedData]);
 
-    const handleSelectItem = (item: TransactionsData) => {
+    const handleSelectItem = (item: ManifestSerahData) => {
         // add to selected
         setSelectedManifestItem((prev) => [...prev, item]);
         setData("selectedItem", [...data.selectedItem, item.id]);
@@ -93,7 +88,7 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
         setItemManifest((prev) => prev.filter((i) => i.id !== item.id));
     };
 
-    const handleRemoveItem = (item: TransactionsData) => {
+    const handleRemoveItem = (item: ManifestSerahData) => {
         setItemManifest((prev) => [...prev, item]);
         setSelectedManifestItem((prev) => prev.filter((i) => i.id !== item.id));
         setData("selectedItem", data.selectedItem.filter((id) => id !== item.id));
@@ -101,15 +96,10 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // if (data.action == 'add') {
-
-        // }
 
         if (data.action == 'update') {
-            let url = "pickup.save_manifest_serah";
-            if (role === "Warehouse") {
-                url = "warehouse.save_manifest_serah";
-            }
+            const url = "warehouse.save_surat_jalan";
+
             post(route(url, selectedData?.id), {
                 onSuccess: () => {
                     resetForm();
@@ -125,10 +115,10 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
     };
 
     const resetForm = () => {
-        reset('to');
-        reset('office_to');
-        reset('type');
+        reset('code');
+        reset('mobil_id');
         reset('action');
+        reset('to');
     };
 
     const getVariant = (status: string | undefined) => {
@@ -201,53 +191,33 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
                 </DialogHeader>
                 <div className="gap-4 py-4">
                     <form className="flex flex-col gap-6" onSubmit={submit}>
-                        <div className={data.type === "linehaul" ? "grid grid-cols-3 gap-2" : "grid grid-cols-2 gap-2"}>
+                        <div className={"grid grid-cols-2 gap-2"}>
                             <div className="grid gap-2">
-                                <Label htmlFor="senderPhone">Jenis</Label>
+                                <Label htmlFor="mobil">Mobil {data.mobil_id?.toString() || ''}</Label>
                                 <Select
-                                    value={data.type}
-                                    onValueChange={(value) => setData('type', value)}
+                                    value={data.mobil_id?.toString() || ''}
+                                    onValueChange={(value) => setData('mobil_id', parseInt(value))}
                                     required
                                     disabled={isView}
                                 >
-                                    <SelectTrigger id="type" tabIndex={4} className="w-full">
-                                        <SelectValue placeholder="Lokal / Antar Cabang / Antar Kota" />
+                                    <SelectTrigger id="mobil" tabIndex={4} className="w-full">
+                                        <SelectValue placeholder="Mobil" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Jenis Manifest</SelectLabel>
-                                            <SelectItem value="local">Lokal</SelectItem>
-                                            <SelectItem value="linehaul">Antar Cabang / Antar Kota</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.type} />
-                            </div>
-
-                            {data.type === "linehaul" && <div className="grid gap-2">
-                                <Label htmlFor="officeTo">Kantor Tujuan</Label>
-                                <Select
-                                    value={data.office_to}
-                                    onValueChange={(value) => setData('office_to', value)}
-                                    required
-                                    disabled={isView}
-                                >
-                                    <SelectTrigger id="officeTo" tabIndex={4} className="w-full">
-                                        <SelectValue placeholder="Kantor Tujuan" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Kantor Tujuan</SelectLabel>
-                                            {kantors.filter((kantor) => data.type === "local" ? kantor.code == auth.user.office : kantor.code !== auth.user.office).map((kantor) => (
-                                                <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
+                                            <SelectLabel>Mobil</SelectLabel>
+                                            {mobils.map((mobil) => (
+                                                <SelectItem key={mobil.id} value={mobil.id.toString()}>
+                                                    {mobil.nopol} - {mobil.merek} - {mobil.description}
+                                                </SelectItem>
                                             ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <InputError message={errors.office_to} />
-                            </div>}
+                                <InputError message={errors.mobil_id} />
+                            </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="to">Bagian Tujuan</Label>
+                                <Label htmlFor="to">Kantor Tujuan</Label>
                                 <Select
                                     value={data.to}
                                     onValueChange={(value) => setData('to', value)}
@@ -255,26 +225,24 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
                                     disabled={isView}
                                 >
                                     <SelectTrigger id="to" tabIndex={4} className="w-full">
-                                        <SelectValue placeholder="Bagian Tujuan" />
+                                        <SelectValue placeholder="Kantor Tujuan" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Bagian Tujuan</SelectLabel>
-                                            {/* {tujuans.map((tujuan) => (
-                                                <SelectItem key={tujuan.id} value={tujuan.name}>
-                                                    {tujuan.name}
-                                                </SelectItem>
-                                            ))} */}
+                                            <SelectLabel>Kantor Tujuan</SelectLabel>
+                                            {kantors.filter((kantor) => kantor.code !== auth.user.office).map((kantor) => (
+                                                <SelectItem key={kantor.id} value={kantor.code.toString()}>{kantor.code} - {kantor.name}</SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <InputError message={errors.office_to} />
+                                <InputError message={errors.to} />
                             </div>
                         </div>
 
                         <div className="flex w-full h-full gap-2">
                             <div className="w-full">
-                                <Label htmlFor="officeTo">Item Belum Diproses</Label>
+                                <Label htmlFor="officeTo">Manifest Belum Dipilih</Label>
                                 <div className="border-2 rounded-xl p-4 mt-3 overflow-y-auto h-4/5 w-full">
                                     {itemManifest?.map((item) => <div key={`item-${item.id}`} onClick={() => handleSelectItem(item)} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code} <ArrowRight /> </div>)}
                                 </div>
@@ -289,7 +257,7 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
 
                         <Button type="submit" className="mt-4 w-full" tabIndex={18} disabled={processing}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Simpan Data Manifest
+                            Simpan Data
                         </Button>
                     </form>
 

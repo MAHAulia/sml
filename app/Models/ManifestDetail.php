@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ManifestDetail extends Model
 {
-    protected $fillable = [
-        'id',
-        'item_id',
-        'manifest_id',
-        'status'
-    ];
+protected $fillable = [
+    'id',
+    'item_id',
+    'manifest_id',
+    'status'
+];
 
     public function manifest()
     {

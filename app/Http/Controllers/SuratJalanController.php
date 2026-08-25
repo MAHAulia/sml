@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ManifestCreated;
+use App\Events\SuratJalanCreated;
 use App\Models\Kantor;
 use App\Models\Manifest;
 use App\Models\Mobil;
@@ -9,23 +11,40 @@ use App\Models\SuratJalan;
 use App\Models\SuratJalanDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class SuratJalanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $datas = SuratJalan::with("items")->get();
         $kantors = Kantor::all();
         $mobils = Mobil::all();
-        return Inertia::render('surat-jalan/index', compact('datas', 'kantors', 'mobils'));
+        if ($request->t == "local") {
+            $suratJalan = SuratJalan::where("code", $request->m)->first();
+            $dataSuratJalan = Manifest::leftJoin('surat_jalan_details', 'manifests.id', '=', 'surat_jalan_details.manifest_id')
+                        ->whereNull('surat_jalan_details.manifest_id')
+                        ->where('manifests.type', 'linehaul')
+                        ->where('manifests.status', 'send')
+                        ->where('manifests.office_to', $suratJalan?->to)
+                        // ->where('surat_jalan_details.surat_jalan_id', $suratJalan?->id)
+                        ->select('manifests.*')
+                        ->get();
+            $dataSelected = Manifest::join('surat_jalan_details', 'manifests.id', '=', 'surat_jalan_details.manifest_id')
+                        ->where('surat_jalan_details.surat_jalan_id', $suratJalan?->id)
+                        ->select('manifests.*')
+                        ->get();
+        } else {
+            $dataSuratJalan = [];
+            $dataSelected = [];
+        }
+        return Inertia::render('surat-jalan/index', compact('datas', 'kantors', 'mobils', 'dataSuratJalan', 'dataSelected'));
     }
 
     public function createSuratJalan(Request $request)
     {  
         $user = Auth::user();
-
-        
 
         if ($request->a == 'delete') {
             $manifest = Manifest::where("code", $request->m)->first();
@@ -56,45 +75,45 @@ class SuratJalanController extends Controller
         }
 
         if ($request->a == 'approval') {
+            dd($request->all());
             try {
-                $manifest = Manifest::where("code", $request->m)->with('items')->first();
-                if (!$manifest) {
+                $suratJalan = SuratJalan::where("code", $request->m)->with('items')->first();
+                if (!$suratJalan) {
                     return redirect()->back()->with('flash', [
                         'type' => 'error',
-                        'title' => 'Manifest Tidak Ditemukan',
-                        'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                        'title' => 'Surat Jalan Tidak Ditemukan',
+                        'message' => 'Data surat jalan yang akan anda tutup tidak ditemukan.',
                     ]);
                 }
 
-                if ($manifest->status != "created") {
+                if ($suratJalan->status != "created") {
                     return redirect()->back()->with('flash', [
                         'type' => 'error',
                         'title' => 'Manifest Sudah Memiliki Status',
-                        'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                        'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($suratJalan->status) . ".",
                     ]);
                 }
 
                 DB::beginTransaction();
 
+                $suratJalan->status = "send";
+                $suratJalan->save();
 
-                $manifest->status = "send";
-                $manifest->save();
-
-                event(new ManifestCreated($manifest));
+                event(new SuratJalanCreated($suratJalan, $user, $suratJalan->status));
 
                 DB::commit();
 
                 return redirect()->back()->with('flash', [
                     'type' => 'success',
-                    'title' => 'Data manifest berhasil disimpan',
-                    'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                    'title' => 'Data surat jalan berhasil disimpan',
+                    'message' => 'Data surat jalan berhasil disimpan, silahkan lanjutkan proses berikutnya',
                 ]);
 
             } catch (\Throwable $th) {
                 DB::rollBack();
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
-                    'title' => 'Manifest gagal ditutup',
+                    'title' => 'Surat Jalan gagal disimpan',
                     'message' => $th->getMessage(),
                 ]);
             }
@@ -108,23 +127,23 @@ class SuratJalanController extends Controller
             ->first();
 
         if ($isExist) {
-            if (!$request->manifest) {
+            if (!$request->code) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
-                    'title' => 'Manifest Sebelumnya Sudah Dibuat',
-                    'message' => 'Manifest untuk tujuan ini sudah dibuat sebelumnya.',
+                    'title' => 'Surat Jalan Sebelumnya Sudah Dibuat',
+                    'message' => 'Surat Jalan untuk tujuan ini sudah dibuat sebelumnya.',
                 ]);
             } else {
                 if (count($request->selectedItem) == 0 ) {
-                        SuratJalanDetail::where("manifest_id", $isExist->id)->delete();
+                        SuratJalanDetail::where("surat_jalan_id", $isExist->id)->delete();
                 } else {
                     foreach ($request->selectedItem as $key => $value) {
                         SuratJalanDetail::updateOrCreate(
                             [
-                                'item_id' => $value, // kondisi pencarian
+                                'manifest_id' => $value, // kondisi pencarian
                             ],
                             [
-                                'manifest_id' => $isExist->id, // data yang diupdate / diinsert
+                                'surat_jalan_id' => $isExist->id, // data yang diupdate / diinsert
                             ]
                         );
                     }
@@ -132,8 +151,8 @@ class SuratJalanController extends Controller
                 
                 return redirect()->back()->with('flash', [
                     'type' => 'success',
-                    'title' => 'Data manifest berhasil disimpan',
-                    'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                    'title' => 'Data surat jalan berhasil disimpan',
+                    'message' => 'Data surat jalan berhasil disimpan, silahkan lanjutkan proses berikutnya',
                 ]);
             }
         } else {

@@ -54,7 +54,7 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
             {(data.items.length != 0 && data.status == 'created') && <DropdownMenuItem
               onClick={() => onTutupManifest(data)}
             >
-              <BoxIcon /> Tutup Manifest
+              <BoxIcon /> Tutup Surat Jalan
             </DropdownMenuItem>}
             {(data.items.length != 0 && data.status == 'send') && <DropdownMenuItem
               onClick={() => onPrint(data)}

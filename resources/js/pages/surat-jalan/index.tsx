@@ -116,9 +116,9 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
     const onTutupManifest = (data: SuratJalanData) => {
         setSelectedData(data)
         setConfirmation({
-            title: "Tutup Manifest",
-            subtitle: "Proses Tutup Manifest",
-            message: "Apakah Anda yakin ingin menutup manifest, untuk proses berikutnya",
+            title: "Tutup Surat Jalan",
+            subtitle: "Proses Tutup Surat Jalan",
+            message: "Apakah Anda yakin ingin menutup surat jalan, untuk proses berikutnya",
             action: "approve",
             label: "Ya, Tutup",
             danger: false,
@@ -127,10 +127,8 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
     }
 
     const handleConfirmation = () => {
-        let url = "pickup.save_manifest_serah";
-        if (role === "Warehouse") {
-            url = "warehouse.save_manifest_serah";
-        }
+        const url = "warehouse.save_surat_jalan";
+        
         post(route(url, { a: 'approval', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)

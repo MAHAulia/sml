@@ -67,6 +67,7 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
         if (selectedData != null) {
             setData('code', selectedData.code);
             setData('mobil_id', selectedData.mobil_id);
+            setData('to', selectedData.to);
             setData('action', 'update');
             getListItem(selectedData)
         } else {
@@ -99,6 +100,7 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
         reset('code');
         reset('mobil_id');
         reset('action');
+        reset('to');
     };
 
 
