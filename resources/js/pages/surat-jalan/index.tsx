@@ -80,10 +80,8 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
     }
 
     const handleDelete = () => {
-        let url = "pickup.save_manifest_serah";
-        if (role === "Warehouse") {
-            url = "warehouse.save_manifest_serah";
-        }
+        const url = "warehouse.save_surat_jalan";
+        
         post(route(url, { a: 'delete', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)
@@ -128,7 +126,7 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
 
     const handleConfirmation = () => {
         const url = "warehouse.save_surat_jalan";
-        
+
         post(route(url, { a: 'approval', m: selectedData?.code }), {
             onSuccess: () => {
                 setShowConfirm(false)

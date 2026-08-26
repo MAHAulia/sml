@@ -28,6 +28,7 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
+      console.log('data', data)
 
       return (
         <DropdownMenu>
@@ -56,7 +57,7 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
             >
               <BoxIcon /> Tutup Surat Jalan
             </DropdownMenuItem>}
-            {(data.items.length != 0 && data.status == 'send') && <DropdownMenuItem
+            {(data.items.length != 0 && data.status == 'sending') && <DropdownMenuItem
               onClick={() => onPrint(data)}
             >
               <Printer /> Cetak

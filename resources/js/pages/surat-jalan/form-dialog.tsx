@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SharedData } from "@/types";
-import { Kantor, Mobil } from "@/types/manifest-serah";
-import { TransactionsData } from "@/types/marketing";
+import { Kantor, ManifestSerahData, Mobil } from "@/types/manifest-serah";
 import { SuratJalanData } from "@/types/surat-jalan";
 import { useForm, usePage } from "@inertiajs/react";
 import { LoaderCircle } from 'lucide-react';
@@ -30,11 +29,10 @@ type SuratJalanForm = {
 
 export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: SuratJalanFormDialog) {
     const { auth } = usePage<SharedData>().props;
-    const role = auth.user.roles[0].name;
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const mobils = page.props.mobils as Mobil[];
-    const [selectedManifestItem, setSelectedManifestItem] = useState<TransactionsData[]>([])
+    const [selectedManifestItem, setSelectedManifestItem] = useState<ManifestSerahData[]>([])
 
     const { data, setData, get, post, put, processing, errors, reset } = useForm<Required<SuratJalanForm>>({
         code: "",
@@ -44,16 +42,14 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
     });
 
     const getListItem = (selectedData: SuratJalanData) => {
-        let url = "pickup.manifest_serah";
-        if (role === "Warehouse") {
-            url = "warehouse.manifest_serah";
-        }
-        get(route(url, { t: null, m: selectedData.code }), {
+        const url = "warehouse.surat_jalan";
+       
+        get(route(url, { t: "local", m: selectedData.code }), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: (page) => {
-                const dataSelected = page.props.data_selected as TransactionsData[]
-
+                console.log(page.props)
+                const dataSelected = page.props.dataSelected as ManifestSerahData[]
                 setSelectedManifestItem(dataSelected)
             },
             onError: (error) => {
@@ -106,7 +102,7 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className={"sm:max-w-5/12"}>
+            <DialogContent className={"sm:max-w-6/12"}>
                 <DialogHeader>
                     <DialogTitle>{isView ? 'Surat Jalan' : 'Buat Surat Jalan Baru'}</DialogTitle>
                     <DialogDescription>
@@ -119,7 +115,7 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
 
                             <div className={"grid grid-cols-2 gap-2"}>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="mobil">Mobil {data.mobil_id?.toString() || ''}</Label>
+                                    <Label htmlFor="mobil">Mobil</Label>
                                     <Select
                                         value={data.mobil_id?.toString() || ''}
                                         onValueChange={(value) => setData('mobil_id', parseInt(value))}
@@ -167,7 +163,7 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
                             </div>
 
                             {isView && <div>
-                                <h1>Data Manifest</h1>
+                                <h1>Data Manifest Surat Jalan</h1>
                                 <div className="border-2 rounded-xl p-4 mt-4 overflow-y-auto h-1/3 w-full">
                                     {selectedManifestItem?.map((item) => <div key={`selected-${item.id}`} className="cursor-pointer border-2 m-2 rounded-lg p-2 flex justify-between">{item.order_number ?? item.code}</div>)}
                                 </div>

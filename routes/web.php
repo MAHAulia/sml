@@ -102,6 +102,7 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     // Route::resource('surat-jalan', SuratJalanController::class);
     Route::get("surat-jalan", [SuratJalanController::class, 'index'])->name('warehouse.surat_jalan');
     Route::post("surat-jalan/warehouse", [SuratJalanController::class, 'createSuratJalan'])->name("warehouse.save_surat_jalan");
+    Route::get("surat-jalan", [SuratJalanController::class, 'printSuratJalan'])->name('print_surat_jalan');
 
 });
 

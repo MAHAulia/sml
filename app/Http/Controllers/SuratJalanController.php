@@ -9,9 +9,11 @@ use App\Models\Manifest;
 use App\Models\Mobil;
 use App\Models\SuratJalan;
 use App\Models\SuratJalanDetail;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SuratJalanController extends Controller
@@ -47,35 +49,35 @@ class SuratJalanController extends Controller
         $user = Auth::user();
 
         if ($request->a == 'delete') {
-            $manifest = Manifest::where("code", $request->m)->first();
-            if (!$manifest) {
+            $suratJalan = SuratJalan::where("code", $request->m)->first();
+            if (!$suratJalan) {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
-                    'title' => 'Manifest Tidak Ditemukan',
-                    'message' => 'Data manifest yang akan anda tutup tidak ditemukan.',
+                    'title' => 'Surat Jalan Tidak Ditemukan',
+                    'message' => 'Data surat jalan yang akan anda tutup tidak ditemukan.',
                 ]);
             }
 
-            if ($manifest->status != "created") {
+            if ($suratJalan->status != "created") {
                 return redirect()->back()->with('flash', [
                     'type' => 'error',
-                    'title' => 'Manifest Sudah Memiliki Status',
-                    'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                    'title' => 'Surat Jalan Sudah Memiliki Status',
+                    'message' => 'Saat ini surat jalan ' . $request->m . ' sudah memiliki status ' . strtoupper($suratJalan->status) . ".",
                 ]);
             }
 
-            $manifest->delete();
+            $suratJalan->items()->delete();
+            $suratJalan->delete();
 
             return redirect()->back()->with('flash', [
                 'type' => 'success',
-                'title' => 'Data manifest berhasil disimpan',
-                'message' => 'Data manifest berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                'title' => 'Data surat jalan berhasil disimpan',
+                'message' => 'Data surat jalan berhasil disimpan, silahkan lanjutkan proses berikutnya',
             ]);
 
         }
 
         if ($request->a == 'approval') {
-            dd($request->all());
             try {
                 $suratJalan = SuratJalan::where("code", $request->m)->with('items')->first();
                 if (!$suratJalan) {
@@ -96,7 +98,7 @@ class SuratJalanController extends Controller
 
                 DB::beginTransaction();
 
-                $suratJalan->status = "send";
+                $suratJalan->status = "sending";
                 $suratJalan->save();
 
                 event(new SuratJalanCreated($suratJalan, $user, $suratJalan->status));
@@ -170,5 +172,27 @@ class SuratJalanController extends Controller
         }
 
         return redirect()->route("warehouse.surat_jalan");
+    }
+
+    public function printSuratJalan(String $code)
+    {
+        try {
+            $manifest = Manifest::with([
+                'creator',
+                'receiver',
+                'items',
+            ])
+                ->where('code', $code)
+                ->firstOrFail();
+
+            return Pdf::loadView('print.manifest', [
+                'manifest' => $manifest
+            ])
+                ->setPaper('a4', 'portrait')
+                ->stream("manifest-{$code}.pdf");
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Manifest not found or an error occurred.'], 404);
+        }
     }
 }
