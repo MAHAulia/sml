@@ -276,6 +276,8 @@ return new class extends Migration
             ["label" => "Cetak manifest", "route_name" => "print_manifest", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
             // 116
             ["label" => "Cetak kantong", "route_name" => "print_bag", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
+            // 117
+            ["label" => "Cetak Surat Jalan", "route_name" => "print_surat_jalan", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
         ]);
     }
 
