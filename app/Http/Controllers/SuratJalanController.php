@@ -174,25 +174,26 @@ class SuratJalanController extends Controller
         return redirect()->route("warehouse.surat_jalan");
     }
 
-    public function printSuratJalan(String $code)
+    public function printSuratJalan(Request $request)
     {
+        $code = $request->code;
         try {
-            $manifest = Manifest::with([
+            $surat_jalan = SuratJalan::with([
                 'creator',
-                'receiver',
-                'items',
+                'driver',
+                'items.manifest',
             ])
                 ->where('code', $code)
                 ->firstOrFail();
 
-            return Pdf::loadView('print.manifest', [
-                'manifest' => $manifest
+            return Pdf::loadView('print.surat-jalan', [
+                'surat_jalan' => $surat_jalan
             ])
                 ->setPaper('a4', 'portrait')
-                ->stream("manifest-{$code}.pdf");
+                ->stream("surat-jalan-{$code}.pdf");
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Manifest not found or an error occurred.'], 404);
+            return response()->json(['error' => 'Surat Jalan not found or an error occurred.'], 404);
         }
     }
 }

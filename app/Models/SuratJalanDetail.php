@@ -12,4 +12,8 @@ class SuratJalanDetail extends Model
         'manifest_id',
         'status'
     ];
+
+    public function manifest() {
+        return $this->belongsTo(Manifest::class);
+    }
 }
