@@ -97,8 +97,11 @@ export default function ManifestTerimaFormDialog({ selectedData, isOpen, setIsOp
     }, [selectedData]);
 
     const handleSelectItem = (item: TransactionsData) => {
-        // moveItem(item);
-        setReviewItem(item)
+        if (selectedData?.type == "linehaul" || role == "Delivery") {
+            moveItem(item)
+        } else {
+            setReviewItem(item)
+        }
     };
 
 

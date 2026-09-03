@@ -11,6 +11,8 @@ use App\Models\Kantor;
 use App\Models\Manifest;
 use App\Models\ManifestDetail;
 use App\Models\Role;
+use App\Models\SuratJalan;
+use App\Models\SuratJalanDetail;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -104,6 +106,19 @@ class WarehouseController extends Controller
                         'type' => 'error',
                         'title' => 'Manifest Sudah Memiliki Status',
                         'message' => 'Saat ini manifest ' . $request->m . ' sudah memiliki status ' . strtoupper($manifest->status) . ".",
+                    ]);
+                }
+
+                // Check Status Manifest Is Arrived
+                $suratJalan = SuratJalan::whereHas('items', function ($query) use ($manifest) {
+                    $query->where('manifest_id', $manifest->id);
+                })->first();
+
+                if ($suratJalan->status != "arrived") {
+                    return redirect()->back()->with('flash', [
+                        'type' => 'error',
+                        'title' => 'Manifest Belum Diterima',
+                        'message' => 'Manifest saat ini masih dalam proses angkutan, silahkan menunggu manifest diserahkan oleh driver.',
                     ]);
                 }
 

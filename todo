@@ -34,9 +34,9 @@ Yang Sudah dikerjakan dari yang sebelumnya
    - ok Tampilkan berat barang saat proses manifest terima
    - ok Sehingga bagian penerima dapat melakukan proses timbang ulang, dan menyesuaikan berat jika ternyata ada ketidaksesuaian berat
    - ok Ketika berat berbeda, pastikan penerima barang bisa melampirkan gambar sebagai eviden bahwa setelah ditimbang ulang barang beratnya beda
+4. Pastikan ada Flow dari Warehouse kantor asal ke Angkutan, dan dari Angkutan kantor Asal ke Angkutan mode selanjutnya sesuai proses
 
 yang belom
-4. Pastikan ada Flow dari Warehouse kantor asal ke Angkutan, dan dari Angkutan kantor Asal ke Angkutan mode selanjutnya sesuai proses
 5. Buat API untuk integrasi track n trace di landingpage
 7. Waktu proses manifest dari pickuper ke warehouse 
    - Jika terdapat perbedaan berat, maka proses invoicing akan dikenakan biaya tambahan
