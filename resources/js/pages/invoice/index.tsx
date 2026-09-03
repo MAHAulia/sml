@@ -95,9 +95,8 @@ export default function Invoice({ datas }: InvoiceProps) {
     }
 
     const onVerifynSend = (data: InvoiceData) => {
-        // setSelectedDataInvoice(data)
-        // setTambahData(true)
-        // setisView(false)
+        const url = route('invoice.show', { id: data.no_invoice });
+        window.open(url, '_blank');
     }
 
     const handleConfirmation = () => {

@@ -149,4 +149,10 @@ class InvoiceController extends Controller
             'message' => 'Invoice berhasil dibuat dengan nomor ' . $invoiceNumber,
         ]);
     }
+
+    public function show(string $id)
+    {
+        $invoice = Invoice::with('details', 'mitra')->where("no_invoice", $id)->first();
+        return Inertia::render('invoice/verify', compact('invoice'));
+    }
 }

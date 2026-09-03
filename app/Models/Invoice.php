@@ -26,6 +26,10 @@ class Invoice extends Model
         return $this->belongsTo(Customer::class, "customer_id", "id");
     }
 
+    public function details() {
+        return $this->hasMany(InvoiceDetail::class, "invoice_id", "id");
+    }
+
     public function getAgingAttribute()
     {
         if (!$this->sending_date_time) {

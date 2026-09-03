@@ -14,6 +14,7 @@ export interface InvoiceData {
     mitra: CustomerData;
     aging: number;
     created_at: string;
+    updated_at: string;
 }
 
 export interface InvoiceDetailData {
