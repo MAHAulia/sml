@@ -36,16 +36,19 @@ export default function UserForm({ roles, user, mobils, offices }: PenggunaProps
 
     useEffect(() => {
         if (user != null) {
+            console.log("user", user)
             setData("name", user.name)
             setData("email", user.email)
             setData("role", user.role_id != null ? user.role_id.toString() : "")
+            setData("nopolId", user.mobil_id != null ? user.mobil_id.toString() : "")
+            setData("office", user.office != null ? user.office.toString() : "")
             setData("action", "update")
         }
     }, [user])
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        console.log(data.action)
+        console.log(data)
         if (data.action == "add") {
             post(route('pengguna.store'), {
                 onSuccess: () => {

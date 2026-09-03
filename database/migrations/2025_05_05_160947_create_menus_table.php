@@ -247,36 +247,38 @@ return new class extends Migration
 
             // Driver
             //103
-            ["label" => "Surat Jalan", "route_name" => "driver.surat_jalan", "icon" => "ListTodo", "is_parent" => false, "parent_id" => null, "order_number" => 1, "type" => "menu"],
+            ["label" => "Driver", "route_name" => "driver", "icon" => "Truck", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "menu"],
             //104
-            ["label" => "Show Surat Jalan", "route_name" => "driver.show_surat_jalan", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 99, "order_number" => 2, "type" => "form"],
+            ["label" => "Surat Jalan", "route_name" => "driver.surat_jalan", "icon" => "file-box", "is_parent" => false, "parent_id" => 103, "order_number" => 2, "type" => "menu"],
             //105
-            ["label" => "Buat Surat Jalan", "route_name" => "driver.create_surat_jalan", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 99, "order_number" => 3, "type" => "form"],
+            ["label" => "Show Surat Jalan", "route_name" => "driver.show_surat_jalan", "icon" => "file-box", "is_parent" => false, "parent_id" => 103, "order_number" => 3, "type" => "form"],
             //106
-            ["label" => "Simpan Surat Jalan", "route_name" => "driver.save_surat_jalan", "icon" => "ListTodo", "is_parent" => false, "parent_id" => 99, "order_number" => 4, "type" => "api"],
+            ["label" => "Buat Surat Jalan", "route_name" => "driver.create_surat_jalan", "icon" => "file-box", "is_parent" => false, "parent_id" => 103, "order_number" => 4, "type" => "form"],
+            //107
+            ["label" => "Simpan Surat Jalan", "route_name" => "driver.save_surat_jalan", "icon" => "file-box", "is_parent" => false, "parent_id" => 103, "order_number" => 5, "type" => "api"],
             
             // Super Admin/
-            // 107
-            ["label" => "Mobil", "route_name" => "mobil.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "menu"],
             // 108
-            ["label" => "Tambah Mobil", "route_name" => "mobil.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            ["label" => "Mobil", "route_name" => "mobil.index", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "menu"],
             // 109
-            ["label" => "Simpan Mobil", "route_name" => "mobil.store", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            ["label" => "Tambah Mobil", "route_name" => "mobil.create", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
             // 110
-            ["label" => "Lihat Mobil", "route_name" => "mobil.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            ["label" => "Simpan Mobil", "route_name" => "mobil.store", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
             // 111
-            ["label" => "Ubah Mobil", "route_name" => "mobil.edit", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
+            ["label" => "Lihat Mobil", "route_name" => "mobil.show", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
             // 112
-            ["label" => "Simpan Perubahan Mobil", "route_name" => "mobil.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            ["label" => "Ubah Mobil", "route_name" => "mobil.edit", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "form"],
             // 113
-            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
+            ["label" => "Simpan Perubahan Mobil", "route_name" => "mobil.update", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
             // 114
             ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
             // 115
-            ["label" => "Cetak manifest", "route_name" => "print_manifest", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
+            ["label" => "Hapus Mobil", "route_name" => "mobil.destroy", "icon" => "Truck", "is_parent" => false, "parent_id" => 2, "order_number" => 5, "type" => "api"],
             // 116
-            ["label" => "Cetak kantong", "route_name" => "print_bag", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
+            ["label" => "Cetak manifest", "route_name" => "print_manifest", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
             // 117
+            ["label" => "Cetak kantong", "route_name" => "print_bag", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
+            // 118
             ["label" => "Cetak Surat Jalan", "route_name" => "print_surat_jalan", "icon" => "Printer", "is_parent" => true, "parent_id" => null, "order_number" => 1, "type" => "form"],
         ]);
     }

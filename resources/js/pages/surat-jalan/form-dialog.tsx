@@ -17,18 +17,22 @@ interface SuratJalanFormDialog {
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     isView: boolean;
+    isUpdate: boolean;
 }
 
 type SuratJalanForm = {
     code: string;
     mobil_id: number | null;
+    mobil_terusan_id: number | null;
     to: string;
+    status: 'created' | 'sending' | 'arrived'
     action: 'add' | 'update';
 };
 
 
-export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, isView = true }: SuratJalanFormDialog) {
+export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, isView = true, isUpdate = false }: SuratJalanFormDialog) {
     const { auth } = usePage<SharedData>().props;
+    const role = auth.user.roles[0].name;
     const page = usePage();
     const kantors = page.props.kantors as Kantor[];
     const mobils = page.props.mobils as Mobil[];
@@ -37,12 +41,18 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
     const { data, setData, get, post, put, processing, errors, reset } = useForm<Required<SuratJalanForm>>({
         code: "",
         mobil_id: null,
+        mobil_terusan_id: null,
+        status: 'created',
         action: 'add',
         to: '',
     });
 
     const getListItem = (selectedData: SuratJalanData) => {
-        const url = "warehouse.surat_jalan";
+        console.log("role", role)
+        let url = "warehouse.surat_jalan";
+        if (role === "Driver") {
+            url = "driver.surat_jalan";
+        }
        
         get(route(url, { t: "local", m: selectedData.code }), {
             preserveState: true,
@@ -64,6 +74,7 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
             setData('code', selectedData.code);
             setData('mobil_id', selectedData.mobil_id);
             setData('to', selectedData.to);
+            setData('status', selectedData.status as 'created' | 'sending' | 'arrived');
             setData('action', 'update');
             getListItem(selectedData)
         } else {
@@ -79,6 +90,22 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
             const url = "warehouse.save_surat_jalan";
 
             post(route(url), {
+                onSuccess: () => {
+                    resetForm();
+                    if (setIsOpen) {
+                        setIsOpen(false);
+                    }
+                },
+                onError: (error) => {
+                    console.log(error);
+                },
+            });
+        }
+
+        if (data.action == 'update') {
+            const url = "driver.save_surat_jalan";
+
+            post(route(url, { m: data.code, a: 'update' }), {
                 onSuccess: () => {
                     resetForm();
                     if (setIsOpen) {
@@ -115,7 +142,7 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
 
                             <div className={"grid grid-cols-2 gap-2"}>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="mobil">Mobil</Label>
+                                    <Label htmlFor="mobil">Mobil {!isView && isUpdate ? 'Asal': ''}</Label>
                                     <Select
                                         value={data.mobil_id?.toString() || ''}
                                         onValueChange={(value) => setData('mobil_id', parseInt(value))}
@@ -161,6 +188,54 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
                                     <InputError message={errors.to} />
                                 </div>                                
                             </div>
+                            {!isView && isUpdate && <div className={"grid grid-cols-2 gap-2"}>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="mobil">Mobil {!isView && isUpdate ? 'Terusan': ''}</Label>
+                                    <Select
+                                        value={data.mobil_terusan_id?.toString() || ''}
+                                        onValueChange={(value) => setData('mobil_terusan_id', parseInt(value))}
+                                        required
+                                        disabled={!isView}
+                                    >
+                                        <SelectTrigger id="mobil" tabIndex={4} className="w-full">
+                                            <SelectValue placeholder="Mobil" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Mobil</SelectLabel>
+                                                {mobils.map((mobil) => (
+                                                    <SelectItem key={mobil.id} value={mobil.id.toString()}>
+                                                        {mobil.nopol} - {mobil.merek} - {mobil.description}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.mobil_terusan_id} />
+                                </div>    
+                                <div className="grid gap-2">
+                                    <Label htmlFor="status">Status</Label>
+                                    <Select
+                                        value={data.status || ''}
+                                        onValueChange={(value) => setData('status', value as "created" | "sending" | "arrived")}
+                                        required
+                                        disabled={!isView}
+                                    >
+                                        <SelectTrigger id="status" tabIndex={4} className="w-full">
+                                            <SelectValue placeholder="Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Status</SelectLabel>
+                                                <SelectItem value="created">Created</SelectItem>
+                                                <SelectItem value="sending">Sending</SelectItem>
+                                                <SelectItem value="arrived">Arrived</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.status} />
+                                </div>                         
+                            </div>}
 
                             {isView && <div>
                                 <h1>Data Manifest Surat Jalan</h1>
@@ -169,13 +244,14 @@ export default function SuratJalanFormDialog({ selectedData, isOpen, setIsOpen, 
                                 </div>
                             </div>}
 
-                            {!isView && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
+                            {!isView && isUpdate && <Button type="submit" className="mt-4 w-full" tabIndex={14} disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                 Simpan
                             </Button>}
                             {data.action == "add" && !isView && <Button variant="outline" type="reset" className="w-full" tabIndex={15} disabled={processing} onClick={() => resetForm()}>
                                 Batal
                             </Button>}
+                            
                         </form>
 
                         {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}

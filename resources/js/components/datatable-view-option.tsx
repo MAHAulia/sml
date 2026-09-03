@@ -15,7 +15,7 @@ import {
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>
-  onAddButtonClicked?: () => void
+  onAddButtonClicked?: (() => void) | null
   onDownloadButtonClicked?: () => void
   displayViewColumn?: boolean
 }

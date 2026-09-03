@@ -52,6 +52,11 @@ export interface UserData {
     updated_at: string;
     role_id?: number;
     role?: string;
+    mobil_id?: number;
+    mobil?: MobilData;
+    office?: string;
+    [key: string]: unknown; // This allows for additional properties...
+}
     [key: string]: unknown; // This allows for additional properties...
 }
 

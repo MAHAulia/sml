@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BoxIcon, MoreHorizontal, PlusCircle, Printer, SearchIcon, Trash2Icon } from "lucide-react"
+import { ArrowUpDown, BoxIcon, FilePen, MoreHorizontal, PlusCircle, Printer, SearchIcon, Trash2Icon } from "lucide-react"
 // import { Checkbox } from "@/components/ui/checkbox"
 import { StatusBadge } from "@/components/status-badge"
 import { SuratJalanData } from "@/types/surat-jalan"
@@ -18,17 +18,18 @@ import { SuratJalanData } from "@/types/surat-jalan"
 type ColumnProps = {
   onView: (data: SuratJalanData) => void;
   onEdit: (data: SuratJalanData) => void;
+  onUpdate: (data: SuratJalanData) => void;
   onDelete: (data: SuratJalanData) => void;
   onTutupManifest: (data: SuratJalanData) => void;
   onPrint: (data: SuratJalanData) => void;
+  role: string;
 };
 
-export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManifest, onPrint }: ColumnProps): ColumnDef<SuratJalanData>[] => [
+export const suratJalanTableColumns = ({ onView, onEdit, onUpdate, onDelete, onTutupManifest, onPrint, role }: ColumnProps): ColumnDef<SuratJalanData>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
       const data = row.original
-      console.log('data', data)
 
       return (
         <DropdownMenu>
@@ -57,10 +58,16 @@ export const suratJalanTableColumns = ({ onView, onEdit, onDelete, onTutupManife
             >
               <BoxIcon /> Tutup Surat Jalan
             </DropdownMenuItem>}
-            {(data.items.length != 0 && data.status == 'sending') && <DropdownMenuItem
+            {(data.items.length != 0 && data.status != 'created') && <DropdownMenuItem
               onClick={() => onPrint(data)}
             >
               <Printer /> Cetak
+            </DropdownMenuItem>}
+            {role === "Driver" && data.status == "sending" && <DropdownMenuItem
+              onClick={() => onUpdate(data)}
+            >
+              <FilePen
+               /> Update Status
             </DropdownMenuItem>}
             {/* {data.status !== "created" && data.items.length > 0 ? null : <DropdownMenuSeparator />} */}
             {data.status !== "created" ? null : <DropdownMenuItem className="text-red-500" onClick={() => onDelete(data)}><Trash2Icon className="text-red-500" /> Hapus</DropdownMenuItem>}

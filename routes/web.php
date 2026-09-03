@@ -104,6 +104,10 @@ Route::middleware(['auth', 'verified', 'routeaccess'])->group(function () {
     Route::post("surat-jalan/warehouse", [SuratJalanController::class, 'createSuratJalan'])->name("warehouse.save_surat_jalan");
     Route::get("print-surat-jalan", [SuratJalanController::class, 'printSuratJalan'])->name('print_surat_jalan');
 
+    Route::get("surat-jalan-driver", [SuratJalanController::class, 'index'])->name('driver.surat_jalan');
+    Route::post("surat-jalan/driver", [SuratJalanController::class, 'createSuratJalan'])->name("driver.save_surat_jalan");
+    Route::get("print-surat-jalan-driver", [SuratJalanController::class, 'printSuratJalan'])->name('print_surat_jalan');
+
 });
 
 Route::get('/mailable', function () {

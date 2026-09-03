@@ -47,7 +47,10 @@ export default function SuratJalanDialog({ selectedData, isOpen, setIsOpen, isVi
     const [selectedManifestItem, setSelectedManifestItem] = useState<ManifestSerahData[]>([])
 
     const getListItem = (selectedData: SuratJalanData) => {
-        const url = "warehouse.surat_jalan";
+        let url = "warehouse.surat_jalan";
+        if (role === "Driver") {
+            url = "driver.surat_jalan";
+        }
 
         get(route(url, { t: "local", m: selectedData.code }), {
             preserveState: true,

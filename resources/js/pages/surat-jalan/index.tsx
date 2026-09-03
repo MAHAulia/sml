@@ -34,6 +34,7 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
     const [selectedData, setSelectedData] = useState<SuratJalanData | null>(null)
     const [selectedItemData, setSelectedItemData] = useState<SuratJalanData | null>(null)
     const [deleteMenu, setDeleteMenu] = useState<SuratJalanData>()
+    const [isUpdate, setIsUpdate] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
     const [tambahData, setTambahData] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
@@ -64,6 +65,7 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
         setIsOpen(true)
         setSelectedItemData(data)
         setisView(true)
+            
     }
 
     const handleEdit = (data: SuratJalanData) => {
@@ -146,6 +148,13 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
         });
     }
 
+    const handleUpdate = (data: SuratJalanData) => {
+        setIsOpen(true)
+        setSelectedItemData(data)
+        setisView(true)
+        setIsUpdate(true)
+    }
+
 
     const onPrint = (data: SuratJalanData) => {
         const url = route('print_surat_jalan', { code: data.code });
@@ -165,8 +174,8 @@ export default function SuratJalan({ datas }: SuratJalanProps) {
             <PageLayout title='Surat Jalan' description="Kelola manifest angkutan">
                 <div className="space-y-6 flex">
                     <div className="w-full ml-2">
-                        <SuratJalanTable data={datas} onAddButtonClicked={handleAdd} columns={suratJalanTableColumns({ onView: handleView, onEdit: handleEdit, onDelete: confirmDelete, onTutupManifest: onTutupManifest, onPrint: onPrint })} />
-                        <SuratJalanFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedItemData} isView={isView} />
+                        <SuratJalanTable data={datas} onAddButtonClicked={role === "Driver" ? null : handleAdd} columns={suratJalanTableColumns({ onView: handleView, onEdit: handleEdit, onUpdate: handleUpdate, onDelete: confirmDelete, onTutupManifest: onTutupManifest, onPrint: onPrint, role })} />
+                        <SuratJalanFormDialog isOpen={isOpen} setIsOpen={setIsOpen} selectedData={selectedItemData} isView={isView} isUpdate />
                         <SuratJalanDialog selectedData={selectedData} isOpen={tambahData} setIsOpen={setTambahData} isView={true} />
                         <ConfirmationDialog
                             title={confirmation.title}

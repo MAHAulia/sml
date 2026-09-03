@@ -9,6 +9,7 @@ use App\Models\Manifest;
 use App\Models\Mobil;
 use App\Models\SuratJalan;
 use App\Models\SuratJalanDetail;
+use App\Models\SuratJalanHistory;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,8 @@ class SuratJalanController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = SuratJalan::with("items")->get();
+        $user = Auth::user();
+        $datas = SuratJalan::where("user_id", $user->id)->orWhere("driver_id", $user->id)->with("items")->get();
         $kantors = Kantor::all();
         $mobils = Mobil::all();
         if ($request->t == "local") {
@@ -101,6 +103,15 @@ class SuratJalanController extends Controller
                 $suratJalan->status = "sending";
                 $suratJalan->save();
 
+                SuratJalanHistory::create([
+                    'surat_jalan_id' => $suratJalan->id,
+                    'status' => $suratJalan->status,
+                    'user_id' => $user->id,
+                    'nopol' => $suratJalan->nopol,
+                    'mobil_id' => $suratJalan->mobil_id,
+                    'driver_id' => $suratJalan->driver_id,
+                ]);
+
                 event(new SuratJalanCreated($suratJalan, $user, $suratJalan->status));
 
                 DB::commit();
@@ -120,6 +131,38 @@ class SuratJalanController extends Controller
                 ]);
             }
 
+        }
+
+        if ($request->a == 'update') {
+            $suratJalan = SuratJalan::where("code", $request->m)->first();
+            if (!$suratJalan) {
+                return redirect()->back()->with('flash', [
+                    'type' => 'error',
+                    'title' => 'Surat Jalan Tidak Ditemukan',
+                    'message' => 'Data surat jalan yang akan anda tutup tidak ditemukan.',
+                ]);
+            }
+
+            $selectedMobil = Mobil::where('id',$request->mobil_terusan_id)->with("sopir")->first();
+            
+            $suratJalan->status = $request->status;
+            
+            $suratJalan->save();
+
+            SuratJalanHistory::create([
+                'surat_jalan_id' => $suratJalan->id,
+                'status' => $request->status,
+                'user_id' => $user->id,
+                'nopol' => $selectedMobil?->nopol,
+                'mobil_id' => $request->mobil_terusan_id,
+                'driver_id' => $selectedMobil?->sopir?->id,
+            ]);
+
+            return redirect()->back()->with('flash', [
+                    'type' => 'success',
+                    'title' => 'Data surat jalan berhasil disimpan',
+                    'message' => 'Data surat jalan berhasil disimpan, silahkan lanjutkan proses berikutnya',
+                ]);
         }
 
         $isExist = SuratJalan::where("user_id", $user->id)
@@ -169,6 +212,15 @@ class SuratJalanController extends Controller
             $suratJalan->driver_id = $mobil?->sopir?->id;            
             $suratJalan->to = $request->to;
             $suratJalan->save();
+
+            SuratJalanHistory::create([
+                'surat_jalan_id' => $suratJalan->id,
+                'status' => $suratJalan->status,
+                'user_id' => $user->id,
+                'nopol' => $suratJalan->nopol,
+                'mobil_id' => $suratJalan->mobil_id,
+                'driver_id' => $suratJalan->driver_id,
+            ]);
         }
 
         return redirect()->route("warehouse.surat_jalan");

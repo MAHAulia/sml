@@ -1,6 +1,7 @@
 export interface ManifestSerahData {
     id: number;
     code: string;
+    order_number: string;
     user_id: number;
     from: string;
     to: string;

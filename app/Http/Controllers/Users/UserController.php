@@ -27,7 +27,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $data = User::select("users.id", "users.name", "users.email", "users.email_verified_at", "users.created_at", "role_users.role_id", "roles.name as role")
+        $data = User::select("users.id", "users.name", "users.email", "users.email_verified_at", "users.created_at", "role_users.role_id", "roles.name as role", "users.mobil_id", "users.office")
             ->leftJoin("role_users", "role_users.user_id", "users.id")
             ->leftJoin("roles", "roles.id", "role_users.role_id")
             ->where("users.id", "!=", 1)->get();
@@ -91,6 +91,7 @@ class UserController extends Controller
                 'office' => $validated["office"],
             ];
 
+            
             if (config('app.env') != 'production') {
                 $data['email_verified_at'] = date("Y-m-d H:i:s");
             }
@@ -159,6 +160,9 @@ class UserController extends Controller
         try {
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->mobil_id = $request->nopolId;
+            $user->office = $request->office;
+            
             $user->save();
 
             $role = RoleUser::where("user_id", $user->id)->where("role_id", $request->role)->first();
